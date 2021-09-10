@@ -1,0 +1,3 @@
+name: AuroraMC-Game-Engine
+main: net.auroramc.engine.AuroraMCGameEngine
+version: 1.0-SNAPSHOT
