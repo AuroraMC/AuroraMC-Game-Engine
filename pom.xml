@@ -148,4 +148,12 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <name>Releases</name>
+            <url>http://nexus.block2block.me/repository/AuroraMC-Game-Engine</url>
+        </repository>
+    </distributionManagement>
+
 </project>
