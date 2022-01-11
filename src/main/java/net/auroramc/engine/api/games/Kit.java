@@ -1,4 +1,4 @@
-package net.auroramc.engine.api;
+package net.auroramc.engine.api.games;
 
 public abstract class Kit {
 

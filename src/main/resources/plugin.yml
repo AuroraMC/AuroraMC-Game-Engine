@@ -3,3 +3,6 @@ main: net.auroramc.engine.AuroraMCGameEngine
 version: 1.0-SNAPSHOT
 author: "The AuroraMC Development Team"
 website: auroramc.net
+load: STARTUP
+depend:
+  - AuroraMC-Core

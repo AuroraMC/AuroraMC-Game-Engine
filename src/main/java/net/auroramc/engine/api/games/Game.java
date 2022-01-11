@@ -1,4 +1,4 @@
-package net.auroramc.engine.api;
+package net.auroramc.engine.api.games;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public abstract class Game {
         this.name = name;
     }
 
-    public abstract void preLoad(Map map);
+    public abstract void preLoad();
 
     public abstract void load(Map map);
 
