@@ -4,18 +4,20 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-public class Map {
+public class GameMap {
 
     private final File regionFolder;
     private final int id;
     private final String name;
     private final String author;
+    private final JSONObject mapData;
 
-    public Map(File regionFolder, int id, String name, String author, JSONObject mapData) {
+    public GameMap(File regionFolder, int id, String name, String author, JSONObject mapData) {
         this.regionFolder = regionFolder;
         this.id = id;
         this.name = name;
         this.author = author;
+        this.mapData = mapData;
     }
 
     public File getRegionFolder() {
@@ -33,4 +35,9 @@ public class Map {
     public String getAuthor() {
         return author;
     }
+
+    public JSONObject getMapData() {
+        return mapData;
+    }
+
 }

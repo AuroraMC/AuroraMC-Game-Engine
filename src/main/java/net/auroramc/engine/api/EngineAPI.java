@@ -2,63 +2,50 @@ package net.auroramc.engine.api;
 
 import net.auroramc.engine.AuroraMCGameEngine;
 import net.auroramc.engine.api.games.Game;
-import net.auroramc.engine.api.games.Map;
+import net.auroramc.engine.api.games.GameInfo;
+import net.auroramc.engine.api.games.GameMap;
+import net.auroramc.engine.api.games.MapRegistry;
 import net.auroramc.engine.api.server.ServerState;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EngineAPI {
 
     private static AuroraMCGameEngine gameEngine;
-    private static final List<Class<? extends Game>> games;
-    private static Map waitingLobbyMap;
+    private static final Map<String, GameInfo> games;
+    private static GameMap waitingLobbyMap;
     private static ServerState serverState;
     private static Game activeGame;
-    private static Map activeMap;
+    private static GameMap activeMap;
+    private static final Map<String, MapRegistry> maps;
+    private static final List<GameInfo> gameRotation;
 
     static {
-        games = new ArrayList<>();
+        games = new HashMap<>();
+        maps = new HashMap<>();
+        gameRotation = new ArrayList<>();
         serverState = ServerState.STARTING_UP;
+
+        activeGame = null;
+        activeMap = null;
     }
 
     public static void init(AuroraMCGameEngine gameEngine) {
         EngineAPI.gameEngine = gameEngine;
     }
 
-    public static List<Class<? extends Game>> getGames() {
+    public static Map<String, GameInfo> getGames() {
         return games;
     }
 
-    public static void registerGame(Class<? extends Game> game) {
-        EngineAPI.games.add(game);
+    public static void registerGame(GameInfo game) {
+        EngineAPI.games.put(game.getRegistryKey(), game);
     }
 
-    public static Class<? extends Game> getGame(String name) {
-        for (Class<? extends Game> game : games) {
-            if (game.getSimpleName().equalsIgnoreCase(name)) {
-               return game;
-            }
-        }
-        return null;
-    }
-
-    public static Game initiateGame(String name) {
-        for (Class<? extends Game> game : games) {
-            if (game.getSimpleName().equalsIgnoreCase(name)) {
-                try {
-                    return game.getConstructor().newInstance();
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static Map getWaitingLobbyMap() {
+    public static GameMap getWaitingLobbyMap() {
         return waitingLobbyMap;
     }
 
@@ -78,7 +65,7 @@ public class EngineAPI {
         return activeGame;
     }
 
-    public static Map getActiveMap() {
+    public static GameMap getActiveMap() {
         return activeMap;
     }
 
@@ -86,7 +73,19 @@ public class EngineAPI {
         EngineAPI.activeGame = activeGame;
     }
 
-    public static void setActiveMap(Map activeMap) {
-        EngineAPI.activeMap = activeMap;
+    public static void setActiveMap(GameMap activeGameMap) {
+        EngineAPI.activeMap = activeGameMap;
+    }
+
+    public static Map<String, MapRegistry> getMaps() {
+        return maps;
+    }
+
+    public static void setWaitingLobbyMap(GameMap waitingLobbyMap) {
+        EngineAPI.waitingLobbyMap = waitingLobbyMap;
+    }
+
+    public static List<GameInfo> getGameRotation() {
+        return gameRotation;
     }
 }

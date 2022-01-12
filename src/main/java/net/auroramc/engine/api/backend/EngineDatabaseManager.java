@@ -2,7 +2,7 @@ package net.auroramc.engine.api.backend;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.games.Map;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,9 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class EngineDatabaseManager {
 
@@ -24,6 +21,9 @@ public class EngineDatabaseManager {
             ResultSet set = statement.executeQuery();
             while (set.next()) {
                 File file = new File(EngineAPI.getGameEngine().getDataFolder(), "zips");
+                if (file.exists()) {
+                    FileUtils.deleteDirectory(file);
+                }
                 file.mkdirs();
                 file = new File(file, set.getInt(1) + ".zip");
                 FileOutputStream output = new FileOutputStream(file);

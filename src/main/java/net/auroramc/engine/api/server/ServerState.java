@@ -4,6 +4,7 @@ public enum ServerState {
 
     STARTING_UP("Starting up..."),
     IDLE("Idle"),
+    RELOADING_MAPS("Reloading Maps..."),
     LOADING_GAME("Loading Game..."),
     LOADING_MAP("Loading Map..."),
     WAITING_FOR_PLAYERS("Waiting for players..."),

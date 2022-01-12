@@ -21,5 +21,10 @@
       <option name="name" value="nexus" />
       <option name="url" value="http://nexus.block2block.me/repository/AuroraMC-Core/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="nexus" />
+      <option name="name" value="nexus" />
+      <option name="url" value="https://nexus.block2block.me/repository/AuroraMC-Core/" />
+    </remote-repository>
   </component>
 </project>

@@ -4,17 +4,17 @@ import java.util.List;
 
 public abstract class Game {
 
-    int id;
-    String name;
+    protected GameVariation gameVariation;
+    protected GameMap map;
 
-    public Game(int id, String name) {
-        this.id = id;
-        this.name = name;
+
+    public Game(GameVariation gameVariation) {
+        this.gameVariation = gameVariation;
     }
 
     public abstract void preLoad();
 
-    public abstract void load(Map map);
+    public abstract void load(GameMap map);
 
     public abstract void start();
 
@@ -22,11 +22,4 @@ public abstract class Game {
 
     public abstract List<Kit> getKits();
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
 }
