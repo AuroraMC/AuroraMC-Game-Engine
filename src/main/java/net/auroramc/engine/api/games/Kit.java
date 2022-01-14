@@ -17,7 +17,18 @@ public abstract class Kit {
     public abstract void onGameStart();
 
     public String getName() {
-
+        return name;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
