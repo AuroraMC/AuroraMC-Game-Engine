@@ -1,14 +1,22 @@
 package net.auroramc.engine;
 
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.ZipUtil;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
+import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.MapRegistry;
+import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.engine.api.util.VoidGenerator;
 import net.auroramc.engine.listeners.JoinListener;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class AuroraMCGameEngine extends JavaPlugin {
 
@@ -25,10 +34,12 @@ public class AuroraMCGameEngine extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Loading AuroraMC Game Engine...");
         EngineAPI.init(this);
+
         getLogger().info("Downloading all live maps...");
         EngineDatabaseManager.downloadMaps();
         File[] zips = new File(getDataFolder(), "zips").listFiles();
         assert zips != null;
+
         getLogger().info(zips.length + " zips downloaded. Extracting maps...");
         File mapsFolder = new File(getDataFolder(), "maps");
         if (mapsFolder.exists()) {
@@ -46,9 +57,9 @@ public class AuroraMCGameEngine extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-
         File[] maps = new File(getDataFolder(), "maps").listFiles();
         assert maps != null;
+
         getLogger().info(maps.length + " maps extracted. Loading map registry...");
         for (File map : maps) {
             File data = new File(map, "map.json");
@@ -78,7 +89,6 @@ public class AuroraMCGameEngine extends JavaPlugin {
         }
 
         getLogger().info("Maps loaded. Copying waiting lobby...");
-
         if (EngineAPI.getMaps().containsKey("WAITING_LOBBY")) {
             GameMap map = EngineAPI.getMaps().get("WAITING_LOBBY").getMaps().get(0);
             EngineAPI.setWaitingLobbyMap(map);
@@ -98,12 +108,14 @@ public class AuroraMCGameEngine extends JavaPlugin {
         getLogger().info("Waiting lobby copied. Registering listeners...");
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
 
-        getLogger().info("Listeners registered. Loading rotation...");
-        for (Object object : AuroraMCAPI.getServerInfo().getServerType().getJSONArray("rotation")) {
-            String string = (String) object;
-            EngineAPI.getGameRotation().add(EngineAPI.getGames().get(string));
+        getLogger().info("Listeners registered. Loading map world...");
+        World world = Bukkit.createWorld(new WorldCreator("map_world").generator(new VoidGenerator(this)));
+        world.setKeepSpawnInMemory(false);
+        for (Chunk chunk : Arrays.asList(world.getLoadedChunks())) {
+            world.unloadChunk(chunk);
         }
 
+        getLogger().info("Loading complete. Waiting for games to be registered...");
     }
 
 }

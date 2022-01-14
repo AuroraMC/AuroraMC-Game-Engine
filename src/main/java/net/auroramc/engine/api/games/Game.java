@@ -1,5 +1,8 @@
 package net.auroramc.engine.api.games;
 
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import org.bukkit.entity.Player;
+
 import java.util.List;
 
 public abstract class Game {
@@ -19,6 +22,10 @@ public abstract class Game {
     public abstract void start();
 
     public abstract void end();
+
+    public abstract void onPlayerJoin(Player player);
+
+    public abstract void onPlayerJoin(AuroraMCGamePlayer player);
 
     public abstract List<Kit> getKits();
 
