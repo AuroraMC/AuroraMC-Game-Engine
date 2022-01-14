@@ -1,6 +1,5 @@
 package net.auroramc.engine.api.events;
 
-import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
