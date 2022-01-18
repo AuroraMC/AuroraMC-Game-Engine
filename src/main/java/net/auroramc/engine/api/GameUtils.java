@@ -5,7 +5,10 @@ import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.server.ServerState;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -30,8 +33,14 @@ public class GameUtils {
             EngineAPI.setServerState(ServerState.LOADING_MAP);
             game.load(map);
             EngineAPI.setActiveMap(map);
+            File file = new File(EngineAPI.getMapWorld().getWorldFolder(), "region");
+            if (file.exists()) {
+                FileUtils.deleteDirectory(file);
+            }
+            file.mkdirs();
+            FileUtils.copyDirectory(map.getRegionFolder(), file);
             EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
             e.printStackTrace();
         }
     }

@@ -108,6 +108,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         for (Chunk chunk : Arrays.asList(world.getLoadedChunks())) {
             world.unloadChunk(chunk);
         }
+        EngineAPI.setMapWorld(world);
 
         getLogger().info("Loading complete. Waiting for games to be registered...");
     }

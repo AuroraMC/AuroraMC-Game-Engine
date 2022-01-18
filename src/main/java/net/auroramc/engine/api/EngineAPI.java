@@ -9,6 +9,7 @@ import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.MapRegistry;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.util.*;
 
@@ -23,6 +24,7 @@ public class EngineAPI {
     private static GameMap activeMap;
     private static final Map<String, MapRegistry> maps;
     private static final List<GameInfo> gameRotation;
+    private static World mapWorld;
 
     private static final Random random;
 
@@ -57,6 +59,14 @@ public class EngineAPI {
 
     public static ServerState getServerState() {
         return serverState;
+    }
+
+    public static void setMapWorld(World mapWorld) {
+        EngineAPI.mapWorld = mapWorld;
+    }
+
+    public static World getMapWorld() {
+        return mapWorld;
     }
 
     public static void setServerState(ServerState serverState) {
