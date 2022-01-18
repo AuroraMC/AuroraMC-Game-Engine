@@ -8,6 +8,7 @@ import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.MapRegistry;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.engine.api.util.GameStartingRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -25,6 +26,8 @@ public class EngineAPI {
     private static final Map<String, MapRegistry> maps;
     private static final List<GameInfo> gameRotation;
     private static World mapWorld;
+    private static Game nextGame;
+    private static GameStartingRunnable gameStartingRunnable;
 
     private static final Random random;
 
@@ -137,5 +140,21 @@ public class EngineAPI {
             EngineAPI.setServerState(ServerState.IDLE);
         }
 
+    }
+
+    public static Game getNextGame() {
+        return nextGame;
+    }
+
+    public static GameStartingRunnable getGameStartingRunnable() {
+        return gameStartingRunnable;
+    }
+
+    public static void setGameStartingRunnable(GameStartingRunnable gameStartingRunnable) {
+        EngineAPI.gameStartingRunnable = gameStartingRunnable;
+    }
+
+    public static void setNextGame(Game nextGame) {
+        EngineAPI.nextGame = nextGame;
     }
 }
