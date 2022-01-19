@@ -46,15 +46,15 @@ public class JoinListener implements Listener {
             EngineAPI.getActiveGame().onPlayerJoin(player);
         } else {
             PlayerScoreboard scoreboard = player.getScoreboard();
-            scoreboard.setTitle("&3&l-= &b&l&n" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
+            scoreboard.setTitle("&3&l-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
             scoreboard.setLine(11, "&b&l«GAME»");
-            scoreboard.setLine(10, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None"));
+            scoreboard.setLine(10, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
             scoreboard.setLine(9, " ");
             scoreboard.setLine(8, "&b&l«MAP»");
-            scoreboard.setLine(7, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None"));
+            scoreboard.setLine(7, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None  "));
             scoreboard.setLine(6, "  ");
             scoreboard.setLine(5, "&b&l«KIT»");
-            scoreboard.setLine(4, ((player.getKit() != null)?player.getKit().getName():"None"));
+            scoreboard.setLine(4, ((player.getKit() != null)?player.getKit().getName():"None "));
             scoreboard.setLine(3, "   ");
             scoreboard.setLine(2, "&b&l«TEAM»");
             scoreboard.setLine(1, ((player.getTeam() != null)?"&" + player.getTeam().getTeamColor() + "&l" + player.getTeam().getName():"None"));

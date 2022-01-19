@@ -51,6 +51,8 @@ public class LobbyListener implements Listener {
                     e.getEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
                     e.getEntity().setFallDistance(0);
                     e.getEntity().setVelocity(new Vector());
+                } else if (e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK || e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
+                    e.getEntity().setFireTicks(0);
                 }
                 e.setCancelled(true);
 

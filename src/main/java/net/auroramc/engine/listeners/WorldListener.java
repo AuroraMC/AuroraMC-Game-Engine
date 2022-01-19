@@ -16,6 +16,7 @@ public class WorldListener implements Listener {
         if (e.getWorld().getName().equalsIgnoreCase("world")) {
             e.getWorld().setGameRuleValue("doMobSpawning", "false");
             e.getWorld().setGameRuleValue("doDaylightCycle", "false");
+            e.getWorld().setGameRuleValue("doFireTick", "false");
         }
     }
 
