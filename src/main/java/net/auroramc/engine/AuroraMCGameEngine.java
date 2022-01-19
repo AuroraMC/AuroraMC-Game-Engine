@@ -69,12 +69,13 @@ public class AuroraMCGameEngine extends JavaPlugin {
             try {
                 FileReader fileReader = new FileReader(data);
                 object = parser.parse(fileReader);
-                jsonObject = (JSONObject)  object;
+                jsonObject = new JSONObject(((org.json.simple.JSONObject)  object).toJSONString());
             } catch (IOException | ParseException e) {
                 e.printStackTrace();
                 getLogger().info("Map loading for a map failed, skipping...");
                 continue;
             }
+
             String gameType = jsonObject.getString("game_type");
             int id = Integer.parseInt(map.getName().split("\\.")[0]);
             String name = jsonObject.getString("name");
