@@ -13,11 +13,11 @@ public class CommandGameStop extends Command {
 
 
     public CommandGameStop() {
-        super("game", Collections.emptyList(), Collections.singletonList(Permission.ADMIN), false, null);
+        super("stop", Collections.emptyList(), Collections.singletonList(Permission.ADMIN), false, null);
     }
 
     @Override
-    public void execute(AuroraMCPlayer auroraMCPlayer, String s, List<String> list) {
+    public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
         
     }
 

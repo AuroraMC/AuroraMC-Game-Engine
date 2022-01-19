@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandGameSet extends Command {
+public class CommandGameNext extends Command {
 
 
-    public CommandGameSet() {
-        super("set", Collections.emptyList(), Collections.singletonList(Permission.ADMIN), false, null);
+    public CommandGameNext() {
+        super("next", Collections.emptyList(), Collections.singletonList(Permission.ADMIN), false, null);
     }
 
     @Override

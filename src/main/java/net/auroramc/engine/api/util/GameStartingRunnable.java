@@ -18,12 +18,22 @@ public class GameStartingRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.getScoreboard().setTitle("&3&l-= &b&l&nStarting In " + startTime + "&r &3&l=-");
-            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 1);
+            player.getScoreboard().setTitle("&3&l-= &b&l&nSTARTING IN " + startTime + "&r &3&l=-");
+            switch(startTime) {
+                case 60:
+                case 30:
+                case 10:
+                case 5:
+                case 3:
+                case 2:
+                case 1:
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 1);
+            }
         }
         if (startTime == 0) {
             EngineAPI.getActiveGame().start();
             EngineAPI.setServerState(ServerState.IN_GAME);
+            EngineAPI.setGameStartingRunnable(null);
             this.cancel();
             return;
         }

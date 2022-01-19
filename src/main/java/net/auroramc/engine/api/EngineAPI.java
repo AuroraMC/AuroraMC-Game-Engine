@@ -1,6 +1,7 @@
 package net.auroramc.engine.api;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.AuroraMCGameEngine;
 import net.auroramc.engine.api.events.ServerStateChangeEvent;
 import net.auroramc.engine.api.games.Game;
@@ -10,6 +11,7 @@ import net.auroramc.engine.api.games.MapRegistry;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.*;
@@ -29,6 +31,12 @@ public class EngineAPI {
     private static Game nextGame;
     private static GameStartingRunnable gameStartingRunnable;
 
+    private final static GUIItem lobbyItem;
+    private final static GUIItem prefsItem;
+    private final static GUIItem cosmeticsItem;
+    private final static GUIItem kitItem;
+    private final static GUIItem teamItem;
+
     private static final Random random;
 
     static {
@@ -42,6 +50,12 @@ public class EngineAPI {
         activeGame = null;
         activeGameInfo = null;
         activeMap = null;
+
+        lobbyItem = new GUIItem(Material.WOODEN_DOOR, "&a&lReturn to Lobby");
+        prefsItem = new GUIItem(Material.REDSTONE_COMPARATOR, "&a&lView Preferences");
+        cosmeticsItem = new GUIItem(Material.EMERALD, "&a&lView Cometics");
+        kitItem = new GUIItem(Material.EMERALD, "&a&lSelect Kit");
+        teamItem = new GUIItem(Material.EMERALD, "&a&lSelect Team");
     }
 
     public static void init(AuroraMCGameEngine gameEngine) {
@@ -156,5 +170,25 @@ public class EngineAPI {
 
     public static void setNextGame(Game nextGame) {
         EngineAPI.nextGame = nextGame;
+    }
+
+    public static GUIItem getCosmeticsItem() {
+        return cosmeticsItem;
+    }
+
+    public static GUIItem getKitItem() {
+        return kitItem;
+    }
+
+    public static GUIItem getLobbyItem() {
+        return lobbyItem;
+    }
+
+    public static GUIItem getPrefsItem() {
+        return prefsItem;
+    }
+
+    public static GUIItem getTeamItem() {
+        return teamItem;
     }
 }

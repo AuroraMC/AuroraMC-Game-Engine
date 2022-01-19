@@ -1,12 +1,17 @@
 package net.auroramc.engine.listeners;
 
+import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
 import net.auroramc.core.api.players.PlayerScoreboard;
+import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.engine.api.util.GameStartingRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -41,7 +46,7 @@ public class JoinListener implements Listener {
             EngineAPI.getActiveGame().onPlayerJoin(player);
         } else {
             PlayerScoreboard scoreboard = player.getScoreboard();
-            scoreboard.setTitle("&3&l-= &b&l&n" + EngineAPI.getServerState().getName() + "&r &3&l=-");
+            scoreboard.setTitle("&3&l-= &b&l&n" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
             scoreboard.setLine(11, "&b&l«GAME»");
             scoreboard.setLine(10, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None"));
             scoreboard.setLine(9, " ");
@@ -54,6 +59,23 @@ public class JoinListener implements Listener {
             scoreboard.setLine(2, "&b&l«TEAM»");
             scoreboard.setLine(1, ((player.getTeam() != null)?"&" + player.getTeam().getTeamColor() + "&l" + player.getTeam().getName():"None"));
 
+            if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
+                if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
+                    EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
+                    EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+                }
+            }
+
+            player.getPlayer().getInventory().setItem(8, EngineAPI.getLobbyItem().getItem());
+            player.getPlayer().getInventory().setItem(7, EngineAPI.getPrefsItem().getItem());
+            player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
+
+            if (EngineAPI.getActiveGame() != null) {
+                player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                if (EngineAPI.getActiveGame().getTeams().size() > 1) {
+                    player.getPlayer().getInventory().setItem(0, EngineAPI.getTeamItem().getItem());
+                }
+            }
         }
     }
 

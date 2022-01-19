@@ -1,12 +1,18 @@
 package net.auroramc.engine;
 
+import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.ZipUtil;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.MapRegistry;
 import net.auroramc.engine.api.util.VoidGenerator;
+import net.auroramc.engine.commands.CommandDisguiseOverride;
+import net.auroramc.engine.commands.CommandUndisguiseOverride;
+import net.auroramc.engine.commands.game.CommandGame;
 import net.auroramc.engine.listeners.JoinListener;
+import net.auroramc.engine.listeners.LobbyListener;
+import net.auroramc.engine.listeners.PingListener;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -111,6 +117,14 @@ public class AuroraMCGameEngine extends JavaPlugin {
         EngineAPI.setMapWorld(world);
 
         getLogger().info("Loading complete. Waiting for games to be registered...");
+
+        Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new LobbyListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PingListener(), this);
+
+        AuroraMCAPI.registerCommand(new CommandUndisguiseOverride());
+        AuroraMCAPI.registerCommand(new CommandDisguiseOverride());
+        AuroraMCAPI.registerCommand(new CommandGame());
     }
 
 }

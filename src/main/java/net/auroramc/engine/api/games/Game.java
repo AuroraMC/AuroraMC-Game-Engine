@@ -5,16 +5,20 @@ import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Game {
 
     protected GameVariation gameVariation;
     protected GameMap map;
+    protected Map<String, Team> teams;
 
 
     public Game(GameVariation gameVariation) {
         this.gameVariation = gameVariation;
+        this.teams = new HashMap<>();
     }
 
     public abstract void preLoad();
@@ -46,4 +50,7 @@ public abstract class Game {
 
     public abstract List<Kit> getKits();
 
+    public Map<String, Team> getTeams() {
+        return teams;
+    }
 }
