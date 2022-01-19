@@ -10,9 +10,8 @@ import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.MapRegistry;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
+import net.auroramc.engine.api.util.VoidGenerator;
+import org.bukkit.*;
 
 import java.util.*;
 
@@ -140,6 +139,16 @@ public class EngineAPI {
     }
 
     public static void loadRotation() {
+        gameEngine.getLogger().info("Loading map world...");
+        World world = Bukkit.createWorld(new WorldCreator("map_world").generator(new VoidGenerator(gameEngine)));
+        world.setKeepSpawnInMemory(false);
+        for (Chunk chunk : Arrays.asList(world.getLoadedChunks())) {
+            world.unloadChunk(chunk);
+        }
+        EngineAPI.setMapWorld(world);
+
+        gameEngine.getLogger().info("Map world loaded. Loading rotation...");
+
         for (Object object : AuroraMCAPI.getServerInfo().getServerType().getJSONArray("rotation")) {
             String string = (String) object;
             gameRotation.add(games.get(string));
@@ -150,10 +159,10 @@ public class EngineAPI {
             GameInfo gameInfo = EngineAPI.getGameRotation().get(EngineAPI.randomNumber(EngineAPI.getGameRotation().size()));
             GameUtils.loadGame(gameInfo, null);
         } else {
-            gameEngine.getLogger().info("Map world generated. Game rotation is empty, entering idle state.");
+            gameEngine.getLogger().info("Game rotation is empty, entering idle state.");
             EngineAPI.setServerState(ServerState.IDLE);
         }
-
+        gameEngine.getLogger().info("Loading complete.");
     }
 
     public static Game getNextGame() {

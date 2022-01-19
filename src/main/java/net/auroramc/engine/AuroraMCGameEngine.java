@@ -106,19 +106,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
             }
         }
 
-        getLogger().info("Waiting lobby copied. Registering listeners...");
-        Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
-
-        getLogger().info("Listeners registered. Loading map world...");
-        World world = Bukkit.createWorld(new WorldCreator("map_world").generator(new VoidGenerator(this)));
-        world.setKeepSpawnInMemory(false);
-        for (Chunk chunk : Arrays.asList(world.getLoadedChunks())) {
-            world.unloadChunk(chunk);
-        }
-        EngineAPI.setMapWorld(world);
-
-        getLogger().info("Loading complete. Waiting for games to be registered...");
-
+        getLogger().info("Waiting lobby copied. Registering listeners and commands...");
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), this);
         Bukkit.getPluginManager().registerEvents(new PingListener(), this);
@@ -126,6 +114,9 @@ public class AuroraMCGameEngine extends JavaPlugin {
         AuroraMCAPI.registerCommand(new CommandUndisguiseOverride());
         AuroraMCAPI.registerCommand(new CommandDisguiseOverride());
         AuroraMCAPI.registerCommand(new CommandGame());
+
+        getLogger().info("Listeners registered. Waiting for games to be registered...");
+
     }
 
 }
