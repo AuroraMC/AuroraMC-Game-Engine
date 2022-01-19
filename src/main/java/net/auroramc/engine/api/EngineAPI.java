@@ -50,9 +50,9 @@ public class EngineAPI {
         activeGameInfo = null;
         activeMap = null;
 
-        lobbyItem = new GUIItem(Material.WOODEN_DOOR, "&a&lReturn to Lobby");
+        lobbyItem = new GUIItem(Material.WOOD_DOOR, "&a&lReturn to Lobby");
         prefsItem = new GUIItem(Material.REDSTONE_COMPARATOR, "&a&lView Preferences");
-        cosmeticsItem = new GUIItem(Material.EMERALD, "&a&lView Cometics");
+        cosmeticsItem = new GUIItem(Material.EMERALD, "&a&lView Cosmetics");
         kitItem = new GUIItem(Material.EMERALD, "&a&lSelect Kit");
         teamItem = new GUIItem(Material.EMERALD, "&a&lSelect Team");
     }
