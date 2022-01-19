@@ -2,7 +2,9 @@ package net.auroramc.engine.listeners;
 
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.server.ServerState;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,6 +12,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.util.Vector;
+import org.json.JSONArray;
 
 /**
  * All of these listeners will take over the second the game ends or when the server is in the lobby.
@@ -38,7 +42,18 @@ public class LobbyListener implements Listener {
     public void onDamage(EntityDamageEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             if (e.getEntity() instanceof Player) {
+                if (e.getCause() == EntityDamageEvent.DamageCause.VOID && EngineAPI.getServerState() != ServerState.ENDING) {
+                    JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("players");
+                    int x, y, z;
+                    x = spawnLocations.getJSONObject(0).getInt("x");
+                    y = spawnLocations.getJSONObject(0).getInt("y");
+                    z = spawnLocations.getJSONObject(0).getInt("z");
+                    e.getEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
+                    e.getEntity().setFallDistance(0);
+                    e.getEntity().setVelocity(new Vector());
+                }
                 e.setCancelled(true);
+
             }
         }
     }
