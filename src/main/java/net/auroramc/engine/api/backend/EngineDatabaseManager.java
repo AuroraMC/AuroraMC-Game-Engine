@@ -29,7 +29,7 @@ public class EngineDatabaseManager {
                 FileOutputStream output = new FileOutputStream(file);
 
                 System.out.println("Writing to file " + file.getAbsolutePath());
-                InputStream input = set.getBinaryStream(9);
+                InputStream input = set.getBinaryStream(6);
                 byte[] buffer = new byte[1024];
                 while (input.read(buffer) > 0) {
                     output.write(buffer);
