@@ -1,8 +1,14 @@
 package net.auroramc.engine.commands.game;
 
+import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.GameUtils;
+import net.auroramc.engine.api.server.ServerState;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,7 +24,28 @@ public class CommandGameStop extends Command {
 
     @Override
     public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
-        
+        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getServerState() == ServerState.WAITING_FOR_PLAYERS) {
+            if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+                EngineAPI.getActiveGame().end(null);
+            } else {
+                if (EngineAPI.getNextGame() != null) {
+                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                    EngineAPI.setNextVariation(null);
+                    EngineAPI.setNextGame(null);
+                    EngineAPI.setNextMap(null);
+                } else if (EngineAPI.getGameRotation().size() > 0) {
+                    GameUtils.loadNextGame();
+                } else {
+                    EngineAPI.setServerState(ServerState.IDLE);
+                }
+            }
+            String message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "The game has been stopped by an admin.");
+            for (Player player1 : Bukkit.getOnlinePlayers()) {
+                player1.sendMessage(message);
+            }
+        } else {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You cannot stop the game at this time."));
+        }
     }
 
     @Override

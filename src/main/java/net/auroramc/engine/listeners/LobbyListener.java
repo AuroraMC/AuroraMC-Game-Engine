@@ -48,7 +48,8 @@ public class LobbyListener implements Listener {
                     x = spawnLocations.getJSONObject(0).getInt("x");
                     y = spawnLocations.getJSONObject(0).getInt("y");
                     z = spawnLocations.getJSONObject(0).getInt("z");
-                    e.getEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
+                    float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
+                    e.getEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
                     e.getEntity().setFallDistance(0);
                     e.getEntity().setVelocity(new Vector());
                 } else if (e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK || e.getCause() == EntityDamageEvent.DamageCause.LAVA) {

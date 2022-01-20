@@ -45,4 +45,9 @@ public class GameUtils {
         }
     }
 
+    public static void loadNextGame() {
+        GameInfo gameInfo = EngineAPI.getGameRotation().get(EngineAPI.randomNumber(EngineAPI.getGameRotation().size()));
+        GameUtils.loadGame(gameInfo);
+    }
+
 }

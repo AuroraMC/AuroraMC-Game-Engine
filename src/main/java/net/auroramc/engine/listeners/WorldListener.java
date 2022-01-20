@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.json.JSONObject;
 
 public class WorldListener implements Listener {
 
@@ -25,7 +26,11 @@ public class WorldListener implements Listener {
         if (e.getWorld().getName().equalsIgnoreCase("world")) {
             e.getWorld().setGameRuleValue("doMobSpawning", "false");
             e.getWorld().setGameRuleValue("doDaylightCycle", "false");
-            e.getWorld().setTime(6000);
+            JSONObject mapData = EngineAPI.getWaitingLobbyMap().getMapData();
+            if (mapData.has("time")) {
+                e.getWorld().setTime(mapData.getInt("time"));
+            }
+
         }
     }
 }

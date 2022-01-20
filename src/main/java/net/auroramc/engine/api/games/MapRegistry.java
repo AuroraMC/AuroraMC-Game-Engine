@@ -17,6 +17,15 @@ public class MapRegistry {
         return maps;
     }
 
+    public GameMap getMap(String mapName) {
+        for (GameMap map : maps) {
+            if (map.getName().replace(" ","").equalsIgnoreCase(mapName)) {
+                return map;
+            }
+        }
+        return null;
+    }
+
     public String getGame() {
         return game;
     }

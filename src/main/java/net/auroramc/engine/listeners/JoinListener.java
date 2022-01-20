@@ -31,7 +31,8 @@ public class JoinListener implements Listener {
                 x = spawnLocations.getJSONObject(0).getInt("x");
                 y = spawnLocations.getJSONObject(0).getInt("y");
                 z = spawnLocations.getJSONObject(0).getInt("z");
-                e.getPlayer().teleport(new Location(Bukkit.getWorld("world"), x, y, z));
+                float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
+                e.getPlayer().teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
             }
         } else if (EngineAPI.getActiveGame() != null) {
             EngineAPI.getActiveGame().onPlayerJoin(e.getPlayer());
@@ -56,8 +57,8 @@ public class JoinListener implements Listener {
             scoreboard.setLine(5, "&b&l«KIT»");
             scoreboard.setLine(4, ((player.getKit() != null)?player.getKit().getName():"None "));
             scoreboard.setLine(3, "   ");
-            scoreboard.setLine(2, "&b&l«TEAM»");
-            scoreboard.setLine(1, ((player.getTeam() != null)?"&" + player.getTeam().getTeamColor() + "&l" + player.getTeam().getName():"None"));
+            scoreboard.setLine(2, "&b&l«SERVER»");
+            scoreboard.setLine(1, AuroraMCAPI.getServerInfo().getName());
 
             if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
                 if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {

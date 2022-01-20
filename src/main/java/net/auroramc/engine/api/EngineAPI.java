@@ -4,10 +4,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.AuroraMCGameEngine;
 import net.auroramc.engine.api.events.ServerStateChangeEvent;
-import net.auroramc.engine.api.games.Game;
-import net.auroramc.engine.api.games.GameInfo;
-import net.auroramc.engine.api.games.GameMap;
-import net.auroramc.engine.api.games.MapRegistry;
+import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.VoidGenerator;
@@ -27,7 +24,6 @@ public class EngineAPI {
     private static final Map<String, MapRegistry> maps;
     private static final List<GameInfo> gameRotation;
     private static World mapWorld;
-    private static Game nextGame;
     private static GameStartingRunnable gameStartingRunnable;
 
     private final static GUIItem lobbyItem;
@@ -37,6 +33,10 @@ public class EngineAPI {
     private final static GUIItem teamItem;
 
     private static final Random random;
+
+    private static GameInfo nextGame;
+    private static GameMap nextMap;
+    private static GameVariation nextVariation;
 
     static {
         games = new HashMap<>();
@@ -156,17 +156,12 @@ public class EngineAPI {
         gameEngine.getLogger().info(EngineAPI.getGameRotation().size() + " games loaded into rotation.");
         if (EngineAPI.getGameRotation().size() > 0) {
             gameEngine.getLogger().info("Loading a random game...");
-            GameInfo gameInfo = EngineAPI.getGameRotation().get(EngineAPI.randomNumber(EngineAPI.getGameRotation().size()));
-            GameUtils.loadGame(gameInfo, null);
+            GameUtils.loadNextGame();
         } else {
             gameEngine.getLogger().info("Game rotation is empty, entering idle state.");
             EngineAPI.setServerState(ServerState.IDLE);
         }
         gameEngine.getLogger().info("Loading complete.");
-    }
-
-    public static Game getNextGame() {
-        return nextGame;
     }
 
     public static GameStartingRunnable getGameStartingRunnable() {
@@ -175,10 +170,6 @@ public class EngineAPI {
 
     public static void setGameStartingRunnable(GameStartingRunnable gameStartingRunnable) {
         EngineAPI.gameStartingRunnable = gameStartingRunnable;
-    }
-
-    public static void setNextGame(Game nextGame) {
-        EngineAPI.nextGame = nextGame;
     }
 
     public static GUIItem getCosmeticsItem() {
@@ -199,5 +190,29 @@ public class EngineAPI {
 
     public static GUIItem getTeamItem() {
         return teamItem;
+    }
+
+    public static void setNextGame(GameInfo nextGame) {
+        EngineAPI.nextGame = nextGame;
+    }
+
+    public static GameInfo getNextGame() {
+        return nextGame;
+    }
+
+    public static GameMap getNextMap() {
+        return nextMap;
+    }
+
+    public static GameVariation getNextVariation() {
+        return nextVariation;
+    }
+
+    public static void setNextMap(GameMap nextMap) {
+        EngineAPI.nextMap = nextMap;
+    }
+
+    public static void setNextVariation(GameVariation nextVariation) {
+        EngineAPI.nextVariation = nextVariation;
     }
 }
