@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ */
+
 package net.auroramc.engine.api.games;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -153,13 +157,7 @@ public abstract class Game {
                     }.runTaskLater(AuroraMCAPI.getCore(), 200);
                     return;
                 }
-                if (EngineAPI.getNextGame() != null) {
-                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
-                } else if (EngineAPI.getGameRotation().size() > 0) {
-                    GameUtils.loadNextGame();
-                } else {
-                    EngineAPI.setServerState(ServerState.IDLE);
-                }
+
                 for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
                     JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("players");
                     int x, y, z;
@@ -172,6 +170,8 @@ public abstract class Game {
                     pl.getPlayer().setVelocity(new Vector());
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+                    player.setKit(null);
+                    player.setTeam(null);
                     PlayerScoreboard scoreboard = player.getScoreboard();
                     scoreboard.setTitle("&3&l-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
                     scoreboard.setLine(11, "&b&l«GAME»");
@@ -196,7 +196,20 @@ public abstract class Game {
                     player.getPlayer().getInventory().setItem(8, EngineAPI.getLobbyItem().getItem());
                     player.getPlayer().getInventory().setItem(7, EngineAPI.getPrefsItem().getItem());
                     player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
+                }
 
+
+
+                if (EngineAPI.getNextGame() != null) {
+                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                } else if (EngineAPI.getGameRotation().size() > 0) {
+                    GameUtils.loadNextGame();
+                } else {
+                    EngineAPI.setServerState(ServerState.IDLE);
+                }
+
+                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                    AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (EngineAPI.getActiveGame() != null) {
                         player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
                         if (EngineAPI.getActiveGame().getTeams().size() > 1) {

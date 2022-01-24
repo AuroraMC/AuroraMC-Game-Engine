@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ */
+
 package net.auroramc.engine.api.backend;
 
 import net.auroramc.core.api.AuroraMCAPI;

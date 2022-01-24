@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ */
+
 package net.auroramc.engine.api;
 
 import net.auroramc.engine.api.games.Game;
@@ -31,14 +35,14 @@ public class GameUtils {
             EngineAPI.setActiveGame(game);
             game.preLoad();
             EngineAPI.setServerState(ServerState.LOADING_MAP);
-            game.load(map);
-            EngineAPI.setActiveMap(map);
             File file = new File(EngineAPI.getMapWorld().getWorldFolder(), "region");
             if (file.exists()) {
                 FileUtils.deleteDirectory(file);
             }
             file.mkdirs();
             FileUtils.copyDirectory(map.getRegionFolder(), file);
+            game.load(map);
+            EngineAPI.setActiveMap(map);
             EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
             e.printStackTrace();
