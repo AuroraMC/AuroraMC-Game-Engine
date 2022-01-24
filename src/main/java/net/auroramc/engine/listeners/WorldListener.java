@@ -29,7 +29,11 @@ public class WorldListener implements Listener {
             JSONObject mapData = EngineAPI.getWaitingLobbyMap().getMapData();
             if (mapData.has("time")) {
                 e.getWorld().setTime(mapData.getInt("time"));
+            } else {
+                e.getWorld().setTime(6000);
             }
+            e.getWorld().setThundering(false);
+            e.getWorld().setStorm(false);
 
         }
     }

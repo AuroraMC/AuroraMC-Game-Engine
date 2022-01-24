@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.util.Vector;
 import org.json.JSONArray;
 
@@ -67,6 +68,15 @@ public class LobbyListener implements Listener {
             if (e.getEntity() instanceof Player && e.getFoodLevel() < 25) {
                 e.setCancelled(true);
                 e.setFoodLevel(30);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onWeather(WeatherChangeEvent e) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+            if (e.toWeatherState()) {
+                e.setCancelled(true);
             }
         }
     }

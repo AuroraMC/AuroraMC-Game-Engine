@@ -10,10 +10,7 @@ import net.auroramc.engine.api.util.VoidGenerator;
 import net.auroramc.engine.commands.CommandDisguiseOverride;
 import net.auroramc.engine.commands.CommandUndisguiseOverride;
 import net.auroramc.engine.commands.game.CommandGame;
-import net.auroramc.engine.listeners.JoinListener;
-import net.auroramc.engine.listeners.LobbyListener;
-import net.auroramc.engine.listeners.PingListener;
-import net.auroramc.engine.listeners.WorldListener;
+import net.auroramc.engine.listeners.*;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -112,6 +109,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), this);
         Bukkit.getPluginManager().registerEvents(new PingListener(), this);
         Bukkit.getPluginManager().registerEvents(new WorldListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ServerCloseRequestListener(), this);
 
         AuroraMCAPI.registerCommand(new CommandUndisguiseOverride());
         AuroraMCAPI.registerCommand(new CommandDisguiseOverride());
@@ -122,3 +120,4 @@ public class AuroraMCGameEngine extends JavaPlugin {
     }
 
 }
+

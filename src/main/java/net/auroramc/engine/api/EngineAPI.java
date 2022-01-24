@@ -38,6 +38,10 @@ public class EngineAPI {
     private static GameMap nextMap;
     private static GameVariation nextVariation;
 
+    private static boolean awaitingRestart;
+    private static String restartType;
+    private static boolean awaitingMapReload;
+
     static {
         games = new HashMap<>();
         maps = new HashMap<>();
@@ -214,5 +218,29 @@ public class EngineAPI {
 
     public static void setNextVariation(GameVariation nextVariation) {
         EngineAPI.nextVariation = nextVariation;
+    }
+
+    public static boolean isAwaitingRestart() {
+        return awaitingRestart;
+    }
+
+    public static void setAwaitingRestart(boolean awaitingRestart) {
+        EngineAPI.awaitingRestart = awaitingRestart;
+    }
+
+    public static boolean isAwaitingMapReload() {
+        return awaitingMapReload;
+    }
+
+    public static void setAwaitingMapReload(boolean awaitingMapReload) {
+        EngineAPI.awaitingMapReload = awaitingMapReload;
+    }
+
+    public static void setRestartType(String restartType) {
+        EngineAPI.restartType = restartType;
+    }
+
+    public static String getRestartType() {
+        return restartType;
     }
 }
