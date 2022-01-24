@@ -2,7 +2,6 @@ package net.auroramc.engine.commands;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.commands.admin.CommandDisguise;
 import net.auroramc.core.commands.admin.CommandUndisguise;
 
 import java.util.List;
