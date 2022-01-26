@@ -28,21 +28,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.json.JSONArray;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Game {
 
     protected GameVariation gameVariation;
     protected GameMap map;
     protected Map<String, Team> teams;
+    protected UUID gameUUID;
 
 
     public Game(GameVariation gameVariation) {
         this.gameVariation = gameVariation;
         this.teams = new HashMap<>();
+        gameUUID = UUID.randomUUID();
     }
 
     public abstract void preLoad();

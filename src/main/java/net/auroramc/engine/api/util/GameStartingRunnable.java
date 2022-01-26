@@ -9,6 +9,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class GameStartingRunnable extends BukkitRunnable {
@@ -24,16 +25,18 @@ public class GameStartingRunnable extends BukkitRunnable {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.getScoreboard().setTitle("&3&l-= &b&l&nSTARTING IN " + startTime + "&r &3&l=-");
             switch(startTime) {
-                case 60:
-                case 30:
-                case 10:
                 case 5:
                 case 3:
                 case 2:
                 case 1:
+                    player.getPlayer().closeInventory();
+                case 60:
+                case 30:
+                case 10:
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 1);
             }
         }
+
         if (startTime == 0) {
             EngineAPI.getActiveGame().start();
             EngineAPI.setServerState(ServerState.IN_GAME);

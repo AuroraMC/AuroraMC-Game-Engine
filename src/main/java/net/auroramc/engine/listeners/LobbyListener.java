@@ -4,11 +4,24 @@
 
 package net.auroramc.engine.listeners;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.gui.cosmetics.Cosmetics;
+import net.auroramc.core.gui.preferences.Preferences;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.events.ServerStateChangeEvent;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.engine.gui.Kits;
+import net.auroramc.engine.gui.Teams;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,9 +29,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.util.Vector;
 import org.json.JSONArray;
+
+import java.lang.reflect.Field;
 
 /**
  * All of these listeners will take over the second the game ends or when the server is in the lobby.
@@ -81,6 +97,83 @@ public class LobbyListener implements Listener {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             if (e.toWeatherState()) {
                 e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onStateChange(ServerStateChangeEvent e) {
+        if (e.getState() != ServerState.ENDING && e.getState() != ServerState.IN_GAME) {
+            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                player.getScoreboard().setTitle("&3&l-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
+
+                try {
+                    IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName().toUpperCase():EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
+                    IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"You are connected to server: " + AuroraMCAPI.getServerInfo().getName() + "\",\"color\":\"aqua\",\"bold\":\"true\"}");
+
+                    PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
+                    Field ff = packet.getClass().getDeclaredField("a");
+                    ff.setAccessible(true);
+                    ff.set(packet, header);
+
+                    ff = packet.getClass().getDeclaredField("b");
+                    ff.setAccessible(true);
+                    ff.set(packet, footer);
+
+                    ((CraftPlayer)player.getPlayer()).getHandle().playerConnection.sendPacket(packet);
+                } catch (NoSuchFieldException | IllegalAccessException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onItemClick(PlayerInteractEvent e) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
+            if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
+                switch (e.getItem().getType()) {
+                    case EMERALD: {
+                        e.setCancelled(true);
+                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+                        Cosmetics cosmetics = new Cosmetics(player);
+                        cosmetics.open(player);
+                        AuroraMCAPI.openGUI(player, cosmetics);
+                        break;
+                    }
+                    case WOOD_DOOR: {
+                        e.setCancelled(true);
+                        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                        out.writeUTF("Lobby");
+                        out.writeUTF(e.getPlayer().getUniqueId().toString());
+                        e.getPlayer().sendPluginMessage(AuroraMCAPI.getCore(), "BungeeCord", out.toByteArray());
+                        break;
+                    }
+                    case REDSTONE_COMPARATOR: {
+                        e.setCancelled(true);
+                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+                        Preferences prefs = new Preferences(player);
+                        prefs.open(player);
+                        AuroraMCAPI.openGUI(player, prefs);
+                        break;
+                    }
+                    case CHEST: {
+                        e.setCancelled(true);
+                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+                        Kits kits = new Kits(player);
+                        kits.open(player);
+                        AuroraMCAPI.openGUI(player, kits);
+                        break;
+                    }
+                    case LEATHER_CHESTPLATE: {
+                        e.setCancelled(true);
+                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+                        Teams teams = new Teams(player);
+                        teams.open(player);
+                        AuroraMCAPI.openGUI(player, teams);
+                        break;
+                    }
+                }
             }
         }
     }
