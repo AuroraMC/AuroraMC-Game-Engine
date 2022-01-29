@@ -27,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -35,13 +36,13 @@ public abstract class Game {
     protected GameVariation gameVariation;
     protected GameMap map;
     protected Map<String, Team> teams;
-    protected UUID gameUUID;
+    protected GameSession gameSession;
 
 
     public Game(GameVariation gameVariation) {
         this.gameVariation = gameVariation;
         this.teams = new HashMap<>();
-        gameUUID = UUID.randomUUID();
+        gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),gameVariation);
     }
 
     public abstract void preLoad();
@@ -49,14 +50,18 @@ public abstract class Game {
     public abstract void load(GameMap map);
 
     /**
-     * When executed by the Game Engine, this indicates that the Engine is handing over control to the game and that the game is now started.
+     * When executed by the Game Engine, this indicates that the Engine is handing over control to the game and that the game is now started. Should execute super.
      */
-    public abstract void start();
+    public void start() {
+        gameSession.start();
+    }
 
     /**
-     * When executed by the game, it should indicate that the game is handing control back to the Game Engine and the game is no longer in progress.
+     * When executed by the game, it should indicate that the game is handing control back to the Game Engine and the game is no longer in progress. Should execute super.
      */
     public void end(AuroraMCPlayer winner) {
+        gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", ((winner == null)?"NONE":winner.getName()))));
+        gameSession.end(false);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n");
@@ -90,6 +95,7 @@ public abstract class Game {
      * When executed by the game, it should indicate that the game is handing control back to the Game Engine and the game is no longer in progress.
      */
     public void end(Team winner, String winnerName) {
+        gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", winner.getName())));
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n");
@@ -151,7 +157,7 @@ public abstract class Game {
                                 player.kickPlayer(AuroraMCAPI.getFormatter().pluginMessage("Server Manager", "This server is restarting.\n\nYou can reconnect to the network to continue playing!"));
                             }
                             CommunicationUtils.sendMessage(new ProtocolMessage(Protocol.CONFIRM_SHUTDOWN, "Mission Control", EngineAPI.getRestartType(), AuroraMCAPI.getServerInfo().getName(), AuroraMCAPI.getServerInfo().getNetwork().name()));
-                            CommunicationUtils.shutdown();
+                            AuroraMCAPI.setShuttingDown(true);
                         }
                     }.runTaskLater(AuroraMCAPI.getCore(), 200);
                     return;
@@ -211,8 +217,8 @@ public abstract class Game {
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (EngineAPI.getActiveGame() != null) {
                         player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
-                        if (EngineAPI.getActiveGame().getTeams().size() > 1) {
-                            player.getPlayer().getInventory().setItem(0, EngineAPI.getTeamItem().getItem());
+                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand()) {
+                            player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                         }
                     }
                 }
@@ -228,5 +234,9 @@ public abstract class Game {
 
     public Map<String, Team> getTeams() {
         return teams;
+    }
+
+    public GameSession getGameSession() {
+        return gameSession;
     }
 }

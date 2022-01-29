@@ -38,8 +38,8 @@ public class ServerCloseRequestListener implements Listener {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.kickPlayer(AuroraMCAPI.getFormatter().pluginMessage("Server Manager", "This server is restarting.\n\nYou can reconnect to the network to continue playing!"));
                     }
+                    AuroraMCAPI.setShuttingDown(true);
                     CommunicationUtils.sendMessage(new ProtocolMessage(Protocol.CONFIRM_SHUTDOWN, "Mission Control", e.getType(), AuroraMCAPI.getServerInfo().getName(), AuroraMCAPI.getServerInfo().getNetwork().name()));
-                    CommunicationUtils.shutdown();
                 }
             }.runTaskLater(AuroraMCAPI.getCore(), 200);
         } else {

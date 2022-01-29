@@ -15,14 +15,16 @@ public class GameInfo {
     private final String description;
     private final String registryKey;
     private final Map<String, GameVariation> variations;
+    private final boolean teamCommand;
 
 
-    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey) {
+    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey, boolean teamCommand) {
         this.id = id;
         this.name = name;
         this.gameClass = gameClass;
         this.description = description;
         this.registryKey = registryKey;
+        this.teamCommand = teamCommand;
         this.variations = new HashMap<>();
     }
 
@@ -49,5 +51,9 @@ public class GameInfo {
 
     public Map<String, GameVariation> getVariations() {
         return variations;
+    }
+
+    public boolean hasTeamCommand() {
+        return teamCommand;
     }
 }

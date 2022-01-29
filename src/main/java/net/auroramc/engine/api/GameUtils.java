@@ -30,6 +30,7 @@ public class GameUtils {
 
     public static void loadGame(GameInfo gameInfo, GameMap map, GameVariation gameVariation) {
         try {
+            EngineAPI.setActiveGameInfo(gameInfo);
             Game game = gameInfo.getGameClass().getConstructor(GameVariation.class).newInstance(gameVariation);
             EngineAPI.setServerState(ServerState.LOADING_GAME);
             EngineAPI.setActiveGame(game);

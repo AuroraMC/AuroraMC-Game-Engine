@@ -12,6 +12,7 @@ import net.auroramc.core.gui.cosmetics.Cosmetics;
 import net.auroramc.core.gui.preferences.Preferences;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.events.ServerStateChangeEvent;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.gui.Kits;
 import net.auroramc.engine.gui.Teams;
@@ -106,25 +107,28 @@ public class LobbyListener implements Listener {
         if (e.getState() != ServerState.ENDING && e.getState() != ServerState.IN_GAME) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 player.getScoreboard().setTitle("&3&l-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
-
-                try {
-                    IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName().toUpperCase():EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
-                    IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"You are connected to server: " + AuroraMCAPI.getServerInfo().getName() + "\",\"color\":\"aqua\",\"bold\":\"true\"}");
-
-                    PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
-                    Field ff = packet.getClass().getDeclaredField("a");
-                    ff.setAccessible(true);
-                    ff.set(packet, header);
-
-                    ff = packet.getClass().getDeclaredField("b");
-                    ff.setAccessible(true);
-                    ff.set(packet, footer);
-
-                    ((CraftPlayer)player.getPlayer()).getHandle().playerConnection.sendPacket(packet);
-                } catch (NoSuchFieldException | IllegalAccessException ex) {
-                    ex.printStackTrace();
-                }
+                updateHeaderFooter((CraftPlayer) player.getPlayer());
             }
+        }
+    }
+
+    public static void updateHeaderFooter(CraftPlayer player2) {
+        try {
+            IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName().toUpperCase():EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
+            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"You are connected to server: " + AuroraMCAPI.getServerInfo().getName() + "\",\"color\":\"aqua\",\"bold\":\"true\"}");
+
+            PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
+            Field ff = packet.getClass().getDeclaredField("a");
+            ff.setAccessible(true);
+            ff.set(packet, header);
+
+            ff = packet.getClass().getDeclaredField("b");
+            ff.setAccessible(true);
+            ff.set(packet, footer);
+
+            player2.getHandle().playerConnection.sendPacket(packet);
+        } catch (NoSuchFieldException | IllegalAccessException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -160,7 +164,7 @@ public class LobbyListener implements Listener {
                     case CHEST: {
                         e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        Kits kits = new Kits(player);
+                        Kits kits = new Kits((AuroraMCGamePlayer) player);
                         kits.open(player);
                         AuroraMCAPI.openGUI(player, kits);
                         break;
@@ -168,7 +172,7 @@ public class LobbyListener implements Listener {
                     case LEATHER_CHESTPLATE: {
                         e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        Teams teams = new Teams(player);
+                        Teams teams = new Teams((AuroraMCGamePlayer) player);
                         teams.open(player);
                         AuroraMCAPI.openGUI(player, teams);
                         break;

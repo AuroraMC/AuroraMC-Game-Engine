@@ -13,7 +13,9 @@ import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.listeners.LobbyListener;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -100,6 +102,9 @@ public class CommandGameSet extends Command {
                                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
                             }
                         }
+                    }
+                    for (Player player1 : Bukkit.getOnlinePlayers()) {
+                        LobbyListener.updateHeaderFooter((CraftPlayer) player1);
                     }
                     GameUtils.loadGame(info, map, gameVariation);
                     String message;

@@ -6,7 +6,9 @@ package net.auroramc.engine.api.backend;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class EngineDatabaseManager {
 
@@ -41,6 +44,19 @@ public class EngineDatabaseManager {
                 output.flush();
             }
         } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void uploadGameSession(UUID uuid, String game, JSONObject json) {
+        try (Connection connection = AuroraMCAPI.getDbManager().getMySQLConnection()) {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO game_session(game_uuid, game, server, game_data) VALUES (?,?,?,?)");
+            statement.setString(1, uuid.toString());
+            statement.setString(2, game);
+            statement.setString(3, AuroraMCAPI.getServerInfo().getName());
+            statement.setString(4, json.toString());
+            statement.execute();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

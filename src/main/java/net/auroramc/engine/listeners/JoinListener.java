@@ -28,23 +28,7 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        try {
-            IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName().toUpperCase():EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
-            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"You are connected to server: " + AuroraMCAPI.getServerInfo().getName() + "\",\"color\":\"aqua\",\"bold\":\"true\"}");
-
-            PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
-            Field ff = packet.getClass().getDeclaredField("a");
-            ff.setAccessible(true);
-            ff.set(packet, header);
-
-            ff = packet.getClass().getDeclaredField("b");
-            ff.setAccessible(true);
-            ff.set(packet, footer);
-
-            ((CraftPlayer)e.getPlayer()).getHandle().playerConnection.sendPacket(packet);
-        } catch (NoSuchFieldException | IllegalAccessException ex) {
-            ex.printStackTrace();
-        }
+        LobbyListener.updateHeaderFooter((CraftPlayer) e.getPlayer());
 
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
             JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("players");
@@ -98,8 +82,8 @@ public class JoinListener implements Listener {
 
             if (EngineAPI.getActiveGame() != null) {
                 player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
-                if (EngineAPI.getActiveGame().getTeams().size() > 1) {
-                    player.getPlayer().getInventory().setItem(0, EngineAPI.getTeamItem().getItem());
+                if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand()) {
+                    player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                 }
             }
         }

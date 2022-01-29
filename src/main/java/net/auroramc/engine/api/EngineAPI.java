@@ -11,6 +11,7 @@ import net.auroramc.engine.api.events.ServerStateChangeEvent;
 import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
+import net.auroramc.engine.api.util.TitleBarRunnable;
 import net.auroramc.engine.api.util.VoidGenerator;
 import org.bukkit.*;
 
@@ -62,7 +63,7 @@ public class EngineAPI {
         prefsItem = new GUIItem(Material.REDSTONE_COMPARATOR, "&a&lView Preferences");
         cosmeticsItem = new GUIItem(Material.EMERALD, "&a&lView Cosmetics");
         kitItem = new GUIItem(Material.CHEST, "&a&lSelect Kit");
-        teamItem = new GUIItem(Material.LEATHER_CHESTPLATE, "&a&lSelect Team");
+        teamItem = new GUIItem(Material.BOOK, "&a&lSelect Team");
     }
 
     public static void init(AuroraMCGameEngine gameEngine) {
@@ -169,6 +170,9 @@ public class EngineAPI {
             gameEngine.getLogger().info("Game rotation is empty, entering idle state.");
             EngineAPI.setServerState(ServerState.IDLE);
         }
+
+        TitleBarRunnable runnable = new TitleBarRunnable();
+        runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
         gameEngine.getLogger().info("Loading complete.");
     }
 
