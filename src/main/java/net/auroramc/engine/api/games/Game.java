@@ -179,7 +179,7 @@ public abstract class Game {
                 }
 
                 for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
-                    JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("players");
+                    JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
                     int x, y, z;
                     x = spawnLocations.getJSONObject(0).getInt("x");
                     y = spawnLocations.getJSONObject(0).getInt("y");

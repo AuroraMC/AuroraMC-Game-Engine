@@ -31,7 +31,7 @@ public class JoinListener implements Listener {
         e.getPlayer().setAllowFlight(false);
         e.getPlayer().setGameMode(GameMode.SURVIVAL);
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
-            JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("players");
+            JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
             if (spawnLocations == null || spawnLocations.length() > 0) {
                 EngineAPI.getGameEngine().getLogger().info("An invalid waiting lobby was supplied, assuming 0, 64, 0 spawn position.");
                 e.getPlayer().teleport(new Location(Bukkit.getWorld("world"), 0, 64, 0));
