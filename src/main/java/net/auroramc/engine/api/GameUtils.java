@@ -46,6 +46,11 @@ public class GameUtils {
             for (Chunk chunk : Arrays.asList(EngineAPI.getMapWorld().getLoadedChunks())) {
                 EngineAPI.getMapWorld().unloadChunk(chunk);
             }
+
+            if (EngineAPI.getMapWorld() != null) {
+                Bukkit.unloadWorld(EngineAPI.getMapWorld(), false);
+            }
+
             File file = new File(Bukkit.getWorldContainer(), "map_world/region");
             if (file.exists()) {
                 FileUtils.deleteDirectory(file);
