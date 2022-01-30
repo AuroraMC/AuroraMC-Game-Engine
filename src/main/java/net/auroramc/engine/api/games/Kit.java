@@ -4,6 +4,7 @@
 
 package net.auroramc.engine.api.games;
 
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import org.bukkit.Material;
 
 import java.util.Objects;
@@ -27,7 +28,7 @@ public abstract class Kit {
         this.material = material;
     }
 
-    public abstract void onGameStart();
+    public abstract void onGameStart(AuroraMCPlayer player);
 
     public String getName() {
         return name;
