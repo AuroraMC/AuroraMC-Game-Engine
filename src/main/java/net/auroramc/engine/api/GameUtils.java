@@ -43,9 +43,6 @@ public class GameUtils {
             EngineAPI.setActiveGame(game);
             game.preLoad();
             EngineAPI.setServerState(ServerState.LOADING_MAP);
-            for (Chunk chunk : Arrays.asList(EngineAPI.getMapWorld().getLoadedChunks())) {
-                EngineAPI.getMapWorld().unloadChunk(chunk);
-            }
 
             if (EngineAPI.getMapWorld() != null) {
                 Bukkit.unloadWorld(EngineAPI.getMapWorld(), false);
