@@ -23,7 +23,7 @@ public class ServerStateChangeEvent extends Event {
         return handlerList;
     }
 
-    public static HandlerList getHandlersList() {
+    public static HandlerList getHandlerList() {
         return handlerList;
     }
 
