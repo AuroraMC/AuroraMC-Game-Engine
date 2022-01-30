@@ -4,9 +4,12 @@
 
 package net.auroramc.engine.listeners;
 
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.PlayerScoreboard;
+import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
@@ -71,8 +74,49 @@ public class JoinListener implements Listener {
 
             if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
                 if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
+                    for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                        if (player1.getTeam() == null) {
+                            Team leastPlayers = null;
+                            for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
+                                if (leastPlayers == null) {
+                                    leastPlayers = team;
+                                    continue;
+                                }
+                                if (leastPlayers.getPlayers().size() > team.getPlayers().size()) {
+                                    leastPlayers = team;
+                                }
+                            }
+                            if (leastPlayers != null) {
+                                leastPlayers.getPlayers().add(player1);
+                                player1.setTeam(leastPlayers);
+                                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                                    pl.updateNametag(player1);
+                                }
+                            }
+                        }
+                    }
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
                     EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+                }
+            }
+
+            if (!player.isVanished() && EngineAPI.getServerState() == ServerState.STARTING) {
+                Team leastPlayers = null;
+                for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
+                    if (leastPlayers == null) {
+                        leastPlayers = team;
+                        continue;
+                    }
+                    if (leastPlayers.getPlayers().size() > team.getPlayers().size()) {
+                        leastPlayers = team;
+                    }
+                }
+                if (leastPlayers != null) {
+                    leastPlayers.getPlayers().add(player);
+                    player.setTeam(leastPlayers);
+                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                        pl.updateNametag(player);
+                    }
                 }
             }
 

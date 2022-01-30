@@ -30,8 +30,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 import org.json.JSONArray;
 
@@ -178,6 +181,22 @@ public class LobbyListener implements Listener {
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent e) {
+        if (EngineAPI.getServerState() != ServerState.ENDING && EngineAPI.getServerState() != ServerState.IN_GAME && e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onInvMove(InventoryClickEvent e) {
+        if (EngineAPI.getServerState() != ServerState.ENDING && EngineAPI.getServerState() != ServerState.IN_GAME) {
+            if (e.getClickedInventory() instanceof PlayerInventory && e.getWhoClicked().getGameMode() != GameMode.CREATIVE) {
+                e.setCancelled(true);
             }
         }
     }
