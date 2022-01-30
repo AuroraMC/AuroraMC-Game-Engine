@@ -110,6 +110,8 @@ public class LobbyListener implements Listener {
         if (e.getState() != ServerState.ENDING && e.getState() != ServerState.IN_GAME) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 player.getScoreboard().setTitle("&3&l-= &b&l" + e.getState().getName().toUpperCase() + "&r &3&l=-");
+                player.getScoreboard().setLine(10, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
+                player.getScoreboard().setLine(7, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None  "));
                 updateHeaderFooter((CraftPlayer) player.getPlayer());
             }
         }
