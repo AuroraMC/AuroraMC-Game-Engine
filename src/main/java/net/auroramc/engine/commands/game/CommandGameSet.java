@@ -108,7 +108,15 @@ public class CommandGameSet extends Command {
                         LobbyListener.updateHeaderFooter((CraftPlayer) player1);
 
                     }
-                    GameUtils.loadGame(info, map, gameVariation);
+                    if (map == null) {
+                        if (gameVariation == null) {
+                            GameUtils.loadGame(info);
+                        } else {
+                            GameUtils.loadGame(info, gameVariation);
+                        }
+                    } else {
+                        GameUtils.loadGame(info, map, gameVariation);
+                    }
                     String message;
                     if (map != null) {
                         if (gameVariation != null) {
