@@ -11,7 +11,7 @@ public enum ServerState {
     RELOADING_MAPS("Reloading Maps"),
     LOADING_GAME("Loading Game"),
     LOADING_MAP("Loading Map"),
-    WAITING_FOR_PLAYERS("Waiting for players"),
+    WAITING_FOR_PLAYERS("Ready"),
     STARTING("Starting"),
     IN_GAME ("In-Game"),
     ENDING("Ending");
