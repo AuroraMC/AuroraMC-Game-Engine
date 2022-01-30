@@ -29,7 +29,7 @@ public class GameSession {
         this.players = new JSONArray();
         this.gameLog = new JSONArray();
         this.gameRegistryKey = gameRegistryKey;
-        this.gameVariation = gameVariation.getRegistryKey();
+        this.gameVariation = ((gameVariation == null)?"None":gameVariation.getRegistryKey());
     }
 
     public void start() {
