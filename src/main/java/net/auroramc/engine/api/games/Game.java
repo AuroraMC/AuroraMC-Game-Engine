@@ -20,6 +20,7 @@ import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
+import net.auroramc.engine.api.util.InGameStartingRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -41,6 +42,7 @@ public abstract class Game {
     protected Map<String, Team> teams;
     protected List<Kit> kits;
     protected GameSession gameSession;
+    protected boolean starting;
 
 
     public Game(GameVariation gameVariation) {
@@ -48,6 +50,7 @@ public abstract class Game {
         this.teams = new HashMap<>();
         this.kits = new ArrayList<>();
         gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),gameVariation);
+        starting = false;
     }
 
     public abstract void preLoad();
@@ -55,10 +58,17 @@ public abstract class Game {
     public abstract void load(GameMap map);
 
     /**
-     * When executed by the Game Engine, this indicates that the Engine is handing over control to the game and that the game is now started. Should execute super.
+     * When executed by the Game Engine, this indicates that the Engine is handing over control to the game and that the game is now started. Should be overridden and should execute super.
      */
     public void start() {
+        starting = true;
+        InGameStartingRunnable runnable = new InGameStartingRunnable(this);
+        runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
         gameSession.start();
+    }
+
+    public void inProgress() {
+        starting = false;
     }
 
     /**
@@ -248,5 +258,9 @@ public abstract class Game {
 
     public GameSession getGameSession() {
         return gameSession;
+    }
+
+    public boolean isStarting() {
+        return starting;
     }
 }
