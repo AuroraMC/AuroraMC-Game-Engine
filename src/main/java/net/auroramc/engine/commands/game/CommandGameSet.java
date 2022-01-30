@@ -13,6 +13,7 @@ import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.listeners.LobbyListener;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -105,6 +106,7 @@ public class CommandGameSet extends Command {
                     }
                     for (Player player1 : Bukkit.getOnlinePlayers()) {
                         LobbyListener.updateHeaderFooter((CraftPlayer) player1);
+
                     }
                     GameUtils.loadGame(info, map, gameVariation);
                     String message;
@@ -123,6 +125,11 @@ public class CommandGameSet extends Command {
                     }
                     for (Player player1 : Bukkit.getOnlinePlayers()) {
                         player1.sendMessage(message);
+                        AuroraMCGamePlayer pl = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(player1);
+                        if (pl != null) {
+                            pl.setKit(null);
+                            pl.setTeam(null);
+                        }
                     }
                     break;
                 }

@@ -8,7 +8,9 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import org.bukkit.Bukkit;
@@ -54,6 +56,31 @@ public class CommandGameStart extends Command {
             String message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "The game has been started by an admin.");
             for (Player player1 : Bukkit.getOnlinePlayers()) {
                 player1.sendMessage(message);
+            }
+            for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                if (player1.getTeam() == null) {
+                    Team leastPlayers = null;
+                    for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
+                        if (leastPlayers == null) {
+                            leastPlayers = team;
+                            continue;
+                        }
+                        if (leastPlayers.getPlayers().size() > team.getPlayers().size()) {
+                            leastPlayers = team;
+                        }
+                    }
+                    if (leastPlayers != null) {
+                        leastPlayers.getPlayers().add(player1);
+                        player1.setTeam(leastPlayers);
+                        for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                            pl.updateNametag(player1);
+                        }
+                    }
+                }
+                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
+                if (gp.getKit() == null) {
+                    gp.setKit(EngineAPI.getActiveGame().getKits().get(0));
+                }
             }
         } else {
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You cannot start a game at this time."));

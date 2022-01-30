@@ -88,6 +88,10 @@ public class JoinListener implements Listener {
                                 }
                             }
                         }
+                        AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
+                        if (gp.getKit() == null) {
+                            gp.setKit(EngineAPI.getActiveGame().getKits().get(0));
+                        }
                     }
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
                     EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
@@ -111,6 +115,10 @@ public class JoinListener implements Listener {
                     for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
                         pl.updateNametag(player);
                     }
+                }
+                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
+                if (gp.getKit() == null) {
+                    gp.setKit(EngineAPI.getActiveGame().getKits().get(0));
                 }
             }
 
