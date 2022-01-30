@@ -39,12 +39,14 @@ public abstract class Game {
     protected GameVariation gameVariation;
     protected GameMap map;
     protected Map<String, Team> teams;
+    protected List<Kit> kits;
     protected GameSession gameSession;
 
 
     public Game(GameVariation gameVariation) {
         this.gameVariation = gameVariation;
         this.teams = new HashMap<>();
+        this.kits = new ArrayList<>();
         gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),gameVariation);
     }
 
@@ -233,7 +235,9 @@ public abstract class Game {
 
     public abstract void onPlayerJoin(AuroraMCGamePlayer player);
 
-    public abstract List<Kit> getKits();
+    public List<Kit> getKits() {
+        return kits;
+    }
 
     public Map<String, Team> getTeams() {
         return teams;
