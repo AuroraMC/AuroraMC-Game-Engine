@@ -6,7 +6,6 @@ package net.auroramc.engine.api.backend;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.games.GameSession;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 

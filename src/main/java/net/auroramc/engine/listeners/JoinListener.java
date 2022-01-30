@@ -4,7 +4,6 @@
 
 package net.auroramc.engine.listeners;
 
-import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
@@ -14,18 +13,13 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.json.JSONArray;
-
-import java.lang.reflect.Field;
 
 public class JoinListener implements Listener {
 
