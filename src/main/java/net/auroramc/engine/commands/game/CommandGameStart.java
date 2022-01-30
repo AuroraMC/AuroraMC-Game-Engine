@@ -58,7 +58,8 @@ public class CommandGameStart extends Command {
                 player1.sendMessage(message);
             }
             for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                if (player1.getTeam() == null) {
+                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
+                if (player1.getTeam() == null && !gp.isSpectator()) {
                     Team leastPlayers = null;
                     for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
                         if (leastPlayers == null) {
@@ -77,8 +78,8 @@ public class CommandGameStart extends Command {
                         }
                     }
                 }
-                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
-                if (gp.getKit() == null) {
+
+                if (gp.getKit() == null && !gp.isSpectator()) {
                     gp.setKit(EngineAPI.getActiveGame().getKits().get(0));
                 }
             }

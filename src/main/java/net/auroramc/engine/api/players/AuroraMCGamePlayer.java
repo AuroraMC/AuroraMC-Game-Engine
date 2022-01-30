@@ -14,7 +14,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     public AuroraMCGamePlayer(AuroraMCPlayer oldPlayer) {
         super(oldPlayer);
-        spectator = false;
+        spectator = isVanished();
         kit = null;
     }
 

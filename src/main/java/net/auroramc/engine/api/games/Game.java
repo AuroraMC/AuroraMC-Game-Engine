@@ -180,6 +180,9 @@ public abstract class Game {
                     pl.getPlayer().setVelocity(new Vector());
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+                    if (!player.isVanished()) {
+                        player.setSpectator(false);
+                    }
                     player.setKit(null);
                     player.setTeam(null);
                     PlayerScoreboard scoreboard = player.getScoreboard();

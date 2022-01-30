@@ -69,7 +69,8 @@ public class JoinListener implements Listener {
             if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
                 if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                        if (player1.getTeam() == null) {
+                        AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
+                        if (player1.getTeam() == null && !gp.isSpectator()) {
                             Team leastPlayers = null;
                             for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
                                 if (leastPlayers == null) {
@@ -88,8 +89,7 @@ public class JoinListener implements Listener {
                                 }
                             }
                         }
-                        AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
-                        if (gp.getKit() == null) {
+                        if (gp.getKit() == null && !gp.isSpectator()) {
                             gp.setKit(EngineAPI.getActiveGame().getKits().get(0));
                         }
                     }
@@ -99,26 +99,27 @@ public class JoinListener implements Listener {
             }
 
             if (!player.isVanished() && EngineAPI.getServerState() == ServerState.STARTING) {
-                Team leastPlayers = null;
-                for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
-                    if (leastPlayers == null) {
-                        leastPlayers = team;
-                        continue;
+                if (!player.isSpectator()) {
+                    Team leastPlayers = null;
+                    for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
+                        if (leastPlayers == null) {
+                            leastPlayers = team;
+                            continue;
+                        }
+                        if (leastPlayers.getPlayers().size() > team.getPlayers().size()) {
+                            leastPlayers = team;
+                        }
                     }
-                    if (leastPlayers.getPlayers().size() > team.getPlayers().size()) {
-                        leastPlayers = team;
+                    if (leastPlayers != null) {
+                        leastPlayers.getPlayers().add(player);
+                        player.setTeam(leastPlayers);
+                        for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                            pl.updateNametag(player);
+                        }
                     }
-                }
-                if (leastPlayers != null) {
-                    leastPlayers.getPlayers().add(player);
-                    player.setTeam(leastPlayers);
-                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
-                        pl.updateNametag(player);
+                    if (player.getKit() == null) {
+                        player.setKit(EngineAPI.getActiveGame().getKits().get(0));
                     }
-                }
-                AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
-                if (gp.getKit() == null) {
-                    gp.setKit(EngineAPI.getActiveGame().getKits().get(0));
                 }
             }
 
