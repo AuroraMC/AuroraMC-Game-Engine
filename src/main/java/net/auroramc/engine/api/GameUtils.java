@@ -10,10 +10,13 @@ import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.server.ServerState;
 import org.apache.commons.io.FileUtils;
+import org.bukkit.Chunk;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GameUtils {
@@ -36,6 +39,9 @@ public class GameUtils {
             EngineAPI.setActiveGame(game);
             game.preLoad();
             EngineAPI.setServerState(ServerState.LOADING_MAP);
+            for (Chunk chunk : Arrays.asList(EngineAPI.getMapWorld().getLoadedChunks())) {
+                EngineAPI.getMapWorld().unloadChunk(chunk);
+            }
             File file = new File(EngineAPI.getMapWorld().getWorldFolder(), "region");
             if (file.exists()) {
                 FileUtils.deleteDirectory(file);

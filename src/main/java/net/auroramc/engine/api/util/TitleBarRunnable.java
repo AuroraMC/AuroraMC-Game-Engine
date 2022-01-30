@@ -20,7 +20,7 @@ public class TitleBarRunnable extends BukkitRunnable {
     public void run() {
         if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                player.sendHotBar(EngineAPI.getActiveGame().getGameSession().getUuid().toString() + " - " + AuroraMCAPI.getServerInfo().getName() + " - " + DateFormat.getDateInstance().format(new Date()), ChatColor.GRAY, false);
+                player.sendHotBar("§7" + EngineAPI.getActiveGame().getGameSession().getUuid().toString() + " - " + AuroraMCAPI.getServerInfo().getName() + " - " + DateFormat.getDateInstance().format(new Date()), ChatColor.GRAY, false);
             }
         } else {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {

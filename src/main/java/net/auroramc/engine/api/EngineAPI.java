@@ -13,8 +13,11 @@ import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.TitleBarRunnable;
 import net.auroramc.engine.api.util.VoidGenerator;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class EngineAPI {
@@ -149,6 +152,14 @@ public class EngineAPI {
 
     public static void loadRotation() {
         gameEngine.getLogger().info("Loading map world...");
+        File file = new File(Bukkit.getWorldContainer(), "map_world");
+        if (file.exists()) {
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         World world = Bukkit.createWorld(new WorldCreator("map_world").generator(new VoidGenerator(gameEngine)));
         world.setKeepSpawnInMemory(false);
         for (Chunk chunk : Arrays.asList(world.getLoadedChunks())) {
