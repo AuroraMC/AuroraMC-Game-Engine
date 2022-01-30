@@ -25,16 +25,16 @@ public class EngineDatabaseManager {
         try (Connection connection = AuroraMCAPI.getDbManager().getMySQLConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM maps WHERE parse_version = 'LIVE'");
             ResultSet set = statement.executeQuery();
+            File file = new File(EngineAPI.getGameEngine().getDataFolder(), "zips");
+            if (file.exists()) {
+                FileUtils.deleteDirectory(file);
+            }
+            file.mkdirs();
             while (set.next()) {
-                File file = new File(EngineAPI.getGameEngine().getDataFolder(), "zips");
-                if (file.exists()) {
-                    FileUtils.deleteDirectory(file);
-                }
-                file.mkdirs();
-                file = new File(file, set.getInt(1) + ".zip");
-                FileOutputStream output = new FileOutputStream(file);
+                File zipFile = new File(file, set.getInt(1) + ".zip");
+                FileOutputStream output = new FileOutputStream(zipFile);
 
-                System.out.println("Writing to file " + file.getAbsolutePath());
+                System.out.println("Writing to file " + zipFile.getAbsolutePath());
                 InputStream input = set.getBinaryStream(6);
                 byte[] buffer = new byte[1024];
                 while (input.read(buffer) > 0) {
