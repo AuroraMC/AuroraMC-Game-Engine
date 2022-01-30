@@ -14,10 +14,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class InGameStartingRunnable extends BukkitRunnable {
 
     private int i;
-    private Game game;
+    private final Game game;
 
     public InGameStartingRunnable(Game game) {
         i = 10;
+        this.game = game;
     }
 
     @Override
