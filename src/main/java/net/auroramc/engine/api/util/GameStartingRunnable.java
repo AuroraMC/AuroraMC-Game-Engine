@@ -22,7 +22,7 @@ public class GameStartingRunnable extends BukkitRunnable {
     @Override
     public void run() {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.getScoreboard().setTitle("&3-= &b&l&nSTARTING IN " + startTime + "&r &3=-");
+            player.getScoreboard().setTitle("&3-= &b&lSTARTING IN " + startTime + "&r &3=-");
             switch(startTime) {
                 case 5:
                 case 3:

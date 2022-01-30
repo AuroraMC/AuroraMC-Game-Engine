@@ -136,8 +136,10 @@ public class GameSession {
             object.put("amc_id", amcId);
             object.put("rank", rank.name());
             JSONObject disguise = new JSONObject();
-            disguise.put("name", this.disguise.getName());
-            disguise.put("rank", this.disguise.getRank());
+            if (this.disguise != null) {
+                disguise.put("name", this.disguise.getName());
+                disguise.put("rank", this.disguise.getRank());
+            }
             object.put("disguise", disguise);
             return object.toString();
         }
