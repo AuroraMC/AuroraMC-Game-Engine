@@ -188,6 +188,8 @@ public abstract class Game {
                     pl.getPlayer().teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
                     pl.getPlayer().setFallDistance(0);
                     pl.getPlayer().setVelocity(new Vector());
+                    pl.getPlayer().setFlying(false);
+                    pl.getPlayer().setAllowFlight(false);
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (!player.isVanished()) {

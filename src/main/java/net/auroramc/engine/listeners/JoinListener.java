@@ -14,6 +14,7 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
@@ -26,7 +27,9 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         LobbyListener.updateHeaderFooter((CraftPlayer) e.getPlayer());
-
+        e.getPlayer().setFlying(false);
+        e.getPlayer().setAllowFlight(false);
+        e.getPlayer().setGameMode(GameMode.SURVIVAL);
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
             JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("players");
             if (spawnLocations == null || spawnLocations.length() > 0) {
