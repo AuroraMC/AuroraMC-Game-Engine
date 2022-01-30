@@ -9,8 +9,12 @@ import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.server.ServerState;
+import net.auroramc.engine.api.util.VoidGenerator;
 import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,12 +46,14 @@ public class GameUtils {
             for (Chunk chunk : Arrays.asList(EngineAPI.getMapWorld().getLoadedChunks())) {
                 EngineAPI.getMapWorld().unloadChunk(chunk);
             }
-            File file = new File(EngineAPI.getMapWorld().getWorldFolder(), "region");
+            File file = new File(Bukkit.getWorldContainer(), "map_world/region");
             if (file.exists()) {
                 FileUtils.deleteDirectory(file);
             }
             file.mkdirs();
             FileUtils.copyDirectory(map.getRegionFolder(), file);
+            World world = Bukkit.createWorld(new WorldCreator("map_world").generator(new VoidGenerator(EngineAPI.getGameEngine())));
+            EngineAPI.setMapWorld(world);
             game.load(map);
             EngineAPI.setActiveMap(map);
             EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);

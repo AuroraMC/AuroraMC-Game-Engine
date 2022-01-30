@@ -160,12 +160,9 @@ public class EngineAPI {
                 e.printStackTrace();
             }
         }
+
         World world = Bukkit.createWorld(new WorldCreator("map_world").generator(new VoidGenerator(gameEngine)));
-        world.setKeepSpawnInMemory(false);
-        for (Chunk chunk : Arrays.asList(world.getLoadedChunks())) {
-            world.unloadChunk(chunk);
-        }
-        EngineAPI.setMapWorld(world);
+        Bukkit.unloadWorld(world, false);
 
         gameEngine.getLogger().info("Map world loaded. Loading rotation...");
 
