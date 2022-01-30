@@ -39,6 +39,10 @@ public class CommandGameStart extends Command {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager","Invalid syntax. Correct syntax: **/game start [time]**"));
                     return;
                 }
+                if (i > 99) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager","You cannot start the game with a time of more than 99."));
+                    return;
+                }
                 if (EngineAPI.getServerState() == ServerState.STARTING) {
                     EngineAPI.getGameStartingRunnable().setStartTime(i);
                 } else {
