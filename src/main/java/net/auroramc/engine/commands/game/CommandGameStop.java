@@ -32,10 +32,10 @@ public class CommandGameStop extends Command {
             if (EngineAPI.getServerState() == ServerState.IN_GAME) {
                 EngineAPI.getActiveGame().end(null);
             } else {
+                if (EngineAPI.getGameStartingRunnable() != null) {
+                    EngineAPI.getGameStartingRunnable().cancel();
+                }
                 if (EngineAPI.getNextGame() != null) {
-                    if (EngineAPI.getGameStartingRunnable() != null) {
-                        EngineAPI.getGameStartingRunnable().cancel();
-                    }
                     EngineAPI.setNextVariation(null);
                     EngineAPI.setNextGame(null);
                     EngineAPI.setNextMap(null);
