@@ -11,7 +11,6 @@ import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.text.DateFormat;
 import java.util.Date;
 
 public class TitleBarRunnable extends BukkitRunnable {
