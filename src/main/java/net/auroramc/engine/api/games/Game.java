@@ -241,6 +241,9 @@ public abstract class Game {
                 } else if (EngineAPI.getGameRotation().size() > 0) {
                     GameUtils.loadNextGame();
                 } else {
+                    EngineAPI.setActiveGameInfo(null);
+                    EngineAPI.setActiveGame(null);
+                    EngineAPI.setActiveMap(null);
                     EngineAPI.setServerState(ServerState.IDLE);
                 }
 

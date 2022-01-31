@@ -42,6 +42,9 @@ public class CommandGameStop extends Command {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) pl;
                     gp.setTeam(null);
                     gp.setKit(null);
+                    for (AuroraMCPlayer pl2 : AuroraMCAPI.getPlayers()) {
+                        pl2.updateNametag(gp);
+                    }
                 }
                 if (EngineAPI.getNextGame() != null) {
                     EngineAPI.setNextVariation(null);
