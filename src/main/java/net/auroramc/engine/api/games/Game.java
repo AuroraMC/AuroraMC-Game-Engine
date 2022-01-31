@@ -77,6 +77,7 @@ public abstract class Game {
      * When executed by the game, it should indicate that the game is handing control back to the Game Engine and the game is no longer in progress. Should execute super.
      */
     public void end(AuroraMCPlayer winner) {
+        EngineAPI.setServerState(ServerState.ENDING);
         if (runnable != null) {
             runnable.cancel();
         }
@@ -115,6 +116,7 @@ public abstract class Game {
      * When executed by the game, it should indicate that the game is handing control back to the Game Engine and the game is no longer in progress.
      */
     public void end(Team winner, String winnerName) {
+        EngineAPI.setServerState(ServerState.ENDING);
         if (runnable != null) {
             runnable.cancel();
         }
@@ -201,6 +203,7 @@ public abstract class Game {
                     pl.getPlayer().setHealth(20);
                     pl.getPlayer().setFoodLevel(30);
                     pl.getPlayer().getInventory().clear();
+                    pl.getPlayer().setFireTicks(0);
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (!player.isVanished()) {
