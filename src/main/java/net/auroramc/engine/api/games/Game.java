@@ -43,6 +43,7 @@ public abstract class Game {
     protected List<Kit> kits;
     protected GameSession gameSession;
     protected boolean starting;
+    protected InGameStartingRunnable runnable;
 
 
     public Game(GameVariation gameVariation) {
@@ -69,21 +70,25 @@ public abstract class Game {
 
     public void inProgress() {
         starting = false;
+        runnable = null;
     }
 
     /**
      * When executed by the game, it should indicate that the game is handing control back to the Game Engine and the game is no longer in progress. Should execute super.
      */
     public void end(AuroraMCPlayer winner) {
+        if (runnable != null) {
+            runnable.cancel();
+        }
         gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", ((winner == null)?"NONE":winner.getName()))));
         gameSession.end(false);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
-        winnerString.append(" \n");
+        winnerString.append(" \n \n");
         winnerString.append(" §b§l");
         winnerString.append((winner == null)?"Nobody":winner.getPlayer().getName());
         winnerString.append(" won the game!");
-        winnerString.append("\n \n");
+        winnerString.append("\n \n \n");
         winnerString.append("§r§lMap: §b§l");
         winnerString.append(map.getName());
         winnerString.append(" by ");
@@ -110,6 +115,9 @@ public abstract class Game {
      * When executed by the game, it should indicate that the game is handing control back to the Game Engine and the game is no longer in progress.
      */
     public void end(Team winner, String winnerName) {
+        if (runnable != null) {
+            runnable.cancel();
+        }
         gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", winner.getName())));
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
@@ -190,6 +198,8 @@ public abstract class Game {
                     pl.getPlayer().setVelocity(new Vector());
                     pl.getPlayer().setFlying(false);
                     pl.getPlayer().setAllowFlight(false);
+                    pl.getPlayer().setHealth(20);
+                    pl.getPlayer().setFoodLevel(30);
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (!player.isVanished()) {
@@ -211,13 +221,13 @@ public abstract class Game {
                     scoreboard.setLine(2, "&b&l«SERVER»");
                     scoreboard.setLine(1, AuroraMCAPI.getServerInfo().getName());
 
-                    if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
-                        if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
-                            EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
-                            EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+
+                    for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                        if (player1.getRank().getId() >= player.getRank().getId()) {
+                            player1.getPlayer().showPlayer(player.getPlayer());
+                            player1.updateNametag(pl);
                         }
                     }
-
                     player.getPlayer().getInventory().setItem(8, EngineAPI.getLobbyItem().getItem());
                     player.getPlayer().getInventory().setItem(7, EngineAPI.getPrefsItem().getItem());
                     player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
@@ -233,10 +243,19 @@ public abstract class Game {
                     EngineAPI.setServerState(ServerState.IDLE);
                 }
 
+                if (EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
+                    if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
+                        EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
+                        EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+                    }
+                }
+
                 for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (EngineAPI.getActiveGame() != null) {
-                        player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                        if (EngineAPI.getActiveGame().getKits().size() > 1) {
+                            player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                        }
                         if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand()) {
                             player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                         }

@@ -4,6 +4,7 @@
 
 package net.auroramc.engine.commands.game;
 
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
@@ -43,14 +44,14 @@ public class CommandGameStart extends Command {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager","You cannot start the game with a time of more than 9999 seconds."));
                     return;
                 }
-                if (EngineAPI.getServerState() == ServerState.STARTING) {
+                if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null) {
                     EngineAPI.getGameStartingRunnable().setStartTime(i);
                 } else {
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(i));
                     EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
                 }
             } else {
-                if (EngineAPI.getServerState() == ServerState.STARTING) {
+                if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null) {
                     EngineAPI.getGameStartingRunnable().setStartTime(EngineAPI.getGameStartingRunnable().getStartTime() - 2);
                 } else {
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));

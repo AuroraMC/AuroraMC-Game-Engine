@@ -30,6 +30,8 @@ public class JoinListener implements Listener {
         e.getPlayer().setFlying(false);
         e.getPlayer().setAllowFlight(false);
         e.getPlayer().setGameMode(GameMode.SURVIVAL);
+        e.getPlayer().setHealth(20);
+        e.getPlayer().setFoodLevel(30);
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
             JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
             if (spawnLocations == null || spawnLocations.length() == 0) {
@@ -131,7 +133,9 @@ public class JoinListener implements Listener {
             player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
 
             if (EngineAPI.getActiveGame() != null) {
-                player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                if (EngineAPI.getActiveGame().getKits().size() > 1) {
+                    player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                }
                 if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand()) {
                     player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                 }

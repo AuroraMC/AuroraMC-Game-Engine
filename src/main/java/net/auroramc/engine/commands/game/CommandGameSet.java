@@ -117,6 +117,7 @@ public class CommandGameSet extends Command {
                     } else {
                         GameUtils.loadGame(info, map, gameVariation);
                     }
+
                     String message;
                     if (map != null) {
                         if (gameVariation != null) {
@@ -137,6 +138,12 @@ public class CommandGameSet extends Command {
                         if (pl != null) {
                             pl.setKit(null);
                             pl.setTeam(null);
+                        }
+                        if (EngineAPI.getActiveGame().getKits().size() > 1) {
+                            player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                        }
+                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand()) {
+                            player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                         }
                     }
                     break;

@@ -33,13 +33,19 @@ public class CommandGameStop extends Command {
                 EngineAPI.getActiveGame().end(null);
             } else {
                 if (EngineAPI.getNextGame() != null) {
-                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                    if (EngineAPI.getGameStartingRunnable() != null) {
+                        EngineAPI.getGameStartingRunnable().cancel();
+                    }
                     EngineAPI.setNextVariation(null);
                     EngineAPI.setNextGame(null);
                     EngineAPI.setNextMap(null);
+                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
                 } else if (EngineAPI.getGameRotation().size() > 0) {
                     GameUtils.loadNextGame();
                 } else {
+                    EngineAPI.setActiveGameInfo(null);
+                    EngineAPI.setActiveGame(null);
+                    EngineAPI.setActiveMap(null);
                     EngineAPI.setServerState(ServerState.IDLE);
                 }
             }
