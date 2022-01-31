@@ -8,8 +8,10 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.engine.AuroraMCGameEngine;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.GameUtils;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,6 +36,12 @@ public class CommandGameStop extends Command {
             } else {
                 if (EngineAPI.getGameStartingRunnable() != null) {
                     EngineAPI.getGameStartingRunnable().cancel();
+                    EngineAPI.setGameStartingRunnable(null);
+                }
+                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                    AuroraMCGamePlayer gp = (AuroraMCGamePlayer) pl;
+                    gp.setTeam(null);
+                    gp.setKit(null);
                 }
                 if (EngineAPI.getNextGame() != null) {
                     EngineAPI.setNextVariation(null);
