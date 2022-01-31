@@ -101,8 +101,8 @@ public class EngineAPI {
     }
 
     public static void setServerState(ServerState serverState) {
-        Bukkit.getPluginManager().callEvent(new ServerStateChangeEvent(serverState));
         EngineAPI.serverState = serverState;
+        Bukkit.getPluginManager().callEvent(new ServerStateChangeEvent(serverState));
     }
 
     public static AuroraMCGameEngine getGameEngine() {

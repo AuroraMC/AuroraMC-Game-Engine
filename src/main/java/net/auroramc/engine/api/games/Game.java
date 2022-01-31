@@ -63,7 +63,7 @@ public abstract class Game {
      */
     public void start() {
         starting = true;
-        InGameStartingRunnable runnable = new InGameStartingRunnable(this);
+        runnable = new InGameStartingRunnable(this);
         runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
         gameSession.start();
     }
