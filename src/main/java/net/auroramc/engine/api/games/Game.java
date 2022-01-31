@@ -200,6 +200,7 @@ public abstract class Game {
                     pl.getPlayer().setAllowFlight(false);
                     pl.getPlayer().setHealth(20);
                     pl.getPlayer().setFoodLevel(30);
+                    pl.getPlayer().getInventory().clear();
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (!player.isVanished()) {
