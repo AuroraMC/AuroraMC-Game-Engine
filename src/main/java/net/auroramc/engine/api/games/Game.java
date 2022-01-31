@@ -99,7 +99,7 @@ public abstract class Game {
 
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.getPlayer().sendMessage(winnerString.toString());
-            player.sendTitle((winner == null)?"Nobody":winner.getPlayer().getName() + " won the game!", "", 10, 100, 10, ChatColor.AQUA, ChatColor.AQUA, true, false);
+            player.sendTitle((winner == null)?"Nobody won the game":winner.getPlayer().getName() + " won the game!", "", 10, 160, 10, ChatColor.AQUA, ChatColor.AQUA, true, false);
         }
 
         if (winner != null) {
@@ -145,7 +145,7 @@ public abstract class Game {
 
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.getPlayer().sendMessage(winnerString.toString());
-            player.sendTitle(winner.getName() + " won the game!", "", 10, 100, 10, ChatColor.getByChar(winner.getTeamColor()), ChatColor.AQUA, true, false);
+            player.sendTitle(winner.getName() + " won the game!", "", 10, 160, 10, ChatColor.getByChar(winner.getTeamColor()), ChatColor.AQUA, true, false);
         }
 
         for (AuroraMCPlayer amcPlayer : winner.getPlayers()) {
