@@ -26,14 +26,16 @@ public class InGameStartingRunnable extends BukkitRunnable {
         if (i > 0) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", String.format("The game is starting in **%s** second%s!", i, ((i > 1)?"s":""))));
-                player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 1);
+                if (i < 6) {
+                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 5-i);
+                }
             }
             i--;
         } else {
             game.inProgress();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The game has begun!"));
-                player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 2);
+                player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 5);
             }
             this.cancel();
         }

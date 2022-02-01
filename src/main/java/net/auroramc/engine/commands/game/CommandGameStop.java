@@ -47,10 +47,10 @@ public class CommandGameStop extends Command {
                     }
                 }
                 if (EngineAPI.getNextGame() != null) {
+                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
                     EngineAPI.setNextVariation(null);
                     EngineAPI.setNextGame(null);
                     EngineAPI.setNextMap(null);
-                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
                 } else if (EngineAPI.getGameRotation().size() > 0) {
                     GameUtils.loadNextGame();
                 } else {

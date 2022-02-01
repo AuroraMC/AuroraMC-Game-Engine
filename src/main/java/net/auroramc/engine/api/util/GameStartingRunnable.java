@@ -25,6 +25,7 @@ public class GameStartingRunnable extends BukkitRunnable {
             player.getScoreboard().setTitle("&3-= &b&lSTARTING IN " + startTime + "&r &3=-");
             switch(startTime) {
                 case 5:
+                case 4:
                 case 3:
                 case 2:
                 case 1:
@@ -32,7 +33,7 @@ public class GameStartingRunnable extends BukkitRunnable {
                 case 60:
                 case 30:
                 case 10:
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_PLING, 100, 1);
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_STICKS, 100, 1);
             }
         }
 
