@@ -62,15 +62,16 @@ public abstract class Game {
     public void start() {
         StringBuilder startString = new StringBuilder();
         startString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
-        startString.append("§b§lGame: ");
+        startString.append(" \n§b§lGame: ");
         startString.append(EngineAPI.getActiveGameInfo().getName());
         if (gameVariation != null) {
             startString.append(" ");
             startString.append(gameVariation.getName());
         }
-        startString.append("\n \n");
+        startString.append("\n \n§r");
         startString.append(EngineAPI.getActiveGameInfo().getDescription());
         startString.append("\n \n");
+        startString.append("§r§lMap: §b§l");
         startString.append(map.getName());
         startString.append(" by ");
         startString.append(map.getAuthor());
