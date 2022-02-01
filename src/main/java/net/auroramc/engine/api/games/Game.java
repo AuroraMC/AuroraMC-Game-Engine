@@ -62,7 +62,7 @@ public abstract class Game {
     public void start() {
         StringBuilder startString = new StringBuilder();
         startString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
-        startString.append(" §b§lGame: ");
+        startString.append("§b§lGame: ");
         startString.append(EngineAPI.getActiveGameInfo().getName());
         if (gameVariation != null) {
             startString.append(" ");
@@ -77,6 +77,9 @@ public abstract class Game {
         startString.append("\n");
         startString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(startString.toString());
+        }
         starting = true;
         runnable = new InGameStartingRunnable(this);
         runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
