@@ -109,6 +109,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PingListener(), this);
         Bukkit.getPluginManager().registerEvents(new WorldListener(), this);
         Bukkit.getPluginManager().registerEvents(new ServerCloseRequestListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
 
         AuroraMCAPI.registerCommand(new CommandUndisguiseOverride());
         AuroraMCAPI.registerCommand(new CommandDisguiseOverride());

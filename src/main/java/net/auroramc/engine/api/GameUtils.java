@@ -52,6 +52,7 @@ public class GameUtils {
             file.mkdirs();
             FileUtils.copyDirectory(map.getRegionFolder(), file);
             World world = Bukkit.createWorld(new WorldCreator("map_world").generator(new VoidGenerator(EngineAPI.getGameEngine())));
+            world.setGameRuleValue("doMobSpawning", "false");
             EngineAPI.setMapWorld(world);
             game.load(map);
             EngineAPI.setActiveMap(map);

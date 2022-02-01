@@ -31,6 +31,10 @@ public class CommandGameStart extends Command {
     @Override
     public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
         if (EngineAPI.getActiveGame() != null && EngineAPI.getServerState() != ServerState.IDLE && EngineAPI.getServerState() != ServerState.ENDING  && EngineAPI.getServerState() != ServerState.IN_GAME) {
+            if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() <= 1) {
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager","You cannot start the game with 1 or less players ready to start."));
+                return;
+            }
             if (args.size() >= 1) {
                 int i;
                 try {

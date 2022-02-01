@@ -24,6 +24,11 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     public void setSpectator(boolean spectator) {
         this.spectator = spectator;
+        if (spectator) {
+            getPlayer().spigot().setCollidesWithEntities(false);
+        } else {
+            getPlayer().spigot().setCollidesWithEntities(true);
+        }
     }
 
     public Kit getKit() {

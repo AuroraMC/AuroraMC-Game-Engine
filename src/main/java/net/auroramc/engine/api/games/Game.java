@@ -144,6 +144,7 @@ public abstract class Game {
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
 
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+
             player.getPlayer().sendMessage(winnerString.toString());
             player.sendTitle(winner.getName() + " won the game!", "", 10, 160, 10, ChatColor.getByChar(winner.getTeamColor()), ChatColor.AQUA, true, false);
         }
@@ -240,7 +241,11 @@ public abstract class Game {
 
 
                 if (EngineAPI.getNextGame() != null) {
-                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                    if (EngineAPI.getNextMap() != null) {
+                        GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                    } else {
+                        GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextVariation());
+                    }
                 } else if (EngineAPI.getGameRotation().size() > 0) {
                     GameUtils.loadNextGame();
                 } else {
