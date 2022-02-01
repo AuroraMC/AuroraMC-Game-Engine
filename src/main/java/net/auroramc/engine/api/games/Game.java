@@ -21,10 +21,7 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.InGameStartingRunnable;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -63,6 +60,23 @@ public abstract class Game {
      * When executed by the Game Engine, this indicates that the Engine is handing over control to the game and that the game is now started. Should be overridden and should execute super.
      */
     public void start() {
+        StringBuilder startString = new StringBuilder();
+        startString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
+        startString.append(" §b§lGame: ");
+        startString.append(EngineAPI.getActiveGameInfo().getName());
+        if (gameVariation != null) {
+            startString.append(" ");
+            startString.append(gameVariation.getName());
+        }
+        startString.append("\n \n");
+        startString.append(EngineAPI.getActiveGameInfo().getDescription());
+        startString.append("\n \n");
+        startString.append(map.getName());
+        startString.append(" by ");
+        startString.append(map.getAuthor());
+        startString.append("\n");
+        startString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
+
         starting = true;
         runnable = new InGameStartingRunnable(this);
         runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
@@ -101,6 +115,7 @@ public abstract class Game {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.getPlayer().sendMessage(winnerString.toString());
             player.sendTitle((winner == null)?"Nobody won the game":winner.getPlayer().getName() + " won the game!", "", 10, 160, 10, ChatColor.AQUA, ChatColor.AQUA, true, false);
+            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
         }
 
         if (winner != null) {
@@ -145,9 +160,9 @@ public abstract class Game {
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
 
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-
             player.getPlayer().sendMessage(winnerString.toString());
             player.sendTitle(winner.getName() + " won the game!", "", 10, 160, 10, ChatColor.getByChar(winner.getTeamColor()), ChatColor.AQUA, true, false);
+            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
         }
 
         for (AuroraMCPlayer amcPlayer : winner.getPlayers()) {
