@@ -60,17 +60,19 @@ public class JoinListener implements Listener {
         } else {
             PlayerScoreboard scoreboard = player.getScoreboard();
             scoreboard.setTitle("&3&l-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
-            scoreboard.setLine(11, "&b&l«GAME»");
-            scoreboard.setLine(10, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
-            scoreboard.setLine(9, " ");
-            scoreboard.setLine(8, "&b&l«MAP»");
-            scoreboard.setLine(7, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None  "));
-            scoreboard.setLine(6, "  ");
-            scoreboard.setLine(5, "&b&l«KIT»");
-            scoreboard.setLine(4, ((player.getKit() != null)?player.getKit().getName():"None "));
-            scoreboard.setLine(3, "   ");
-            scoreboard.setLine(2, "&b&l«SERVER»");
-            scoreboard.setLine(1, AuroraMCAPI.getServerInfo().getName());
+            scoreboard.setLine(13, "&b&l«GAME»");
+            scoreboard.setLine(12, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
+            scoreboard.setLine(11, " ");
+            scoreboard.setLine(10, "&b&l«MAP»");
+            scoreboard.setLine(9, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None  "));
+            scoreboard.setLine(8, "  ");
+            scoreboard.setLine(7, "&b&l«KIT»");
+            scoreboard.setLine(6, ((player.getKit() != null)?player.getKit().getName():"None "));
+            scoreboard.setLine(5, "   ");
+            scoreboard.setLine(4, "&b&l«SERVER»");
+            scoreboard.setLine(3, AuroraMCAPI.getServerInfo().getName());
+            scoreboard.setLine(2, "    ");
+            scoreboard.setLine(1, "&7You are playing on auroramc.net");
 
             if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
                 if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {

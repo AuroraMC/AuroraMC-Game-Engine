@@ -109,9 +109,11 @@ public class LobbyListener implements Listener {
     public void onStateChange(ServerStateChangeEvent e) {
         if (e.getState() != ServerState.ENDING && e.getState() != ServerState.IN_GAME) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
                 player.getScoreboard().setTitle("&3&l-= &b&l" + e.getState().getName().toUpperCase() + "&r &3&l=-");
-                player.getScoreboard().setLine(10, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
-                player.getScoreboard().setLine(7, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None  "));
+                player.getScoreboard().setLine(12, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
+                player.getScoreboard().setLine(9, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None  "));
+                player.getScoreboard().setLine(6, ((pl.getKit() != null)?pl.getKit().getName():"None "));
                 updateHeaderFooter((CraftPlayer) player.getPlayer());
             }
         }
@@ -120,7 +122,7 @@ public class LobbyListener implements Listener {
     public static void updateHeaderFooter(CraftPlayer player2) {
         try {
             IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName().toUpperCase():EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
-            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"You are connected to server: " + AuroraMCAPI.getServerInfo().getName() + "\",\"color\":\"aqua\",\"bold\":\"true\"}");
+            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"Buy ranks, cosmetics and more at store.auroramc.net!\",\"color\":\"aqua\",\"bold\":\"false\"}");
 
             PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
             Field ff = packet.getClass().getDeclaredField("a");
