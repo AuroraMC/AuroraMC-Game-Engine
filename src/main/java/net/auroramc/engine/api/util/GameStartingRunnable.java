@@ -34,6 +34,8 @@ public class GameStartingRunnable extends BukkitRunnable {
                 case 30:
                 case 10:
                     player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_STICKS, 100, 1);
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", String.format("The game is starting in **%s** second%s!", startTime, ((startTime > 1)?"s":""))));
+
             }
         }
 
