@@ -23,6 +23,7 @@ import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.InGameStartingRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -205,6 +206,10 @@ public abstract class Game {
                     pl.getPlayer().setFoodLevel(30);
                     pl.getPlayer().getInventory().clear();
                     pl.getPlayer().setFireTicks(0);
+                    pl.getPlayer().setGameMode(GameMode.SURVIVAL);
+                    pl.getPlayer().setExp(0);
+                    pl.getPlayer().setLevel(0);
+                    pl.getPlayer().getEnderChest().clear();
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (!player.isVanished()) {

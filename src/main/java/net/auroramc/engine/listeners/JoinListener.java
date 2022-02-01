@@ -33,6 +33,9 @@ public class JoinListener implements Listener {
         e.getPlayer().setHealth(20);
         e.getPlayer().setFoodLevel(30);
         e.getPlayer().getInventory().clear();
+        e.getPlayer().setExp(0);
+        e.getPlayer().setLevel(0);
+        e.getPlayer().getEnderChest().clear();
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
             JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
             if (spawnLocations == null || spawnLocations.length() == 0) {
