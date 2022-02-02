@@ -12,6 +12,9 @@ import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.MapRegistry;
 import net.auroramc.engine.commands.CommandDisguiseOverride;
 import net.auroramc.engine.commands.CommandUndisguiseOverride;
+import net.auroramc.engine.commands.admin.CommandGameMode;
+import net.auroramc.engine.commands.admin.CommandGive;
+import net.auroramc.engine.commands.admin.CommandMob;
 import net.auroramc.engine.commands.game.CommandGame;
 import net.auroramc.engine.listeners.*;
 import org.apache.commons.io.FileUtils;
@@ -115,6 +118,9 @@ public class AuroraMCGameEngine extends JavaPlugin {
         AuroraMCAPI.registerCommand(new CommandUndisguiseOverride());
         AuroraMCAPI.registerCommand(new CommandDisguiseOverride());
         AuroraMCAPI.registerCommand(new CommandGame());
+        AuroraMCAPI.registerCommand(new CommandGameMode());
+        AuroraMCAPI.registerCommand(new CommandGive());
+        AuroraMCAPI.registerCommand(new CommandMob());
 
         getLogger().info("Listeners registered. Waiting for games to be registered...");
 

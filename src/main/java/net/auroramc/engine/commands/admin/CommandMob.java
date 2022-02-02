@@ -1,0 +1,193 @@
+/*
+ * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ */
+
+package net.auroramc.engine.commands.admin;
+
+import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.command.Command;
+import net.auroramc.core.api.permissions.Permission;
+import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.minecraft.server.v1_8_R3.EntityInsentient;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+
+public class CommandMob extends Command {
+
+
+    public CommandMob() {
+        super("mob", Arrays.asList("mobs", "summon", "spawn"), Collections.singletonList(Permission.ADMIN), false, null);
+    }
+
+    @Override
+    public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
+        if (args.size() >= 2) {
+            List<String> matches = new ArrayList<>();
+            String mobString = args.remove(0);
+            for (EntityType type : EntityType.values()) {
+                if (!type.isAlive()) {
+                    continue;
+                }
+                if (type.name().startsWith(mobString.toUpperCase())) {
+                    matches.add(type.name());
+                }
+            }
+
+            if (matches.size() == 0) {
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "No matches were found for mob **" + mobString + "**."));
+                return;
+            }
+
+            if (matches.size() > 1) {
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "Multiple possible matches found for mob **" + mobString + "**. Please be more specific. Matches: [**" + String.join("**, **", matches) + "**]"));
+                return;
+            }
+
+            EntityType type = EntityType.valueOf(matches.get(0));
+            Block block = player.getPlayer().getTargetBlock((Set<Material>) null, 50);
+            if (block == null) {
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You are not looking in a valid location. Please try again."));
+                return;
+            }
+            Location location = block.getLocation();
+            location.setY(location.getY() + 1);
+
+            byte amount = 1;
+
+            if (args.size() >= 1) {
+                try {
+                    amount = Byte.parseByte(args.remove(0));
+                } catch (NumberFormatException e) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You specified an invalid amount. Please try again."));
+                    return;
+                }
+            }
+            String name = null;
+            Material item = null;
+            String armorType = null;
+            int totalHealth = -1;
+            boolean angry = false;
+            boolean baby = false;
+            boolean noAI = false;
+
+            for (String arg : args) {
+                if (arg.equalsIgnoreCase("baby")) {
+                    baby = true;
+                } else if (arg.equalsIgnoreCase("angry")) {
+                    angry = true;
+                } else if (arg.equalsIgnoreCase("noai")) {
+                    noAI = true;
+                } else if (arg.matches("^h[0-9]+$")) {
+                    totalHealth = Integer.parseInt(arg.substring(1));
+                } else if (arg.matches("^n[0-9a-zA-Z_&]+$")) {
+                    name = arg.substring(1);
+                } else if (arg.toLowerCase().matches("^(airon|adiamond|achainmail|aleather)$")) {
+                    armorType = arg.substring(1).toLowerCase();
+                } else if (arg.matches("^i[0-9a-zA-Z_&]+$")) {
+                    String itemString = arg.substring(1);
+                    List<String> itemMatches = new ArrayList<>();
+                    for (Material material : Material.values()) {
+                        if (material.name().startsWith(itemString.toUpperCase())) {
+                            itemMatches.add(material.name());
+                        }
+                    }
+                    if (itemMatches.size() > 0) {
+                        item = Material.valueOf(itemMatches.get(0));
+                    }
+                }
+            }
+
+            while (amount > 0) {
+                LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
+
+                entity.setCanPickupItems(false);
+                entity.setCustomNameVisible(true);
+                if (name != null) {
+                    entity.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(name.replace("_", " "))));
+                }
+                if (entity instanceof EntityInsentient) {
+                    if (item != null) {
+                        entity.getEquipment().setItemInHandDropChance(0);
+                        entity.getEquipment().setItemInHand(new ItemStack(item, 1));
+                    }
+                    if (armorType != null) {
+                        switch (armorType) {
+                            case "iron": {
+                                entity.getEquipment().setBoots(new ItemStack(Material.IRON_BOOTS, 1));
+                                entity.getEquipment().setChestplate(new ItemStack(Material.IRON_CHESTPLATE, 1));
+                                entity.getEquipment().setLeggings(new ItemStack(Material.IRON_LEGGINGS, 1));
+                                entity.getEquipment().setHelmet(new ItemStack(Material.IRON_HELMET, 1));
+                                break;
+                            }
+                            case "diamond": {
+                                entity.getEquipment().setBoots(new ItemStack(Material.DIAMOND_CHESTPLATE, 1));
+                                entity.getEquipment().setChestplate(new ItemStack(Material.DIAMOND_LEGGINGS, 1));
+                                entity.getEquipment().setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS, 1));
+                                entity.getEquipment().setHelmet(new ItemStack(Material.DIAMOND_HELMET, 1));
+                                break;
+                            }
+                            case "chainmail": {
+                                entity.getEquipment().setBoots(new ItemStack(Material.CHAINMAIL_BOOTS, 1));
+                                entity.getEquipment().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE, 1));
+                                entity.getEquipment().setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS, 1));
+                                entity.getEquipment().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET, 1));
+                                break;
+                            }
+                            case "leather": {
+                                entity.getEquipment().setBoots(new ItemStack(Material.LEATHER_BOOTS, 1));
+                                entity.getEquipment().setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
+                                entity.getEquipment().setLeggings(new ItemStack(Material.LEATHER_LEGGINGS, 1));
+                                entity.getEquipment().setHelmet(new ItemStack(Material.LEATHER_HELMET, 1));
+                                break;
+                            }
+                        }
+                        entity.getEquipment().setBootsDropChance(0);
+                        entity.getEquipment().setHelmetDropChance(0);
+                        entity.getEquipment().setChestplateDropChance(0);
+                        entity.getEquipment().setLeggingsDropChance(0);
+                    }
+                }
+                if (totalHealth != -1) {
+                    entity.setMaxHealth(totalHealth);
+                    entity.setHealth(totalHealth);
+                }
+                if (angry && entity instanceof Wolf) {
+                    ((Wolf)entity).setAngry(true);
+                }
+                if (baby && entity instanceof Ageable) {
+                    ((Ageable)entity).setBaby();
+                    ((Ageable)entity).setAgeLock(true);
+                }
+
+                if (noAI) {
+                    assert entity instanceof CraftEntity;
+                    CraftEntity craftEntity = ((CraftEntity)entity);
+                    NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
+                    if (tag == null) {
+                        tag = new NBTTagCompound();
+                    }
+                    craftEntity.getHandle().c(tag);
+                    tag.setInt("NoAI", 1);
+                    craftEntity.getHandle().f(tag);
+                }
+                amount--;
+            }
+
+        } else {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "Invalid syntax. Correct syntax: **/mob [mob] [amount] n[name] i[held item] a[armor type] h[total health] [baby] [angry] [noai]**"));
+        }
+    }
+
+    @Override
+    public @NotNull List<String> onTabComplete(AuroraMCPlayer auroraMCPlayer, String s, List<String> list, String s1, int i) {
+        return new ArrayList<>();
+    }
+}
