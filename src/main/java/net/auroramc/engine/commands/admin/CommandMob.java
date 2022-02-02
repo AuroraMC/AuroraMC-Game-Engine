@@ -16,6 +16,8 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -118,8 +120,17 @@ public class CommandMob extends Command {
                     stand.setSmall(true);
                     stand.setMarker(true);
                     Slime slime = location.getWorld().spawn(location, Slime.class);
-                    slime.setSize(1);
+                    slime.setSize(0);
                     slime.setPassenger(stand);
+                    CraftEntity craftEntity = ((CraftEntity)slime);
+                    NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
+                    if (tag == null) {
+                        tag = new NBTTagCompound();
+                    }
+                    craftEntity.getHandle().c(tag);
+                    tag.setInt("NoAI", 1);
+                    craftEntity.getHandle().f(tag);
+                    slime.addPotionEffect(PotionEffectType.INVISIBILITY.createEffect(1000000, 1));
                     entity.setPassenger(slime);
                     //entity.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(name.replace("_", " "))));
                 }
