@@ -231,6 +231,13 @@ public abstract class Game {
                     pl.getPlayer().getEnderChest().clear();
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+
+                    if (player.getJoinTimestamp() > gameSession.getStartTimestamp()) {
+                        //The player joined after the game started, go from when they joined.
+                        player.getStats().addGameTime(gameSession.getEndTimestamp() - player.getJoinTimestamp(), true);
+                    } else {
+                        player.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
+                    }
                     if (!player.isVanished()) {
                         player.setSpectator(false);
                     }
@@ -308,6 +315,8 @@ public abstract class Game {
     public abstract void onPlayerJoin(Player player);
 
     public abstract void onPlayerJoin(AuroraMCGamePlayer player);
+
+    public abstract void onPlayerLeave(AuroraMCGamePlayer player);
 
     public List<Kit> getKits() {
         return kits;

@@ -19,13 +19,15 @@ public abstract class Kit {
     private final String name;
     private final String description;
     private final Material material;
+    private final int cost;
 
-    public Kit(int id, int gameId, String name, String description, Material material) {
+    public Kit(int id, int gameId, String name, String description, Material material, int cost) {
         this.id = id;
         this.gameId = gameId;
         this.name = name;
         this.description = description;
         this.material = material;
+        this.cost = cost;
     }
 
     public abstract void onGameStart(AuroraMCPlayer player);
@@ -48,6 +50,10 @@ public abstract class Kit {
 
     public Material getMaterial() {
         return material;
+    }
+
+    public int getCost() {
+        return cost;
     }
 
     @Override

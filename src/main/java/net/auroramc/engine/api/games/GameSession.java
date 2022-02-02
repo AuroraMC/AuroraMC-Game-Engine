@@ -23,6 +23,7 @@ public class GameSession {
     private long startTimestamp;
     private final JSONArray players;
     private final JSONArray gameLog;
+    private long endTimestamp;
 
     public GameSession(String gameRegistryKey, GameVariation gameVariation) {
         this.uuid = UUID.randomUUID();
@@ -40,7 +41,7 @@ public class GameSession {
     }
 
     public void end(boolean isVoid) {
-        long endTimestamp = System.currentTimeMillis();
+        endTimestamp = System.currentTimeMillis();
         JSONObject obj = new JSONObject();
         obj.put("uuid", uuid.toString());
         obj.put("game", gameRegistryKey);
@@ -65,6 +66,14 @@ public class GameSession {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public long getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public long getEndTimestamp() {
+        return endTimestamp;
     }
 
     public static class GameLogEntry {

@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.apache.commons.lang.WordUtils;
@@ -15,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Kits extends GUI {
 
@@ -29,7 +31,11 @@ public class Kits extends GUI {
         int column = 1;
         int row = 1;
         for (Kit kit : EngineAPI.getActiveGame().getKits()) {
-            this.setItem(row, column, new GUIItem(kit.getMaterial(), "&3&l" + kit.getName(), 1, "&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&r Click to equip the **" + kit.getName() + "** kit.", (short)0, ((AuroraMCGamePlayer)player).getKit().equals(kit)));
+            if (kit.getCost() == -1 || player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId())) {
+                this.setItem(row, column, new GUIItem(kit.getMaterial(), "&3&l" + kit.getName(), 1, "&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&r Click to equip the **" + kit.getName() + "** kit.", (short)0, player.getKit().equals(kit)));
+            } else {
+                this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, "&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: **" + kit.getCost() + " Crowns**;&r&aClick to purchase  the **" + kit.getName() + "** kit.", (short)0, player.getKit().equals(kit)));
+            }
         }
     }
 
@@ -43,10 +49,32 @@ public class Kits extends GUI {
         if (kit.equals(player.getKit())) {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
         } else {
-            player.setKit(kit);
-            player.getPlayer().closeInventory();
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You set your kit to **" + kit.getName() + "**."));
-            player.getScoreboard().setLine(4, player.getKit().getName() + " ");
+            if (kit.getCost() == -1 || player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId())) {
+                player.setKit(kit);
+                player.getPlayer().closeInventory();
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You set your kit to **" + kit.getName() + "**."));
+                player.getScoreboard().setLine(4, player.getKit().getName() + " ");
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
+                    }
+                }.runTaskAsynchronously(AuroraMCAPI.getCore());
+            } else {
+                if (player.getBank().getCrowns() >= kit.getCost()) {
+                    player.getBank().withdrawCrowns(kit.getCost(), false, true);
+                    player.getUnlockedKits().get(kit.getGameId()).add(kit.getId());
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You unlocked and set your kit to **" + kit.getName() + "**."));
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            EngineDatabaseManager.setUnlockedKits(player.getId(), kit.getGameId(), player.getUnlockedKits().get(kit.getGameId()));
+                            EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
+                        }
+                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+
+                }
+            }
         }
     }
 }

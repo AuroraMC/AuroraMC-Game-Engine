@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
+import redis.clients.jedis.Jedis;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
+import java.util.*;
 
 public class EngineDatabaseManager {
 
@@ -57,6 +58,48 @@ public class EngineDatabaseManager {
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static int getDefaultKit(int amcId, int gameId) {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            if (connection.hexists("defaultkits." + amcId, gameId + "")) {
+                return Integer.parseInt(connection.hget("defaultkits." + amcId, gameId + ""));
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public static void setDefaultKit(int amcId, int gameId, int kitId) {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            connection.hset("defaultkits." + amcId, gameId + "", kitId + "");
+        }
+    }
+
+    public static Map<Integer, List<Integer>> getUnlockedKits(int amcId) {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            Map<String, String> kits = connection.hgetAll("unlockedkits." + amcId);
+            Map<Integer, List<Integer>> unlockedKits = new HashMap<>();
+            for (Map.Entry<String, String> entry : kits.entrySet()) {
+                List<Integer> unlockedGameKits = new ArrayList<>();
+                String[] gameKits = entry.getValue().split(";");
+                for (String gameKit : gameKits) {
+                    unlockedGameKits.add(Integer.parseInt(gameKit));
+                }
+                unlockedKits.put(Integer.parseInt(entry.getKey()), unlockedGameKits);
+            }
+            return unlockedKits;
+        }
+    }
+
+    public static void setUnlockedKits(int amcId, int gameId, List<Integer> kits) {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            List<String> kit = new ArrayList<>();
+            for (int i : kits) {
+                kit.add(i + "");
+            }
+            connection.hset("unlockedkits." + amcId, gameId + "", String.join(";", kit));
         }
     }
 

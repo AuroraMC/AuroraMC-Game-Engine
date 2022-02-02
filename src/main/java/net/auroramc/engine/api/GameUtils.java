@@ -4,16 +4,18 @@
 
 package net.auroramc.engine.api;
 
-import net.auroramc.engine.api.games.Game;
-import net.auroramc.engine.api.games.GameInfo;
-import net.auroramc.engine.api.games.GameMap;
-import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.engine.api.backend.EngineDatabaseManager;
+import net.auroramc.engine.api.games.*;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.VoidGenerator;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,6 +58,32 @@ public class GameUtils {
             game.load(map);
             EngineAPI.setActiveMap(map);
             EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
+            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                if (!player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()) {
+                    AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            Kit kit = game.getKits().get(0);
+                            int id = EngineDatabaseManager.getDefaultKit(player.getId(), gameInfo.getId());
+                            for (Kit kit2 : game.getKits()) {
+                                if (kit2.getId() == id) {
+                                    kit = kit2;
+                                }
+                            }
+                            gp.setKit(kit);
+                            player.getScoreboard().setLine(4, kit.getName() + " ");
+                            Kit finalKit = kit;
+                            new BukkitRunnable(){
+                                @Override
+                                public void run() {
+                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + finalKit.getName() + "**."));
+                                }
+                            }.runTask(AuroraMCAPI.getCore());
+                        }
+                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                }
+            }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
             e.printStackTrace();
         }
