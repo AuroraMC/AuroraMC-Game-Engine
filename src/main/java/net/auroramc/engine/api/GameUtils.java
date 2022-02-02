@@ -72,7 +72,7 @@ public class GameUtils {
                                 }
                             }
                             gp.setKit(kit);
-                            player.getScoreboard().setLine(4, kit.getName() + " ");
+                            player.getScoreboard().setLine(6, kit.getName() + " ");
                             Kit finalKit = kit;
                             new BukkitRunnable(){
                                 @Override
