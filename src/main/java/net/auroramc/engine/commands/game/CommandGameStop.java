@@ -8,7 +8,6 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.engine.AuroraMCGameEngine;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -47,7 +46,11 @@ public class CommandGameStop extends Command {
                     }
                 }
                 if (EngineAPI.getNextGame() != null) {
-                    GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                    if (EngineAPI.getNextMap() != null) {
+                        GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                    } else {
+                        GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextVariation());
+                    }
                     EngineAPI.setNextVariation(null);
                     EngineAPI.setNextGame(null);
                     EngineAPI.setNextMap(null);

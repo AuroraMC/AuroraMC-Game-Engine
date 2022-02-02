@@ -294,7 +294,7 @@ public abstract class Game {
                         if (EngineAPI.getActiveGame().getKits().size() > 1) {
                             player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
                         }
-                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand()) {
+                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && EngineAPI.isTeamBalancingEnabled()) {
                             player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                         }
                     }
@@ -302,6 +302,8 @@ public abstract class Game {
             }
         }.runTaskLater(AuroraMCAPI.getCore(), 200);
     }
+
+    public abstract void generateTeam(AuroraMCPlayer player);
 
     public abstract void onPlayerJoin(Player player);
 

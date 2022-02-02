@@ -37,6 +37,8 @@ public class EngineAPI {
     private static World mapWorld;
     private static GameStartingRunnable gameStartingRunnable;
 
+    private static boolean teamBalancingEnabled;
+
     private final static GUIItem lobbyItem;
     private final static GUIItem prefsItem;
     private final static GUIItem cosmeticsItem;
@@ -58,6 +60,8 @@ public class EngineAPI {
         maps = new HashMap<>();
         gameRotation = new ArrayList<>();
         serverState = ServerState.STARTING_UP;
+
+        teamBalancingEnabled = true;
 
         random = new Random();
 
@@ -261,5 +265,13 @@ public class EngineAPI {
 
     public static String getRestartType() {
         return restartType;
+    }
+
+    public static boolean isTeamBalancingEnabled() {
+        return teamBalancingEnabled;
+    }
+
+    public static void setTeamBalancingEnabled(boolean teamBalancingEnabled) {
+        EngineAPI.teamBalancingEnabled = teamBalancingEnabled;
     }
 }

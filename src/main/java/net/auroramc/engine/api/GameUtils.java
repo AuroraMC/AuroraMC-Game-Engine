@@ -36,10 +36,9 @@ public class GameUtils {
         try {
             EngineAPI.setActiveGameInfo(gameInfo);
             Game game = gameInfo.getGameClass().getConstructor(GameVariation.class).newInstance(gameVariation);
-            EngineAPI.setServerState(ServerState.LOADING_GAME);
+            EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGame(game);
             game.preLoad();
-            EngineAPI.setServerState(ServerState.LOADING_MAP);
 
             if (EngineAPI.getMapWorld() != null) {
                 Bukkit.unloadWorld(EngineAPI.getMapWorld(), false);

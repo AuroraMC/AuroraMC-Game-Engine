@@ -23,7 +23,7 @@ public class TitleBarRunnable extends BukkitRunnable {
             }
         } else {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                player.sendHotBar("Players: §b" + AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() + "§r - Team: §" + ((player.getTeam() == null)?"7None":player.getTeam().getTeamColor() + player.getTeam().getName()) + "§r - Lobby: §b" + EngineAPI.getWaitingLobbyMap().getName() + " §rby §b" + EngineAPI.getWaitingLobbyMap().getAuthor(), ChatColor.WHITE, false);
+                player.sendHotBar("Players: §b" + AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() + "§r/§b" + AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") + " - Lobby: §b" + EngineAPI.getWaitingLobbyMap().getName() + " §rby §b" + EngineAPI.getWaitingLobbyMap().getAuthor(), ChatColor.WHITE, false);
             }
         }
     }

@@ -6,9 +6,7 @@ package net.auroramc.engine.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
-import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.PlayerScoreboard;
-import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
@@ -78,59 +76,10 @@ public class JoinListener implements Listener {
             scoreboard.setLine(1, "&7You are playing on auroramc.net");
 
             if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
-                if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
-                    for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                        AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
-                        if (player1.getTeam() == null && !gp.isSpectator()) {
-                            Team leastPlayers = null;
-                            for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
-                                if (leastPlayers == null) {
-                                    leastPlayers = team;
-                                    continue;
-                                }
-                                if (leastPlayers.getPlayers().size() > team.getPlayers().size()) {
-                                    leastPlayers = team;
-                                }
-                            }
-                            if (leastPlayers != null) {
-                                leastPlayers.getPlayers().add(player1);
-                                player1.setTeam(leastPlayers);
-                                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
-                                    pl.updateNametag(player1);
-                                }
-                            }
-                        }
-                        if (gp.getKit() == null && !gp.isSpectator()) {
-                            gp.setKit(EngineAPI.getActiveGame().getKits().get(0));
-                        }
-                    }
+                if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() + 1 >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
+                    EngineAPI.setServerState(ServerState.STARTING);
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
                     EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
-                }
-            }
-
-            if (!player.isVanished() && EngineAPI.getServerState() == ServerState.STARTING) {
-                if (!player.isSpectator()) {
-                    Team leastPlayers = null;
-                    for (Team team : EngineAPI.getActiveGame().getTeams().values()) {
-                        if (leastPlayers == null) {
-                            leastPlayers = team;
-                            continue;
-                        }
-                        if (leastPlayers.getPlayers().size() > team.getPlayers().size()) {
-                            leastPlayers = team;
-                        }
-                    }
-                    if (leastPlayers != null) {
-                        leastPlayers.getPlayers().add(player);
-                        player.setTeam(leastPlayers);
-                        for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
-                            pl.updateNametag(player);
-                        }
-                    }
-                    if (player.getKit() == null) {
-                        player.setKit(EngineAPI.getActiveGame().getKits().get(0));
-                    }
                 }
             }
 
@@ -142,7 +91,7 @@ public class JoinListener implements Listener {
                 if (EngineAPI.getActiveGame().getKits().size() > 1) {
                     player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
                 }
-                if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand()) {
+                if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && EngineAPI.isTeamBalancingEnabled()) {
                     player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                 }
             }
