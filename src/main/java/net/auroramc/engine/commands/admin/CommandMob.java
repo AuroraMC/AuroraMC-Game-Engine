@@ -111,7 +111,13 @@ public class CommandMob extends Command {
                 entity.setCanPickupItems(false);
                 entity.setCustomNameVisible(true);
                 if (name != null) {
-                    entity.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(name.replace("_", " "))));
+                    ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
+                    stand.setVisible(false);
+                    stand.setCustomName(name);
+                    stand.setCustomNameVisible(true);
+                    stand.setSmall(true);
+                    entity.setPassenger(stand);
+                    //entity.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(name.replace("_", " "))));
                 }
                 if (entity instanceof EntityInsentient) {
                     if (item != null) {
