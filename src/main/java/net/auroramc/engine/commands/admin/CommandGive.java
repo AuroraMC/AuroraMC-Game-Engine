@@ -33,12 +33,17 @@ public class CommandGive extends Command {
 
             List<Material> materials = new ArrayList<>();
 
+            outer:
             for (String item : items) {
                 if (item.equals("")) {
                     continue;
                 }
                 List<String> matches = new ArrayList<>();
                 for (Material material : Material.values()) {
+                    if (material.name().equalsIgnoreCase(item)) {
+                        materials.add(material);
+                        continue outer;
+                    }
                     if (material.name().startsWith(item.toUpperCase())) {
                         matches.add(material.name());
                     }
@@ -94,7 +99,7 @@ public class CommandGive extends Command {
                             return;
                         }
                         try {
-                            level = Integer.parseInt(args.remove(0));
+                            level = Integer.parseInt(ench[1]);
                             if (level < 1) {
                                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "An enchantment was not in a valid format. Please format enchantments as: **enchantment:level**"));
                                 return;
