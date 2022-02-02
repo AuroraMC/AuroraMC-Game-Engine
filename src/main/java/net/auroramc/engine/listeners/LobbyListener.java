@@ -23,12 +23,17 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Silverfish;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -82,6 +87,28 @@ public class LobbyListener implements Listener {
                 }
                 e.setCancelled(true);
 
+            }
+        }
+
+        if (e.getEntity() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
+            if (e.getEntity().isInsideVehicle()) {
+                if (e.getEntity().getVehicle() instanceof Damageable) {
+                    Damageable damageable = (Damageable) e.getEntity().getVehicle();
+                    if (e instanceof EntityDamageByEntityEvent) {
+                        damageable.damage(e.getDamage(), ((EntityDamageByEntityEvent)e).getDamager());
+                    } else {
+                        damageable.damage(e.getDamage());
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeath(EntityDeathEvent e) {
+        if (e.getEntity().isInsideVehicle()) {
+            if (e.getEntity().getVehicle() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
+                e.getEntity().getVehicle().remove();
             }
         }
     }

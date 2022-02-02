@@ -119,9 +119,10 @@ public class CommandMob extends Command {
                     stand.setCustomNameVisible(true);
                     stand.setSmall(true);
                     stand.setMarker(true);
-                    Silverfish slime = location.getWorld().spawn(location, Silverfish.class);
-                    slime.setPassenger(stand);
-                    CraftEntity craftEntity = ((CraftEntity)slime);
+                    Rabbit rabbit = location.getWorld().spawn(location, Rabbit.class);
+                    rabbit.setPassenger(stand);
+                    rabbit.setBaby();
+                    CraftEntity craftEntity = ((CraftEntity)rabbit);
                     NBTTagCompound tag = craftEntity.getHandle().getNBTTag();
                     if (tag == null) {
                         tag = new NBTTagCompound();
@@ -129,8 +130,8 @@ public class CommandMob extends Command {
                     craftEntity.getHandle().c(tag);
                     tag.setInt("NoAI", 1);
                     craftEntity.getHandle().f(tag);
-                    //slime.addPotionEffect(PotionEffectType.INVISIBILITY.createEffect(1000000, 1));
-                    entity.setPassenger(slime);
+                    rabbit.addPotionEffect(PotionEffectType.INVISIBILITY.createEffect(1000000, 1));
+                    entity.setPassenger(rabbit);
                     //entity.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(name.replace("_", " "))));
                 }
                 if (entity instanceof EntityInsentient) {
