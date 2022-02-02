@@ -117,7 +117,10 @@ public class CommandMob extends Command {
                     stand.setCustomNameVisible(true);
                     stand.setSmall(true);
                     stand.setMarker(true);
-                    entity.setPassenger(stand);
+                    Slime slime = location.getWorld().spawn(location, Slime.class);
+                    slime.setSize(1);
+                    slime.setPassenger(stand);
+                    entity.setPassenger(slime);
                     //entity.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(name.replace("_", " "))));
                 }
                 if (entity instanceof EntityInsentient) {
