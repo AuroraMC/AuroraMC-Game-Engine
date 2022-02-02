@@ -130,7 +130,7 @@ public class CommandMob extends Command {
                     craftEntity.getHandle().c(tag);
                     tag.setInt("NoAI", 1);
                     craftEntity.getHandle().f(tag);
-                    rabbit.addPotionEffect(PotionEffectType.INVISIBILITY.createEffect(1000000, 1));
+                    rabbit.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 1, true, false));
                     entity.setPassenger(rabbit);
                     //entity.setCustomName(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(name.replace("_", " "))));
                 }

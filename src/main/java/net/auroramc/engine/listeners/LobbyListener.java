@@ -107,8 +107,9 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity().isInsideVehicle()) {
-            if (e.getEntity().getVehicle() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
-                e.getEntity().getVehicle().remove();
+            if (e.getEntity().getPassenger() instanceof Rabbit && !((Rabbit)e.getEntity().getPassenger()).isAdult()) {
+                e.getEntity().getPassenger().getPassenger().remove();
+                e.getEntity().getPassenger().remove();
             }
         }
     }
