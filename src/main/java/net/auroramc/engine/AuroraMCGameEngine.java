@@ -17,7 +17,8 @@ import net.auroramc.engine.commands.admin.CommandEffect;
 import net.auroramc.engine.commands.admin.CommandGameMode;
 import net.auroramc.engine.commands.admin.CommandGive;
 import net.auroramc.engine.commands.admin.CommandMob;
-import net.auroramc.engine.commands.game.CommandGame;
+import net.auroramc.engine.commands.admin.game.CommandGame;
+import net.auroramc.engine.commands.moderation.CommandTeleport;
 import net.auroramc.engine.listeners.*;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -125,6 +126,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         AuroraMCAPI.registerCommand(new CommandMob());
         AuroraMCAPI.registerCommand(new CommandMap());
         AuroraMCAPI.registerCommand(new CommandEffect());
+        AuroraMCAPI.registerCommand(new CommandTeleport());
 
         getLogger().info("Listeners registered. Waiting for games to be registered...");
 

@@ -33,6 +33,9 @@ public class CommandEffect extends Command {
 
             List<String> matches = new ArrayList<>();
             for (PotionEffectType type : PotionEffectType.values()) {
+                if (type == null || type.getName() == null) {
+                    continue;
+                }
                 if (type.getName().startsWith(effect.toUpperCase())) {
                     matches.add(type.getName());
                 }
