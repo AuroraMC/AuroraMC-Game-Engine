@@ -69,7 +69,7 @@ public class CommandEffect extends Command {
             }
             if (args.size() >= 1) {
                 try {
-                    duration = Integer.parseInt(args.remove(0)) * 20;
+                    duration = Integer.parseInt(args.remove(0));
                     if (duration < 1) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "Invalid syntax. Correct syntax: **/effect <player|all> <effect> [amplifier] [duration]**"));
                         return;
@@ -82,7 +82,7 @@ public class CommandEffect extends Command {
 
             if (target.equalsIgnoreCase("all")) {
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                    player1.getPlayer().addPotionEffect(new PotionEffect(type, duration, multiplier));
+                    player1.getPlayer().addPotionEffect(new PotionEffect(type, duration*20, multiplier));
                     player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "You were given effect **" + WordUtils.capitalizeFully(type.getName().replace("_", " ")) + " " + multiplier + "** for **" + duration + "** seconds by **" + player.getPlayer().getName() + "**."));
                 }
                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "You gave effect **" + WordUtils.capitalizeFully(type.getName().replace("_", " ")) + " " + multiplier + "** for **" + duration + " seconds** to **" + AuroraMCAPI.getPlayers().size() + "** players."));
@@ -92,7 +92,7 @@ public class CommandEffect extends Command {
                 for (String target1 : targets) {
                     AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(target1);
                     if (player1 != null) {
-                        player1.getPlayer().addPotionEffect(new PotionEffect(type, duration, multiplier));
+                        player1.getPlayer().addPotionEffect(new PotionEffect(type, duration*20, multiplier));
                         players++;
                         player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "You were given effect **" + WordUtils.capitalizeFully(type.getName().replace("_", " ")) + " " + multiplier + "** for **" + duration + "** seconds by **" + player.getPlayer().getName() + "**."));
                     } else {
