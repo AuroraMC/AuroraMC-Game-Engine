@@ -23,10 +23,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Rabbit;
-import org.bukkit.entity.Silverfish;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -87,6 +84,8 @@ public class LobbyListener implements Listener {
                 }
                 e.setCancelled(true);
 
+            } else if (e.getEntity() instanceof ArmorStand) {
+                e.setCancelled(true);
             }
         }
 
@@ -172,10 +171,13 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onItemClick(PlayerInteractEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
-            e.setCancelled(true);
+            if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                e.setCancelled(true);
+            }
             if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
                 switch (e.getItem().getType()) {
                     case EMERALD: {
+                        e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                         Cosmetics cosmetics = new Cosmetics(player);
                         cosmetics.open(player);
@@ -183,6 +185,7 @@ public class LobbyListener implements Listener {
                         break;
                     }
                     case WOOD_DOOR: {
+                        e.setCancelled(true);
                         ByteArrayDataOutput out = ByteStreams.newDataOutput();
                         out.writeUTF("Lobby");
                         out.writeUTF(e.getPlayer().getUniqueId().toString());
@@ -190,6 +193,7 @@ public class LobbyListener implements Listener {
                         break;
                     }
                     case REDSTONE_COMPARATOR: {
+                        e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                         Preferences prefs = new Preferences(player);
                         prefs.open(player);
@@ -197,6 +201,7 @@ public class LobbyListener implements Listener {
                         break;
                     }
                     case CHEST: {
+                        e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                         Kits kits = new Kits((AuroraMCGamePlayer) player);
                         kits.open(player);
@@ -204,6 +209,7 @@ public class LobbyListener implements Listener {
                         break;
                     }
                     case LEATHER_CHESTPLATE: {
+                        e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                         Teams teams = new Teams((AuroraMCGamePlayer) player);
                         teams.open(player);
