@@ -35,7 +35,7 @@ public class CommandMob extends Command {
 
     @Override
     public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
-        if (args.size() >= 2) {
+        if (args.size() >= 1) {
             if (args.get(0).equalsIgnoreCase("kill")) {
                 List<String> matches = new ArrayList<>();
                 String mobString = args.remove(1);
@@ -71,7 +71,7 @@ public class CommandMob extends Command {
             } else if (args.get(0).equalsIgnoreCase("list")) {
                 Map<String, Integer> mobs = new HashMap<>();
                 for (Entity entity : player.getPlayer().getLocation().getWorld().getEntities()) {
-                    String name = entity.getClass().getSimpleName();
+                    String name = entity.getClass().getSimpleName().replace("Craft", "");
                     if (mobs.containsKey(name)) {
                         mobs.put(name, mobs.get(name) + 1);
                     } else {
