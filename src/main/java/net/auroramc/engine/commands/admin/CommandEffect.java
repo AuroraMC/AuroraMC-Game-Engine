@@ -52,13 +52,13 @@ public class CommandEffect extends Command {
             }
 
             PotionEffectType type = PotionEffectType.getByName(matches.get(0));
-            byte multiplier = 1;
+            int multiplier = 1;
             int duration = 10;
 
             if (args.size() >= 1) {
                 try {
-                    multiplier = Byte.parseByte(args.remove(0));
-                    if (multiplier < 1) {
+                    multiplier = Integer.parseInt(args.remove(0));
+                    if (multiplier < 0 || multiplier > 255) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "Invalid syntax. Correct syntax: **/effect <player|all> <effect> [amplifier] [duration]**"));
                         return;
                     }
@@ -69,7 +69,7 @@ public class CommandEffect extends Command {
             }
             if (args.size() >= 1) {
                 try {
-                    duration = Integer.parseInt(args.remove(0));
+                    duration = Integer.parseInt(args.remove(0)) * 20;
                     if (duration < 1) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "Invalid syntax. Correct syntax: **/effect <player|all> <effect> [amplifier] [duration]**"));
                         return;

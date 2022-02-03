@@ -189,6 +189,15 @@ public abstract class Game {
             public void run() {
                 if (EngineAPI.isAwaitingRestart()) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
+                        AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(player);
+                        if (player1 != null) {
+                            if (player1.getJoinTimestamp() > gameSession.getStartTimestamp()) {
+                                //The player joined after the game started, go from when they joined.
+                                player1.getStats().addGameTime(gameSession.getEndTimestamp() - player1.getJoinTimestamp(), true);
+                            } else {
+                                player1.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
+                            }
+                        }
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Server Manager", "This server is restarting for an update. You are being sent to a lobby."));
                         ByteArrayDataOutput out = ByteStreams.newDataOutput();
                         out.writeUTF("Lobby");
@@ -231,7 +240,6 @@ public abstract class Game {
                     pl.getPlayer().getEnderChest().clear();
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
-
                     if (player.getJoinTimestamp() > gameSession.getStartTimestamp()) {
                         //The player joined after the game started, go from when they joined.
                         player.getStats().addGameTime(gameSession.getEndTimestamp() - player.getJoinTimestamp(), true);
