@@ -57,7 +57,9 @@ public class CommandEffect extends Command {
                 return;
             }
 
-            type = PotionEffectType.getByName(matches.get(0));
+            if (type == null) {
+                type = PotionEffectType.getByName(matches.get(0));
+            }
             int multiplier = 1;
             int duration = 10;
 
