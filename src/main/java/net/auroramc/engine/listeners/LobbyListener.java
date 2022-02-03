@@ -84,7 +84,7 @@ public class LobbyListener implements Listener {
                 }
                 e.setCancelled(true);
 
-            } else if (e.getEntity() instanceof ArmorStand) {
+            } else if (e.getEntity() instanceof ArmorStand || e.getEntity() instanceof Painting || e.getEntity() instanceof ItemFrame) {
                 e.setCancelled(true);
             }
         }
