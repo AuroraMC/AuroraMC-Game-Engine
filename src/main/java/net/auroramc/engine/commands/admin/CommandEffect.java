@@ -31,27 +31,33 @@ public class CommandEffect extends Command {
             String target = args.remove(0);
             String effect = args.remove(0);
 
+            PotionEffectType type = null;
+
             List<String> matches = new ArrayList<>();
-            for (PotionEffectType type : PotionEffectType.values()) {
-                if (type == null || type.getName() == null) {
+            for (PotionEffectType type1 : PotionEffectType.values()) {
+                if (type1 == null || type1.getName() == null) {
                     continue;
                 }
-                if (type.getName().startsWith(effect.toUpperCase())) {
-                    matches.add(type.getName());
+                if (type1.getName().equalsIgnoreCase(effect)) {
+                    type = type1;
+                    break;
+                }
+                if (type1.getName().startsWith(effect.toUpperCase())) {
+                    matches.add(type1.getName());
                 }
             }
 
-            if (matches.size() == 0) {
+            if (matches.size() == 0 && type == null) {
                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "No matches were found for potion effect **" + effect + "**."));
                 return;
             }
 
-            if (matches.size() > 1) {
+            if (matches.size() > 1 && type == null) {
                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "Multiple possible matches found for potion effect **" + effect + "**. Please be more specific. Matches: [**" + String.join("**, **", matches) + "**]"));
                 return;
             }
 
-            PotionEffectType type = PotionEffectType.getByName(matches.get(0));
+            type = PotionEffectType.getByName(matches.get(0));
             int multiplier = 1;
             int duration = 10;
 
