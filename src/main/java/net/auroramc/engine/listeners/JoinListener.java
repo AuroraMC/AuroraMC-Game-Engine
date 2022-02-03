@@ -20,6 +20,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.potion.PotionEffect;
 import org.json.JSONArray;
 
 public class JoinListener implements Listener {
@@ -36,6 +37,9 @@ public class JoinListener implements Listener {
         e.getPlayer().setExp(0);
         e.getPlayer().setLevel(0);
         e.getPlayer().getEnderChest().clear();
+        for (PotionEffect pe : e.getPlayer().getActivePotionEffects()) {
+            e.getPlayer().removePotionEffect(pe.getType());
+        }
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
             JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
             if (spawnLocations == null || spawnLocations.length() == 0) {

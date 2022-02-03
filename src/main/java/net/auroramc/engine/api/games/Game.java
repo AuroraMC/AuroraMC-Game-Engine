@@ -23,6 +23,7 @@ import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.InGameStartingRunnable;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.json.JSONArray;
@@ -238,6 +239,9 @@ public abstract class Game {
                     pl.getPlayer().setExp(0);
                     pl.getPlayer().setLevel(0);
                     pl.getPlayer().getEnderChest().clear();
+                    for (PotionEffect pe : pl.getPlayer().getActivePotionEffects()) {
+                        pl.getPlayer().removePotionEffect(pe.getType());
+                    }
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (player.getJoinTimestamp() > gameSession.getStartTimestamp()) {
