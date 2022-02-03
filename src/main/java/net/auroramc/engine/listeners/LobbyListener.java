@@ -172,10 +172,10 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onItemClick(PlayerInteractEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
+            e.setCancelled(true);
             if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
                 switch (e.getItem().getType()) {
                     case EMERALD: {
-                        e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                         Cosmetics cosmetics = new Cosmetics(player);
                         cosmetics.open(player);
@@ -183,7 +183,6 @@ public class LobbyListener implements Listener {
                         break;
                     }
                     case WOOD_DOOR: {
-                        e.setCancelled(true);
                         ByteArrayDataOutput out = ByteStreams.newDataOutput();
                         out.writeUTF("Lobby");
                         out.writeUTF(e.getPlayer().getUniqueId().toString());
@@ -191,7 +190,6 @@ public class LobbyListener implements Listener {
                         break;
                     }
                     case REDSTONE_COMPARATOR: {
-                        e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                         Preferences prefs = new Preferences(player);
                         prefs.open(player);
@@ -199,7 +197,6 @@ public class LobbyListener implements Listener {
                         break;
                     }
                     case CHEST: {
-                        e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                         Kits kits = new Kits((AuroraMCGamePlayer) player);
                         kits.open(player);
@@ -207,7 +204,6 @@ public class LobbyListener implements Listener {
                         break;
                     }
                     case LEATHER_CHESTPLATE: {
-                        e.setCancelled(true);
                         AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
                         Teams teams = new Teams((AuroraMCGamePlayer) player);
                         teams.open(player);
