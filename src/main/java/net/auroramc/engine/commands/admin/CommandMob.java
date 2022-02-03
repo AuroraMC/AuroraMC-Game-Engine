@@ -164,6 +164,15 @@ public class CommandMob extends Command {
                     }
                 }
 
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You have spawned **" + amount + " " + WordUtils.capitalizeFully(type.name().replace("_", " ")) + "s**. Options:\n" +
+                        "Baby: **" + baby + "**\n" +
+                        "Angry: **" + angry + "**\n" +
+                        "NoAI: **" + noAI + "**\n" +
+                        "Armor: **" + ((armorType != null)?armorType:"None") + "**\n" +
+                        "Held Item: **" + ((item != null)?item.name():"None") + "**\n" +
+                        "Custom Name: **" + ((name != null)?name:"None") + "**\n" +
+                        "Total Health: **" + ((totalHealth > -1)?totalHealth:"Default") + "hp**"));
+
                 while (amount > 0) {
                     LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);
 
@@ -262,14 +271,6 @@ public class CommandMob extends Command {
                     }
                     amount--;
                 }
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You have spawned **" + amount + " " + WordUtils.capitalizeFully(type.name().replace("_", " ")) + "s**. Options:\n" +
-                        "Baby: **" + baby + "**\n" +
-                        "Angry: **" + angry + "**\n" +
-                        "NoAI: **" + noAI + "**\n" +
-                        "Armor: **" + ((armorType != null)?armorType:"None") + "**\n" +
-                        "Held Item: **" + ((item != null)?item.name():"None") + "**\n" +
-                        "Custom Name: **" + ((name != null)?name:"None") + "**\n" +
-                        "Total Health: **" + ((totalHealth > -1)?totalHealth:"Default") + "hp**"));
 
             }
         } else {
