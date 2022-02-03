@@ -295,7 +295,7 @@ public class CommandMob extends Command {
 
             }
         } else {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "Invalid syntax. Correct syntax: **/mob [mob] [amount] n[name] i[held item] a[armor type] h[total health] [baby] [angry] [noai]**"));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "Invalid syntax. Correct syntax: **/mob [mob] [amount] n[name] i[held item] a[armor type] h[total health] [baby] [angry] [noai]** / **/mob kill [mob]** / **/mob list**"));
         }
     }
 
