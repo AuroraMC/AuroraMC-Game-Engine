@@ -85,7 +85,7 @@ public class CommandGive extends Command {
             }
 
             if (args.size() >= 1) {
-                name = AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(args.remove(0)));
+                name = AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(args.remove(0).replace("_"," ")));
             }
 
             if (args.size() >= 1) {
@@ -150,17 +150,29 @@ public class CommandGive extends Command {
                         player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You were given **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + "s** by **" + player.getPlayer().getName() + "**."));
                     }
                 }
+                for (Material material : materials) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You gave **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + "** to **" + AuroraMCAPI.getPlayers().size() + "** players."));
+                }
             } else {
                 String[] targets = target.split(",");
+                int players = 0;
                 for (String target1 : targets) {
                     AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(target1);
                     if (player1 != null) {
                         player1.getPlayer().getInventory().addItem(is);
+                        players++;
                         for (Material material : materials) {
                             player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You were given **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + "s** by **" + player.getPlayer().getName() + "**."));
                         }
                     } else {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "Target **" + target1 + "** not found."));
+                    }
+                }
+                if (players == 0) {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "No targets were found, so nothing was given out."));
+                } else {
+                    for (Material material : materials) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You gave **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + "** to **" + players + "** players."));
                     }
                 }
             }

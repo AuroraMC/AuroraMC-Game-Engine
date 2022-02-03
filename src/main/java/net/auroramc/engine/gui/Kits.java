@@ -65,6 +65,7 @@ public class Kits extends GUI {
                     player.getBank().withdrawCrowns(kit.getCost(), false, true);
                     player.getUnlockedKits().get(kit.getGameId()).add(kit.getId());
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You unlocked and set your kit to **" + kit.getName() + "**."));
+                    player.getPlayer().closeInventory();
                     new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -73,6 +74,9 @@ public class Kits extends GUI {
                         }
                     }.runTaskAsynchronously(AuroraMCAPI.getCore());
 
+                } else {
+                    player.getPlayer().closeInventory();
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You have insufficient funds to buy kit **" + kit.getName() + "**."));
                 }
             }
         }

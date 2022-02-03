@@ -5,6 +5,7 @@
 package net.auroramc.engine.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.events.player.PlayerLeaveEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -12,13 +13,12 @@ import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 public class LeaveListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onLeave(PlayerQuitEvent e) {
-        if (EngineAPI.getServerState() == ServerState.STARTING) {
+    public void onLeave(PlayerLeaveEvent e) {
+        if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null) {
             if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isSpectator()).count() < AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
                 EngineAPI.getGameStartingRunnable().cancel();
                 EngineAPI.setGameStartingRunnable(null);
@@ -27,8 +27,8 @@ public class LeaveListener implements Listener {
                 }
             }
         } else if (EngineAPI.getServerState() == ServerState.IN_GAME) {
-            AuroraMCGamePlayer player = ((AuroraMCGamePlayer)AuroraMCAPI.getPlayer(e.getPlayer()));
-            EngineAPI.getActiveGame().onPlayerLeave((AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer()));
+            AuroraMCGamePlayer player = ((AuroraMCGamePlayer)e.getPlayer());
+            EngineAPI.getActiveGame().onPlayerLeave((AuroraMCGamePlayer) e.getPlayer());
             if (player.getJoinTimestamp() > EngineAPI.getActiveGame().getGameSession().getStartTimestamp()) {
                 //The player joined after the game started, go from when they joined.
                 player.getStats().addGameTime(System.currentTimeMillis() - player.getJoinTimestamp(), true);

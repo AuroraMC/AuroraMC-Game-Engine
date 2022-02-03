@@ -108,7 +108,9 @@ public class LobbyListener implements Listener {
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity().getPassenger() != null) {
             if (e.getEntity().getPassenger() instanceof Rabbit && !((Rabbit)e.getEntity().getPassenger()).isAdult()) {
-                e.getEntity().getPassenger().getPassenger().remove();
+                if (e.getEntity().getPassenger().getPassenger() != null) {
+                    e.getEntity().getPassenger().getPassenger().remove();
+                }
                 e.getEntity().getPassenger().remove();
             }
         }

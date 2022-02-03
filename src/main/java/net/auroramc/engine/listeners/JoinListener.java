@@ -8,6 +8,8 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
 import net.auroramc.core.api.players.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.backend.EngineDatabaseManager;
+import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
@@ -80,6 +82,31 @@ public class JoinListener implements Listener {
                     EngineAPI.setServerState(ServerState.STARTING);
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
                     EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+                    int kitId = EngineDatabaseManager.getDefaultKit(player.getId(), EngineAPI.getActiveGameInfo().getId());
+                    for (Kit kit : EngineAPI.getActiveGame().getKits()) {
+                        if (kitId == kit.getId()) {
+                            player.setKit(kit);
+                            break;
+                        }
+                    }
+                    if (player.getKit() == null) {
+                        player.setKit(EngineAPI.getActiveGame().getKits().get(0));
+                    }
+                }
+            }
+
+            if (EngineAPI.getActiveGame() != null) {
+                if (!player.isSpectator() && !player.isVanished() && player.getKit() == null) {
+                    int kitId = EngineDatabaseManager.getDefaultKit(player.getId(), EngineAPI.getActiveGameInfo().getId());
+                    for (Kit kit : EngineAPI.getActiveGame().getKits()) {
+                        if (kitId == kit.getId()) {
+                            player.setKit(kit);
+                            break;
+                        }
+                    }
+                    if (player.getKit() == null) {
+                        player.setKit(EngineAPI.getActiveGame().getKits().get(0));
+                    }
                 }
             }
 
