@@ -6,6 +6,7 @@ package net.auroramc.engine.commands.admin;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
+import net.auroramc.core.api.events.player.PlayerLeaveEvent;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
@@ -37,37 +38,57 @@ public class CommandMob extends Command {
     public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
         if (args.size() >= 1) {
             if (args.get(0).equalsIgnoreCase("kill")) {
-                List<String> matches = new ArrayList<>();
-                String mobString = args.remove(1);
-                for (EntityType type : EntityType.values()) {
-                    if (!type.isAlive()) {
-                        continue;
+                if (args.size() == 2) {
+                    if (args.get(1).equalsIgnoreCase("all")) {
+                        for (Entity entity : player.getPlayer().getLocation().getWorld().getEntities()) {
+                            if (entity instanceof Player) {
+                                continue;
+                            }
+                            entity.remove();
+                        }
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You killed all entities."));
+                        return;
                     }
-                    if (type.name().startsWith(mobString.toUpperCase())) {
-                        matches.add(type.name());
+                    List<String> matches = new ArrayList<>();
+                    String mobString = args.remove(1);
+                    for (EntityType type : EntityType.values()) {
+                        if (!type.isAlive()) {
+                            continue;
+                        }
+                        if (type.name().startsWith(mobString.toUpperCase())) {
+                            matches.add(type.name());
+                        }
                     }
-                }
 
-                if (matches.size() == 0) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "No matches were found for mob **" + mobString + "**."));
-                    return;
-                }
+                    if (matches.size() == 0) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "No matches were found for mob **" + mobString + "**."));
+                        return;
+                    }
 
-                if (matches.size() > 1) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "Multiple possible matches found for mob **" + mobString + "**. Please be more specific. Matches: [**" + String.join("**, **", matches) + "**]"));
-                    return;
-                }
+                    if (matches.size() > 1) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "Multiple possible matches found for mob **" + mobString + "**. Please be more specific. Matches: [**" + String.join("**, **", matches) + "**]"));
+                        return;
+                    }
 
-                EntityType type = EntityType.valueOf(matches.get(0));
-                if (type == EntityType.PLAYER) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You cannot kill players with /mob."));
-                    return;
+                    EntityType type = EntityType.valueOf(matches.get(0));
+                    if (type == EntityType.PLAYER) {
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You cannot kill players with /mob."));
+                        return;
+                    }
+                    Collection<Entity> entities = player.getPlayer().getWorld().getEntitiesByClasses(type.getEntityClass());
+                    for (Entity entity : entities) {
+                        if (entity.getPassenger() != null) {
+                            if (entity.getPassenger().getPassenger() != null) {
+                                entity.getPassenger().getPassenger().remove();
+                            }
+                            entity.getPassenger().remove();
+                        }
+                        entity.remove();
+                    }
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You have killed **" + entities.size() + " " + WordUtils.capitalizeFully(type.name().replace("_", " ")) + "s**."));
+                } else {
+                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "Invalid syntax. Correct syntax: **/mob kill [mob]**"));
                 }
-                Collection<Entity> entities = player.getPlayer().getWorld().getEntitiesByClasses(type.getEntityClass());
-                for (Entity entity : entities) {
-                    entity.remove();
-                }
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Mob", "You have killed **" + entities.size() + " " + WordUtils.capitalizeFully(type.name().replace("_", " ")) + "s**."));
             } else if (args.get(0).equalsIgnoreCase("list")) {
                 Map<String, Integer> mobs = new HashMap<>();
                 for (Entity entity : player.getPlayer().getLocation().getWorld().getEntities()) {
