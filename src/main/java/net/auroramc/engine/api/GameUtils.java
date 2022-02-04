@@ -15,6 +15,8 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -53,7 +55,12 @@ public class GameUtils {
             file.mkdirs();
             FileUtils.copyDirectory(map.getRegionFolder(), file);
             World world = Bukkit.createWorld(new WorldCreator("map_world").generator(new VoidGenerator(EngineAPI.getGameEngine())));
+            world.setGameRuleValue("doDaylightCycle", "false");
             world.setGameRuleValue("doMobSpawning", "false");
+            world.setGameRuleValue("doFireTick", "false");
+            if (map.getMapData().has("time")) {
+                world.setTime(map.getMapData().getInt("time"));
+            }
             EngineAPI.setMapWorld(world);
             game.load(map);
             EngineAPI.setActiveMap(map);

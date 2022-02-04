@@ -24,6 +24,7 @@ import net.auroramc.engine.api.util.InGameStartingRunnable;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.json.JSONArray;
@@ -81,6 +82,16 @@ public abstract class Game {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(startString.toString());
+            if (map.getMapData().has("time")) {
+                if (map.getMapData().getInt("time") <= 12000) {
+                    player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+                } else {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 1, true, false), false);
+                }
+            } else {
+                player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+            }
+
         }
         starting = true;
         runnable = new InGameStartingRunnable(this);
@@ -243,6 +254,10 @@ public abstract class Game {
                         pl.getPlayer().removePotionEffect(pe.getType());
                     }
 
+                    if (EngineAPI.getWaitingLobbyMap().getMapData().getInt("time") > 12000) {
+                        pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 1, true, false), false);
+                    }
+
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (player.getJoinTimestamp() > gameSession.getStartTimestamp()) {
                         //The player joined after the game started, go from when they joined.
@@ -251,7 +266,7 @@ public abstract class Game {
                         player.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
                     }
                     if (!player.isVanished()) {
-                        player.setSpectator(false);
+                        player.setSpectator(false, false);
                     }
                     player.setKit(null);
                     player.setTeam(null);

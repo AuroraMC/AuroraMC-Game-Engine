@@ -92,6 +92,7 @@ public class LobbyListener implements Listener {
         if (e.getEntity() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
             if (e.getEntity().isInsideVehicle()) {
                 if (e.getEntity().getVehicle() instanceof Damageable) {
+                    e.setCancelled(true);
                     Damageable damageable = (Damageable) e.getEntity().getVehicle();
                     if (e instanceof EntityDamageByEntityEvent) {
                         damageable.damage(e.getDamage(), ((EntityDamageByEntityEvent)e).getDamager());

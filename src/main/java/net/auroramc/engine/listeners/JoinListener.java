@@ -6,6 +6,7 @@ package net.auroramc.engine.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
@@ -21,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.json.JSONArray;
 
 public class JoinListener implements Listener {
@@ -53,7 +55,17 @@ public class JoinListener implements Listener {
                 float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
                 e.getPlayer().teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
             }
+            if (EngineAPI.getWaitingLobbyMap().getMapData().getInt("time") > 12000) {
+                e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 1, true, false), false);
+            }
+
         } else if (EngineAPI.getActiveGame() != null) {
+            //Hide spectators from the user joining.
+            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                if (((AuroraMCGamePlayer)player).isSpectator() && !e.getPlayer().equals(player.getPlayer())) {
+                    e.getPlayer().hidePlayer(player.getPlayer());
+                }
+            }
             EngineAPI.getActiveGame().onPlayerJoin(e.getPlayer());
         }
     }

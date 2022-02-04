@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.Kit;
+import net.auroramc.engine.api.util.SpectatorUtil;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
@@ -38,13 +39,18 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
         return spectator;
     }
 
-    public void setSpectator(boolean spectator) {
+    public void setSpectator(boolean spectator, boolean isDead) {
         this.spectator = spectator;
         if (spectator) {
             getPlayer().spigot().setCollidesWithEntities(false);
+            if (isDead) {
+                SpectatorUtil.giveItems(this);
+            }
         } else {
             getPlayer().spigot().setCollidesWithEntities(true);
         }
+        this.dead = isDead;
+
     }
 
     public Kit getKit() {
