@@ -9,6 +9,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.util.SpectatorUtil;
+import org.bukkit.GameMode;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
@@ -43,8 +44,17 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
         this.spectator = spectator;
         if (spectator) {
             getPlayer().spigot().setCollidesWithEntities(false);
+            getPlayer().setFlying(false);
+            getPlayer().setAllowFlight(false);
+            getPlayer().setGameMode(GameMode.SURVIVAL);
+            getPlayer().setHealth(20);
+            getPlayer().setFoodLevel(30);
             if (isDead) {
                 SpectatorUtil.giveItems(this);
+                getPlayer().getInventory().clear();
+                getPlayer().setExp(0);
+                getPlayer().setLevel(0);
+                getPlayer().getEnderChest().clear();
             }
         } else {
             getPlayer().spigot().setCollidesWithEntities(true);
