@@ -66,6 +66,9 @@ public class JoinListener implements Listener {
                     e.getPlayer().hidePlayer(player.getPlayer());
                 }
             }
+            if (EngineAPI.getActiveMap().getMapData().getInt("time") > 12000) {
+                e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true, false), false);
+            }
             EngineAPI.getActiveGame().onPlayerJoin(e.getPlayer());
         }
     }

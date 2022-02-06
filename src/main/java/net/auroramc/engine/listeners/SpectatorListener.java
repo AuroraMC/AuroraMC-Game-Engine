@@ -23,37 +23,41 @@ public class SpectatorListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        AuroraMCGamePlayer pl = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
-        if (pl != null && (pl.isSpectator() || pl.isVanished())) {
-            e.setCancelled(true);
-            if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
-                switch (e.getItem().getType()) {
-                    case EMERALD: {
-                        e.setCancelled(true);
-                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        Cosmetics cosmetics = new Cosmetics(player);
-                        cosmetics.open(player);
-                        AuroraMCAPI.openGUI(player, cosmetics);
-                        break;
-                    }
-                    case WOOD_DOOR: {
-                        e.setCancelled(true);
-                        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                        out.writeUTF("Lobby");
-                        out.writeUTF(e.getPlayer().getUniqueId().toString());
-                        e.getPlayer().sendPluginMessage(AuroraMCAPI.getCore(), "BungeeCord", out.toByteArray());
-                        break;
-                    }
-                    case REDSTONE_COMPARATOR: {
-                        e.setCancelled(true);
-                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        Preferences prefs = new Preferences(player);
-                        prefs.open(player);
-                        AuroraMCAPI.openGUI(player, prefs);
-                        break;
+        if (AuroraMCAPI.getPlayer(e.getPlayer()) != null && e.getPlayer() instanceof AuroraMCGamePlayer) {
+            AuroraMCGamePlayer pl = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+            if (pl != null && (pl.isSpectator() || pl.isVanished())) {
+                e.setCancelled(true);
+                if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
+                    switch (e.getItem().getType()) {
+                        case EMERALD: {
+                            e.setCancelled(true);
+                            AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+                            Cosmetics cosmetics = new Cosmetics(player);
+                            cosmetics.open(player);
+                            AuroraMCAPI.openGUI(player, cosmetics);
+                            break;
+                        }
+                        case WOOD_DOOR: {
+                            e.setCancelled(true);
+                            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                            out.writeUTF("Lobby");
+                            out.writeUTF(e.getPlayer().getUniqueId().toString());
+                            e.getPlayer().sendPluginMessage(AuroraMCAPI.getCore(), "BungeeCord", out.toByteArray());
+                            break;
+                        }
+                        case REDSTONE_COMPARATOR: {
+                            e.setCancelled(true);
+                            AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+                            Preferences prefs = new Preferences(player);
+                            prefs.open(player);
+                            AuroraMCAPI.openGUI(player, prefs);
+                            break;
+                        }
                     }
                 }
             }
+        } else {
+            e.setCancelled(true);
         }
     }
 
