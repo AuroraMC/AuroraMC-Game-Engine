@@ -32,7 +32,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -146,6 +148,13 @@ public class LobbyListener implements Listener {
                 player.getScoreboard().setLine(6, ((pl.getKit() != null)?pl.getKit().getName():"None "));
                 updateHeaderFooter((CraftPlayer) player.getPlayer());
             }
+        }
+    }
+
+    @EventHandler
+    public void onPaintingBreak(HangingBreakEvent e) {
+        if (EngineAPI.getServerState() != ServerState.ENDING && EngineAPI.getServerState() != ServerState.IN_GAME) {
+            e.setCancelled(true);
         }
     }
 
