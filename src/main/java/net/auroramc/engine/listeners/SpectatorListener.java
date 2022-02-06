@@ -23,7 +23,6 @@ public class SpectatorListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if (AuroraMCAPI.getPlayer(e.getPlayer()) != null && e.getPlayer() instanceof AuroraMCGamePlayer) {
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
             if (pl != null && (pl.isSpectator() || pl.isVanished())) {
                 e.setCancelled(true);
@@ -56,9 +55,6 @@ public class SpectatorListener implements Listener {
                     }
                 }
             }
-        } else {
-            e.setCancelled(true);
-        }
     }
 
     @EventHandler
