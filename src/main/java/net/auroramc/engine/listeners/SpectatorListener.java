@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -52,6 +53,16 @@ public class SpectatorListener implements Listener {
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageByEntityEvent e) {
+        if (e.getDamager() instanceof Player) {
+            AuroraMCGamePlayer pl = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer((Player) e.getDamager());
+            if (pl != null && (pl.isSpectator() || pl.isVanished())) {
+                e.setCancelled(true);
             }
         }
     }

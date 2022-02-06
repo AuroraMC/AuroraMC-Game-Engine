@@ -56,7 +56,7 @@ public class JoinListener implements Listener {
                 e.getPlayer().teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
             }
             if (EngineAPI.getWaitingLobbyMap().getMapData().getInt("time") > 12000) {
-                e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 1, true, false), false);
+                e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true, false), false);
             }
 
         } else if (EngineAPI.getActiveGame() != null) {

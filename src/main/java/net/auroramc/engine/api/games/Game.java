@@ -95,7 +95,7 @@ public abstract class Game {
                 if (map.getMapData().getInt("time") <= 12000) {
                     player.removePotionEffect(PotionEffectType.NIGHT_VISION);
                 } else {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 1, true, false), false);
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true, false), false);
                 }
             } else {
                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
@@ -264,7 +264,7 @@ public abstract class Game {
                     }
 
                     if (EngineAPI.getWaitingLobbyMap().getMapData().getInt("time") > 12000) {
-                        pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 1, true, false), false);
+                        pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true, false), false);
                     }
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
