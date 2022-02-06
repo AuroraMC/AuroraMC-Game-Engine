@@ -315,6 +315,10 @@ public abstract class Game {
                     } else {
                         GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextVariation());
                     }
+
+                    EngineAPI.setNextMap(null);
+                    EngineAPI.setNextGame(null);
+                    EngineAPI.setNextVariation(null);
                 } else if (EngineAPI.getGameRotation().size() > 0) {
                     GameUtils.loadNextGame();
                 } else {
