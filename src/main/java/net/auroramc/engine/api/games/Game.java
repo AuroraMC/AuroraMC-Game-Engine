@@ -81,6 +81,15 @@ public abstract class Game {
         startString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            player.getPlayer().setFlying(false);
+            player.getPlayer().setAllowFlight(false);
+            player.getPlayer().setGameMode(GameMode.SURVIVAL);
+            player.getPlayer().setHealth(20);
+            player.getPlayer().setFoodLevel(30);
+            player.getPlayer().getInventory().clear();
+            player.getPlayer().setExp(0);
+            player.getPlayer().setLevel(0);
+            player.getPlayer().getEnderChest().clear();
             player.sendMessage(startString.toString());
             if (map.getMapData().has("time")) {
                 if (map.getMapData().getInt("time") <= 12000) {
