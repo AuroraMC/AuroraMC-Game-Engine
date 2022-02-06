@@ -44,8 +44,8 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
         this.spectator = spectator;
         if (spectator) {
             getPlayer().spigot().setCollidesWithEntities(false);
-            getPlayer().setFlying(true);
             getPlayer().setAllowFlight(true);
+            getPlayer().setFlying(true);
             getPlayer().setGameMode(GameMode.SURVIVAL);
             getPlayer().setHealth(20);
             getPlayer().setFoodLevel(30);
