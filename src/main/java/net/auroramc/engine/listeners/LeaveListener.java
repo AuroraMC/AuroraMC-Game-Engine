@@ -5,6 +5,8 @@
 package net.auroramc.engine.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.cosmetics.Cosmetic;
+import net.auroramc.core.api.cosmetics.ServerMessage;
 import net.auroramc.core.api.events.player.PlayerLeaveEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
@@ -19,8 +21,14 @@ public class LeaveListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerLeaveEvent e) {
         if (!e.getPlayer().isVanished()) {
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Quit", String.format("**%s** has left the server.", e.getPlayer().getPlayer().getName())));
+            String message;
+            if (e.getPlayer().getActiveCosmetics().containsKey(Cosmetic.CosmeticType.SERVER_MESSAGE)) {
+                message = ((ServerMessage)e.getPlayer().getActiveCosmetics().get(Cosmetic.CosmeticType.SERVER_MESSAGE)).onLeave(e.getPlayer());
+            } else {
+                message = ((ServerMessage)AuroraMCAPI.getCosmetics().get(400)).onLeave(e.getPlayer());
+            }
+            for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Leave", message));
             }
         }
         if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null) {

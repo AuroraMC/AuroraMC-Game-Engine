@@ -6,7 +6,7 @@ package net.auroramc.engine.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.cosmetics.JoinMessage;
+import net.auroramc.core.api.cosmetics.ServerMessage;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.PlayerScoreboard;
@@ -81,10 +81,10 @@ public class JoinListener implements Listener {
         e.setPlayer(player);
         if (!player.isVanished()) {
             String message;
-            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.JOIN_MESSAGE)) {
-                message = ((JoinMessage)player.getActiveCosmetics().get(Cosmetic.CosmeticType.JOIN_MESSAGE)).onJoin(player);
+            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.SERVER_MESSAGE)) {
+                message = ((ServerMessage)player.getActiveCosmetics().get(Cosmetic.CosmeticType.SERVER_MESSAGE)).onJoin(player);
             } else {
-                message = ((JoinMessage)AuroraMCAPI.getCosmetics().get(400)).onJoin(player);
+                message = ((ServerMessage)AuroraMCAPI.getCosmetics().get(400)).onJoin(player);
             }
             for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                 player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Join", message));
