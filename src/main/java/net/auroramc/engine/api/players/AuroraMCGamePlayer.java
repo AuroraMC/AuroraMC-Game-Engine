@@ -43,6 +43,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     public void setSpectator(boolean spectator, boolean isDead) {
         this.spectator = spectator;
         if (spectator) {
+            this.hidden = true;
             getPlayer().spigot().setCollidesWithEntities(false);
             getPlayer().setAllowFlight(true);
             getPlayer().setFlying(true);
@@ -57,6 +58,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
                 getPlayer().getEnderChest().clear();
             }
         } else {
+            this.hidden = false;
             getPlayer().spigot().setCollidesWithEntities(true);
         }
         this.dead = isDead;
