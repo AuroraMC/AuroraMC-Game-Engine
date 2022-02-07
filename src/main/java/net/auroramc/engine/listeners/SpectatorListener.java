@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class SpectatorListener implements Listener {
@@ -75,6 +76,14 @@ public class SpectatorListener implements Listener {
             if (pl.isSpectator() || pl.isVanished()) {
                 e.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onItemDrop(PlayerDropItemEvent e) {
+        AuroraMCGamePlayer pl = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+        if (pl.isSpectator() || pl.isVanished()) {
+            e.setCancelled(true);
         }
     }
 
