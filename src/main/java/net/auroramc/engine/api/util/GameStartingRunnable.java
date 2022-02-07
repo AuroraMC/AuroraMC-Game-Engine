@@ -5,6 +5,7 @@
 package net.auroramc.engine.api.util;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.cosmetics.Cosmetic;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.EngineAPI;
@@ -28,11 +29,17 @@ public class GameStartingRunnable extends BukkitRunnable {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.getScoreboard().setTitle("&3-= &b&lSTARTING IN " + startTime + "&r &3=-");
             switch(startTime) {
+                case 1:{
+                    for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
+                        if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT || entry.getKey() == Cosmetic.CosmeticType.MORPH || entry.getKey() == Cosmetic.CosmeticType.PET || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
+                            entry.getValue().onUnequip(player);
+                        }
+                    }
+                }
                 case 5:
                 case 4:
                 case 3:
                 case 2:
-                case 1:
                     player.getPlayer().closeInventory();
                 case 60:
                 case 30:

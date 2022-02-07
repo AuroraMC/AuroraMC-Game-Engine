@@ -319,6 +319,7 @@ public abstract class Game {
                         pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true, false), false);
                     }
 
+
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (player.getJoinTimestamp() > gameSession.getStartTimestamp()) {
                         //The player joined after the game started, go from when they joined.
@@ -333,6 +334,11 @@ public abstract class Game {
                             if (player1.getRank().getId() >= player.getRank().getId()) {
                                 player1.getPlayer().showPlayer(player.getPlayer());
                             }
+                        }
+                    }
+                    for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
+                        if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT || entry.getKey() == Cosmetic.CosmeticType.MORPH || entry.getKey() == Cosmetic.CosmeticType.PET || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
+                            entry.getValue().onEquip(player);
                         }
                     }
                     player.setKit(null);
