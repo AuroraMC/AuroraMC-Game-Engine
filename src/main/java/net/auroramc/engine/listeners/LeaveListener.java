@@ -48,6 +48,12 @@ public class LeaveListener implements Listener {
             } else {
                 player.getStats().addGameTime(System.currentTimeMillis() - EngineAPI.getActiveGame().getGameSession().getStartTimestamp(), true);
             }
+            if (!player.isSpectator() && !player.isVanished()) {
+                if (player.getRewards() != null) {
+                    player.getRewards().stop();
+                    player.getRewards().apply(false);
+                }
+            }
         }
     }
 
