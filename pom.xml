@@ -3,6 +3,7 @@
   ~ Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
   -->
 
+<!--suppress MavenModelInspection -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -160,7 +161,7 @@
         <dependency>
             <groupId>net.auroramc</groupId>
             <artifactId>AuroraMC-Core</artifactId>
-            <version>1.0-20220207.160457-263</version>
+            <version>1.0-20220207.163224-264</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

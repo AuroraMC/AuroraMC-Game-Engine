@@ -5,6 +5,8 @@
 package net.auroramc.engine.listeners;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.cosmetics.Cosmetic;
+import net.auroramc.core.api.cosmetics.JoinMessage;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.PlayerScoreboard;
@@ -77,6 +79,17 @@ public class JoinListener implements Listener {
     public void onObjectCreate(PlayerObjectCreationEvent e) {
         AuroraMCGamePlayer player = new AuroraMCGamePlayer(e.getPlayer());
         e.setPlayer(player);
+        if (!player.isVanished()) {
+            String message;
+            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.JOIN_MESSAGE)) {
+                message = ((JoinMessage)player.getActiveCosmetics().get(Cosmetic.CosmeticType.JOIN_MESSAGE)).onJoin(player);
+            } else {
+                message = ((JoinMessage)AuroraMCAPI.getCosmetics().get(400)).onJoin(player);
+            }
+            for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Join", message));
+            }
+        }
         if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame() != null) {
             EngineAPI.getActiveGame().onPlayerJoin(player);
         } else {

@@ -18,6 +18,11 @@ public class LeaveListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerLeaveEvent e) {
+        if (!e.getPlayer().isVanished()) {
+            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Quit", String.format("**%s** has left the server.", e.getPlayer().getPlayer().getName())));
+            }
+        }
         if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null) {
             if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isSpectator()).count() < AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
                 EngineAPI.getGameStartingRunnable().cancel();
