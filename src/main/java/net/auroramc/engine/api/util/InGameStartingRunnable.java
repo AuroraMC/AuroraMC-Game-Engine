@@ -5,7 +5,9 @@
 package net.auroramc.engine.api.util;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.games.Game;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -36,6 +38,10 @@ public class InGameStartingRunnable extends BukkitRunnable {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The game has begun!"));
                 player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 2);
+                AuroraMCPlayer pl = AuroraMCAPI.getPlayer(player);
+                if (pl instanceof AuroraMCGamePlayer) {
+                    ((AuroraMCGamePlayer) pl).gameStarted();
+                }
             }
             this.cancel();
         }

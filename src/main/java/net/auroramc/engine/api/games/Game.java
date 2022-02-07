@@ -91,10 +91,7 @@ public abstract class Game {
             player.getPlayer().setLevel(0);
             player.getPlayer().getEnderChest().clear();
             player.sendMessage(startString.toString());
-            AuroraMCPlayer pl = AuroraMCAPI.getPlayer(player);
-            if (pl instanceof AuroraMCGamePlayer) {
-                ((AuroraMCGamePlayer) pl).gameStarted();
-            }
+            AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(player);
             if (map.getMapData().has("time")) {
                 if (map.getMapData().getInt("time") <= 12000) {
                     player.removePotionEffect(PotionEffectType.NIGHT_VISION);
@@ -147,6 +144,13 @@ public abstract class Game {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
             if (pl.getRewards() != null) {
+                if (winner != null) {
+                    pl.getStats().addGamePlayed(winner.equals(pl));
+                    pl.getStats().getGameStatistics(EngineAPI.getActiveGameInfo().getId()).addStat("gamesPlayed", 1);
+                    if (winner.equals(pl)) {
+                        pl.getStats().getGameStatistics(EngineAPI.getActiveGameInfo().getId()).addStat("gamesWon", 1);
+                    }
+                }
                 pl.getRewards().stop();
             }
 
@@ -202,6 +206,11 @@ public abstract class Game {
             player.sendTitle(winner.getName() + " won the game!", "", 10, 160, 10, ChatColor.getByChar(winner.getTeamColor()), ChatColor.AQUA, true, false);
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
+            pl.getStats().addGamePlayed(winner.getPlayers().contains(pl));
+            pl.getStats().getGameStatistics(EngineAPI.getActiveGameInfo().getId()).addStat("gamesPlayed", 1);
+            if (winner.getPlayers().contains(pl)) {
+                pl.getStats().getGameStatistics(EngineAPI.getActiveGameInfo().getId()).addStat("gamesWon", 1);
+            }
             if (pl.getRewards() != null) {
                 pl.getRewards().stop();
             }
