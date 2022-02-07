@@ -146,9 +146,9 @@ public abstract class Game {
             if (pl.getRewards() != null) {
                 if (winner != null) {
                     pl.getStats().addGamePlayed(winner.equals(pl));
-                    pl.getStats().getGameStatistics(EngineAPI.getActiveGameInfo().getId()).addStat("gamesPlayed", 1);
+                    pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
                     if (winner.equals(pl)) {
-                        pl.getStats().getGameStatistics(EngineAPI.getActiveGameInfo().getId()).addStat("gamesWon", 1);
+                        pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
                     }
                 }
                 pl.getRewards().stop();
@@ -207,9 +207,9 @@ public abstract class Game {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
             pl.getStats().addGamePlayed(winner.getPlayers().contains(pl));
-            pl.getStats().getGameStatistics(EngineAPI.getActiveGameInfo().getId()).addStat("gamesPlayed", 1);
+            pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
             if (winner.getPlayers().contains(pl)) {
-                pl.getStats().getGameStatistics(EngineAPI.getActiveGameInfo().getId()).addStat("gamesWon", 1);
+                pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
             }
             if (pl.getRewards() != null) {
                 pl.getRewards().stop();
