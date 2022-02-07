@@ -64,8 +64,10 @@ public class JoinListener implements Listener {
         } else if (EngineAPI.getActiveGame() != null) {
             //Hide spectators from the user joining.
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                if (((AuroraMCGamePlayer)player).isSpectator() && !e.getPlayer().equals(player.getPlayer())) {
-                    e.getPlayer().hidePlayer(player.getPlayer());
+                if (player instanceof AuroraMCGamePlayer) {
+                    if (((AuroraMCGamePlayer)player).isSpectator() && !e.getPlayer().equals(player.getPlayer())) {
+                        e.getPlayer().hidePlayer(player.getPlayer());
+                    }
                 }
             }
             if (EngineAPI.getActiveMap().getMapData().getInt("time") > 12000) {
