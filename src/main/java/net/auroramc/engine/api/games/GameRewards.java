@@ -100,7 +100,7 @@ public class GameRewards {
             for (Map.Entry<String, Integer> entry : xp.entrySet()) {
                 xpBreakdown.append("\n&r+");
                 xpBreakdown.append(entry.getValue());
-                xpBreakdown.append("XP **");
+                xpBreakdown.append(" XP **");
                 xpBreakdown.append(entry.getKey());
                 xpBreakdown.append("**");
             }
@@ -119,7 +119,7 @@ public class GameRewards {
 
             textComponent.addExtra("\n \n");
 
-            TextComponent xp = new TextComponent("+" + totalXP + timeXp + " XP\n");
+            TextComponent xp = new TextComponent("+" + (totalXP + timeXp) + " XP\n");
             xp.setColor(ChatColor.GREEN);
             xp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(xpBreakdown.toString()))).create()));
             textComponent.addExtra(xp);
