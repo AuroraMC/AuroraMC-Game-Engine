@@ -7,6 +7,8 @@ package net.auroramc.engine.api.players;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
+import net.auroramc.engine.api.games.Game;
+import net.auroramc.engine.api.games.GameRewards;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.util.SpectatorUtil;
 import org.bukkit.GameMode;
@@ -20,6 +22,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     private boolean spectator;
     private Kit kit;
     private Map<Integer, List<Integer>> unlockedKits;
+    private GameRewards rewards;
 
     private final long joinTimestamp;
 
@@ -79,5 +82,17 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     public Map<Integer, List<Integer>> getUnlockedKits() {
         return unlockedKits;
+    }
+
+    public void gameStarted() {
+        rewards = new GameRewards(this);
+    }
+
+    public GameRewards getRewards() {
+        return rewards;
+    }
+
+    public void gameOver() {
+        rewards = null;
     }
 }

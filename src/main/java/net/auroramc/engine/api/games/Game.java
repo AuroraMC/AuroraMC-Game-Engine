@@ -64,7 +64,7 @@ public abstract class Game {
     public void start() {
         StringBuilder startString = new StringBuilder();
         startString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
-        startString.append(" \n§b§lGame: ");
+        startString.append(" \n§b§lGame: §r");
         startString.append(EngineAPI.getActiveGameInfo().getName());
         if (gameVariation != null) {
             startString.append(" ");
@@ -73,7 +73,7 @@ public abstract class Game {
         startString.append("\n \n§r");
         startString.append(EngineAPI.getActiveGameInfo().getDescription());
         startString.append("\n \n");
-        startString.append("§r§lMap: §b§l");
+        startString.append("§b§lMap: §r");;
         startString.append(map.getName());
         startString.append(" by ");
         startString.append(map.getAuthor());
@@ -91,6 +91,10 @@ public abstract class Game {
             player.getPlayer().setLevel(0);
             player.getPlayer().getEnderChest().clear();
             player.sendMessage(startString.toString());
+            AuroraMCPlayer pl = AuroraMCAPI.getPlayer(player);
+            if (pl instanceof AuroraMCGamePlayer) {
+                ((AuroraMCGamePlayer) pl).gameStarted();
+            }
             if (map.getMapData().has("time")) {
                 if (map.getMapData().getInt("time") <= 12000) {
                     player.removePotionEffect(PotionEffectType.NIGHT_VISION);
@@ -126,11 +130,11 @@ public abstract class Game {
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n \n");
-        winnerString.append(" §b§l");
+        winnerString.append("§b§l");
         winnerString.append((winner == null)?"Nobody":winner.getPlayer().getName());
         winnerString.append(" won the game!");
         winnerString.append("\n \n \n");
-        winnerString.append("§r§lMap: §b§l");
+        winnerString.append("§b§lMap: §r");
         winnerString.append(map.getName());
         winnerString.append(" by ");
         winnerString.append(map.getAuthor());
@@ -149,6 +153,10 @@ public abstract class Game {
                 WinEffect winEffect = (WinEffect) cosmetic;
                 winEffect.onWin(winner);
             }
+            AuroraMCGamePlayer player = (AuroraMCGamePlayer) winner;
+            player.getRewards().addXp("Winner Bonus", 150);
+            player.getRewards().addTickets(150);
+            player.getRewards().addCrowns(150);
         }
         startEndRunnable();
     }
@@ -165,7 +173,7 @@ public abstract class Game {
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n");
-        winnerString.append(" §");
+        winnerString.append("§");
         winnerString.append(winner.getTeamColor());
         winnerString.append("§l");
         winnerString.append((winnerName != null)?winnerName:winner.getName());
@@ -177,7 +185,7 @@ public abstract class Game {
         }
         winnerString.append(String.join("§r, §b", winners));
         winnerString.append("\n \n");
-        winnerString.append("§r§lMap: §b§l");
+        winnerString.append("§b§lMap: §r");
         winnerString.append(map.getName());
         winnerString.append(" by ");
         winnerString.append(map.getAuthor());
@@ -192,6 +200,9 @@ public abstract class Game {
 
         for (AuroraMCPlayer amcPlayer : winner.getPlayers()) {
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) amcPlayer;
+            player.getRewards().addXp("Winner Bonus", 150);
+            player.getRewards().addTickets(150);
+            player.getRewards().addCrowns(150);
             if (!player.isSpectator()) {
                 Cosmetic cosmetic = player.getActiveCosmetics().get(Cosmetic.CosmeticType.WIN_EFFECT);
                 if (cosmetic != null) {
@@ -295,6 +306,8 @@ public abstract class Game {
                     scoreboard.setLine(2, "    ");
                     scoreboard.setLine(1, "&7You are playing on auroramc.net");
 
+                    player.getRewards().apply(true);
+                    player.gameOver();
 
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                         if (player1.getRank().getId() >= player.getRank().getId()) {
