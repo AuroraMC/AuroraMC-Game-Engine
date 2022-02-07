@@ -52,6 +52,7 @@ public class LeaveListener implements Listener {
                 if (player.getRewards() != null) {
                     player.getRewards().stop();
                     player.getRewards().apply(false);
+                    player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
                 }
             }
         }
