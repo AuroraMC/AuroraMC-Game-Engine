@@ -145,6 +145,7 @@ public class GameRewards {
 
             textComponent.addExtra("\n \n");
             textComponent.addExtra(lines);
+            player.getPlayer().spigot().sendMessage(textComponent);
         }
     }
 
