@@ -157,7 +157,7 @@ public abstract class Game {
             player.sendTitle((winner == null)?"Nobody won the game":winner.getPlayer().getName() + " won the game!", "", 10, 160, 10, ChatColor.AQUA, ChatColor.AQUA, true, false);
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
-            if (pl.getRewards() != null) {
+            if (pl.getRewards() != null && !pl.isVanished() && !pl.isSpectator()) {
                 if (winner != null) {
                     pl.getStats().addGamePlayed(winner.equals(pl));
                     pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
@@ -221,12 +221,14 @@ public abstract class Game {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
             pl.getStats().addGamePlayed(winner.getPlayers().contains(pl));
-            pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
-            if (winner.getPlayers().contains(pl)) {
-                pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
-            }
-            if (pl.getRewards() != null) {
-                pl.getRewards().stop();
+            if (!pl.isVanished() && !pl.isSpectator()) {
+                pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
+                if (winner.getPlayers().contains(pl)) {
+                    pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
+                }
+                if (pl.getRewards() != null) {
+                    pl.getRewards().stop();
+                }
             }
         }
 
@@ -262,7 +264,9 @@ public abstract class Game {
                                 player1.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
                             }
                             if (player1.getRewards() != null) {
-                                player1.getRewards().apply(true);
+                                if (!player1.isSpectator() && !player1.isVanished()) {
+                                    player1.getRewards().apply(true);
+                                }
                                 player1.gameOver();
                             }
                         }
@@ -350,7 +354,9 @@ public abstract class Game {
                     scoreboard.setLine(1, "&7You are playing on auroramc.net");
 
                     if (player.getRewards() != null) {
-                        player.getRewards().apply(true);
+                        if (!player.isSpectator() && !player.isVanished()) {
+                            player.getRewards().apply(true);
+                        }
                         player.gameOver();
                     }
 
