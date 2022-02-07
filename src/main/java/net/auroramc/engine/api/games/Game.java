@@ -81,8 +81,6 @@ public abstract class Game {
         startString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.getPlayer().setFlying(false);
-            player.getPlayer().setAllowFlight(false);
             player.getPlayer().setGameMode(GameMode.SURVIVAL);
             player.getPlayer().setHealth(20);
             player.getPlayer().setFoodLevel(30);
@@ -92,6 +90,22 @@ public abstract class Game {
             player.getPlayer().getEnderChest().clear();
             player.sendMessage(startString.toString());
             AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(player);
+            if (player1 instanceof AuroraMCGamePlayer) {
+                if (player1.isVanished() || ((AuroraMCGamePlayer) player1).isSpectator()) {
+                    player.getPlayer().setAllowFlight(true);
+                    player.getPlayer().setFlying(true);
+                    ((AuroraMCGamePlayer) player1).setSpectator(true, true);
+                    for (Player player2 : Bukkit.getOnlinePlayers()) {
+                        player2.hidePlayer(player1.getPlayer());
+                    }
+                } else {
+                    player.getPlayer().setFlying(false);
+                    player.getPlayer().setAllowFlight(false);
+                }
+            } else {
+                player.getPlayer().setFlying(false);
+                player.getPlayer().setAllowFlight(false);
+            }
             if (map.getMapData().has("time")) {
                 if (map.getMapData().getInt("time") <= 12000) {
                     player.removePotionEffect(PotionEffectType.NIGHT_VISION);
@@ -310,6 +324,12 @@ public abstract class Game {
                     }
                     if (!player.isVanished()) {
                         player.setSpectator(false, false);
+                    } else {
+                        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                            if (player1.getRank().getId() >= player.getRank().getId()) {
+                                player1.getPlayer().showPlayer(player.getPlayer());
+                            }
+                        }
                     }
                     player.setKit(null);
                     player.setTeam(null);
