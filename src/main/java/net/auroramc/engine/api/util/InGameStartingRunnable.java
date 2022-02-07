@@ -39,7 +39,7 @@ public class InGameStartingRunnable extends BukkitRunnable {
                 player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The game has begun!"));
                 player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 2);
                 AuroraMCPlayer pl = AuroraMCAPI.getPlayer(player);
-                if (pl instanceof AuroraMCGamePlayer) {
+                if (pl instanceof AuroraMCGamePlayer && !((AuroraMCGamePlayer) pl).isSpectator() && !pl.isVanished()) {
                     ((AuroraMCGamePlayer) pl).gameStarted();
                 }
             }
