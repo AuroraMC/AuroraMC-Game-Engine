@@ -146,7 +146,10 @@ public abstract class Game {
             player.sendTitle((winner == null)?"Nobody won the game":winner.getPlayer().getName() + " won the game!", "", 10, 160, 10, ChatColor.AQUA, ChatColor.AQUA, true, false);
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
-            pl.getRewards().stop();
+            if (pl.getRewards() != null) {
+                pl.getRewards().stop();
+            }
+
         }
 
         if (winner != null) {
@@ -199,7 +202,9 @@ public abstract class Game {
             player.sendTitle(winner.getName() + " won the game!", "", 10, 160, 10, ChatColor.getByChar(winner.getTeamColor()), ChatColor.AQUA, true, false);
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
-            pl.getRewards().stop();
+            if (pl.getRewards() != null) {
+                pl.getRewards().stop();
+            }
         }
 
         for (AuroraMCPlayer amcPlayer : winner.getPlayers()) {
@@ -310,8 +315,10 @@ public abstract class Game {
                     scoreboard.setLine(2, "    ");
                     scoreboard.setLine(1, "&7You are playing on auroramc.net");
 
-                    player.getRewards().apply(true);
-                    player.gameOver();
+                    if (player.getRewards() != null) {
+                        player.getRewards().apply(true);
+                        player.gameOver();
+                    }
 
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                         if (player1.getRank().getId() >= player.getRank().getId()) {
