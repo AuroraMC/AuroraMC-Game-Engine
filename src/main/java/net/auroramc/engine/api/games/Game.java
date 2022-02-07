@@ -238,7 +238,12 @@ public abstract class Game {
                             } else {
                                 player1.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
                             }
+                            if (player1.getRewards() != null) {
+                                player1.getRewards().apply(true);
+                                player1.gameOver();
+                            }
                         }
+
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Server Manager", "This server is restarting for an update. You are being sent to a lobby."));
                         ByteArrayDataOutput out = ByteStreams.newDataOutput();
                         out.writeUTF("Lobby");
