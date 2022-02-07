@@ -35,6 +35,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -134,6 +135,13 @@ public class LobbyListener implements Listener {
             if (e.toWeatherState()) {
                 e.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent e) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+                e.setCancelled(true);
         }
     }
 
