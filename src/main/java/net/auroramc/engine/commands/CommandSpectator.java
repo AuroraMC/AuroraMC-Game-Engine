@@ -32,7 +32,7 @@ public class CommandSpectator extends Command {
                 if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
                     ((AuroraMCGamePlayer) player).setSpectator(false, false);
                 }
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You will not be a spectator in the next game."));
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You will no longer be a spectator in the next game."));
             } else {
                 ((AuroraMCGamePlayer) player).setOptedSpec(true);
                 if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
@@ -41,7 +41,7 @@ public class CommandSpectator extends Command {
                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You will now be a spectator in the next game."));
             }
         } else {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You cannot un-spectate while in vanish."));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You cannot toggle spectator mode while in vanish."));
         }
     }
 
