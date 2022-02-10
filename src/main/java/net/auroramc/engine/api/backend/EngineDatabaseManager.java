@@ -123,4 +123,16 @@ public class EngineDatabaseManager {
         }
     }
 
+    public static float getXpMultiplier() {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            return Float.parseFloat(connection.hget("xpboost", "multiplier"));
+        }
+    }
+
+    public static String getXpMessage() {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            return connection.hget("xpboost", "message");
+        }
+    }
+
 }

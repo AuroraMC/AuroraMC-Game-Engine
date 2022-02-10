@@ -10,8 +10,10 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.backend.communication.CommunicationUtils;
 import net.auroramc.core.api.backend.communication.Protocol;
 import net.auroramc.core.api.backend.communication.ProtocolMessage;
+import net.auroramc.core.api.events.ProtocolMessageEvent;
 import net.auroramc.core.api.events.ServerCloseRequestEvent;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -46,6 +48,14 @@ public class ServerCloseRequestListener implements Listener {
             //Set that it is awaiting a restart, then restart when the game is over.
             EngineAPI.setAwaitingRestart(true);
             EngineAPI.setRestartType(e.getType());
+        }
+    }
+
+    @EventHandler
+    public void onProtocolMessage(ProtocolMessageEvent e) {
+        if (e.getMessage().getProtocol() == Protocol.UPDATE_PLAYER_COUNT) {
+            EngineAPI.setXpBoostMessage(EngineDatabaseManager.getXpMessage());
+            EngineAPI.setXpBoostMultiplier(EngineDatabaseManager.getXpMultiplier());
         }
     }
 

@@ -7,6 +7,7 @@ package net.auroramc.engine.api;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.AuroraMCGameEngine;
+import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.events.ServerStateChangeEvent;
 import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.players.Reward;
@@ -58,6 +59,9 @@ public class EngineAPI {
 
     private final static Map<Integer, Reward> kitLevelRewards;
 
+    private static String xpBoostMessage;
+    private static float xpBoostMultiplier;
+
     static {
         games = new HashMap<>();
         maps = new HashMap<>();
@@ -78,6 +82,9 @@ public class EngineAPI {
         cosmeticsItem = new GUIItem(Material.EMERALD, "&a&lView Cosmetics");
         kitItem = new GUIItem(Material.CHEST, "&a&lSelect Kit");
         teamItem = new GUIItem(Material.BOOK, "&a&lSelect Team");
+
+       xpBoostMessage = EngineDatabaseManager.getXpMessage();
+       xpBoostMultiplier = EngineDatabaseManager.getXpMultiplier();
     }
 
     public static void init(AuroraMCGameEngine gameEngine) {
@@ -281,5 +288,21 @@ public class EngineAPI {
 
     public static Map<Integer, Reward> getKitLevelRewards() {
         return kitLevelRewards;
+    }
+
+    public static float getXpBoostMultiplier() {
+        return xpBoostMultiplier;
+    }
+
+    public static String getXpBoostMessage() {
+        return xpBoostMessage;
+    }
+
+    public static void setXpBoostMessage(String xpBoostMessage) {
+        EngineAPI.xpBoostMessage = xpBoostMessage;
+    }
+
+    public static void setXpBoostMultiplier(float xpBoostMultiplier) {
+        EngineAPI.xpBoostMultiplier = xpBoostMultiplier;
     }
 }

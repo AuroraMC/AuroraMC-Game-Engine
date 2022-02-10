@@ -5,12 +5,12 @@
 package net.auroramc.engine.api.games;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,9 +87,11 @@ public class GameRewards {
             multiplier += 1;
         }
 
+        long totalXp = Math.round((this.totalXP + timeXp) * EngineAPI.getXpBoostMultiplier());
+
         long totalTickets = Math.round((tickets + timeXp)*multiplier);
 
-        player.getStats().addXp(totalXP + timeXp, true);
+        player.getStats().addXp(totalXp, true);
         player.getBank().addCrowns(crowns + timeXp, true, true);
         player.getBank().addTickets(totalTickets, true, true);
 
@@ -121,9 +123,16 @@ public class GameRewards {
 
             textComponent.addExtra("\n \n");
 
-            TextComponent xp = new TextComponent("+" + (totalXP + timeXp) + " XP\n");
+            TextComponent xp = new TextComponent("+" + totalXp + " XP");
             xp.setColor(ChatColor.GREEN);
             xp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(xpBreakdown.toString()))).create()));
+
+            if (EngineAPI.getXpBoostMessage() != null) {
+                xp.addExtra(" " + EngineAPI.getXpBoostMessage() + "\n");
+            } else {
+                xp.addExtra("\n");
+            }
+
             textComponent.addExtra(xp);
 
             xp = new TextComponent("+" + ((totalXP + timeXp)*4) + " Kit XP\n");
