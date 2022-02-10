@@ -342,6 +342,13 @@ public abstract class Game {
                             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Cosmetics", String.format("**%s** has been re-equipped.", entry.getValue().getName())));
                         }
                     }
+                    if (player.getRewards() != null) {
+                        if (!player.isSpectator() && !player.isVanished()) {
+                            player.getRewards().apply(true);
+                        }
+                        player.gameOver();
+                    }
+
                     player.setKit(null);
                     player.setTeam(null);
                     PlayerScoreboard scoreboard = player.getScoreboard();
@@ -359,13 +366,6 @@ public abstract class Game {
                     scoreboard.setLine(3, AuroraMCAPI.getServerInfo().getName());
                     scoreboard.setLine(2, "    ");
                     scoreboard.setLine(1, "&7You are playing on auroramc.net");
-
-                    if (player.getRewards() != null) {
-                        if (!player.isSpectator() && !player.isVanished()) {
-                            player.getRewards().apply(true);
-                        }
-                        player.gameOver();
-                    }
 
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                         if (player1.getRank().getId() >= player.getRank().getId()) {
