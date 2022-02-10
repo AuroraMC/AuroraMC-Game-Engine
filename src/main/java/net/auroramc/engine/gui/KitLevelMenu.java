@@ -84,10 +84,10 @@ public class KitLevelMenu extends GUI {
         lvl = level.getLevel() + 1;
 
         String levelHover = null;
-        if (player.getStats().getLevel() != 100) {
+        if (level.getLevel() != 100) {
             String progress = "||||||||||||||||||||||||||||||";
-            double percentage = (((double) level.getXpIntoLevel() / LevelUtils.xpForLevel(player.getStats().getLevel() + 1))*100);
-            if (player.getStats().getLevel() != 250) {
+            double percentage = (((double) level.getXpIntoLevel() / LevelUtils.xpForLevel(level.getLevel() + 1))*100);
+            if (level.getLevel() != 100) {
                 int amountToColour = (int) Math.floor(((percentage) / 100)*30);
                 progress = ((progress.substring(0, amountToColour) + "&r&l" + progress.substring(amountToColour + 1)));
             } else {
