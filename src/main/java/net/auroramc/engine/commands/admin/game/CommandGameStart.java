@@ -66,22 +66,6 @@ public class CommandGameStart extends Command {
             String message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "The game has been started by an admin.");
             for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                 player1.getPlayer().sendMessage(message);
-                new BukkitRunnable(){
-                    @Override
-                    public void run() {
-                        int kitId = EngineDatabaseManager.getDefaultKit(player1.getId(), EngineAPI.getActiveGameInfo().getId());
-                        for (Kit kit : EngineAPI.getActiveGame().getKits()) {
-                            if (kitId == kit.getId()) {
-                                ((AuroraMCGamePlayer)player1).setKit(kit);
-                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + kit.getName() + "**."));
-                                break;
-                            }
-                        }
-                        if (((AuroraMCGamePlayer)player1).getKit() == null) {
-                            ((AuroraMCGamePlayer)player1).setKit(EngineAPI.getActiveGame().getKits().get(0));
-                        }
-                    }
-                }.runTaskAsynchronously(AuroraMCAPI.getCore());
 
             }
         } else {

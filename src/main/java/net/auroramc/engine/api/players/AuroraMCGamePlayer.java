@@ -77,10 +77,8 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     public void setKit(Kit kit) {
         this.kit = kit;
         if (kit == null) {
-            Bukkit.broadcastMessage("test " + getPlayer().getName());
             kitLevel = null;
         } else {
-            Bukkit.broadcastMessage("test2 " + getPlayer().getName());
             kitLevel = EngineDatabaseManager.getKitLevel(this, kit.getGameId(), kit.getId());
         }
     }
