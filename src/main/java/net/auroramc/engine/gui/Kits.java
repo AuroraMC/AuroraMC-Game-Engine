@@ -44,7 +44,7 @@ public class Kits extends GUI {
                 }
                 continue;
             }
-            this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: &6" + kit.getCost() + " Crowns&r;&r&aClick to purchase  the **" + kit.getName() + "** kit.", (short)0, player.getKit().equals(kit)));
+            this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: &6" + kit.getCost() + " Crowns&r;&r&aClick to purchase  the " + kit.getName() + "&a kit.", (short)0, player.getKit().equals(kit)));
             column++;
             if (column == 8) {
                 row++;
