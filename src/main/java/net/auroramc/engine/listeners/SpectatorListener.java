@@ -11,6 +11,7 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.gui.cosmetics.Cosmetics;
 import net.auroramc.core.gui.preferences.Preferences;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.gui.PlayerTracker;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,6 +52,14 @@ public class SpectatorListener implements Listener {
                             Preferences prefs = new Preferences(player);
                             prefs.open(player);
                             AuroraMCAPI.openGUI(player, prefs);
+                            break;
+                        }
+                        case COMPASS: {
+                            e.setCancelled(true);
+                            AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
+                            PlayerTracker tracker = new PlayerTracker(player);
+                            tracker.open(player);
+                            AuroraMCAPI.openGUI(player, tracker);
                             break;
                         }
                     }
