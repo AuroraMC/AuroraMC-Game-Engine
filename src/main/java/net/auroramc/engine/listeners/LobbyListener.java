@@ -7,6 +7,7 @@ package net.auroramc.engine.listeners;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.events.VanishEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.gui.cosmetics.Cosmetics;
 import net.auroramc.core.gui.preferences.Preferences;
@@ -254,6 +255,13 @@ public class LobbyListener implements Listener {
             if (e.getClickedInventory() instanceof PlayerInventory && e.getWhoClicked().getGameMode() != GameMode.CREATIVE) {
                 e.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onVanish(VanishEvent e) {
+        if (e.isVanish() && (EngineAPI.getServerState() == ServerState.ENDING || EngineAPI.getServerState() == ServerState.IN_GAME)) {
+            e.setCancelled(true);
         }
     }
 
