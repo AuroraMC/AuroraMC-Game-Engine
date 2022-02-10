@@ -6,6 +6,7 @@ package net.auroramc.engine.api.players;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.LevelUtils;
+import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.Kit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -58,6 +59,9 @@ public class PlayerKitLevel {
             do {
                 ++this.level;
                 this.xpIntoLevel -= LevelUtils.xpForLevel((long)this.level);
+                if (EngineAPI.getKitLevelRewards().containsKey(this.level)) {
+                    EngineAPI.getKitLevelRewards().get(this.level).apply(player);
+                }
             } while(this.xpIntoLevel >= LevelUtils.xpForLevel((long)(this.level + 1)) && this.level < 100);
 
             levelUp = true;

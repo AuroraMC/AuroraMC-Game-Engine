@@ -9,6 +9,7 @@ import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.AuroraMCGameEngine;
 import net.auroramc.engine.api.events.ServerStateChangeEvent;
 import net.auroramc.engine.api.games.*;
+import net.auroramc.engine.api.players.Reward;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.TitleBarRunnable;
@@ -55,9 +56,12 @@ public class EngineAPI {
     private static String restartType;
     private static boolean awaitingMapReload;
 
+    private final static Map<Integer, Reward> kitLevelRewards;
+
     static {
         games = new HashMap<>();
         maps = new HashMap<>();
+        kitLevelRewards = new HashMap<>();
         gameRotation = new ArrayList<>();
         serverState = ServerState.STARTING_UP;
 
@@ -273,5 +277,9 @@ public class EngineAPI {
 
     public static void setTeamBalancingEnabled(boolean teamBalancingEnabled) {
         EngineAPI.teamBalancingEnabled = teamBalancingEnabled;
+    }
+
+    public static Map<Integer, Reward> getKitLevelRewards() {
+        return kitLevelRewards;
     }
 }
