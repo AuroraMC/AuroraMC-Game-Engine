@@ -38,7 +38,7 @@ public class KitLevelMenu extends GUI {
         this.setItem(0, 0, new GUIItem(Material.ARROW, "&3&lBack"));
         this.setItem(0, 4, new GUIItem(kit.getMaterial(), "&3&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ""));
 
-        this.setItem(1, 4, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + level.getLevel(), 1, ";&rRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(level.getLevel()))?EngineAPI.getKitLevelRewards().get(level.getLevel()).getRewardString():"None") + "**;;&aThis is your current level."));
+        this.setItem(1, 4, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + level.getLevel(), 1, ";&rRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(level.getLevel()))?EngineAPI.getKitLevelRewards().get(level.getLevel()).getRewardString():"None") + "**;;&aThis is your current level.", (short)5));
 
         if (level.getLatestUpgrade() < level.getLevel() / 20) {
             int cost;
@@ -97,7 +97,7 @@ public class KitLevelMenu extends GUI {
         }
 
         while (lvl <= 100 && col <= 8) {
-            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + level.getLevel(), 1, ";&rRewards:;**&kSome Random Reward**" + ((col == 5 && levelHover != null)?";;" + levelHover:"")));
+            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + level.getLevel(), 1, ";&rRewards:;**&kReward**" + ((col == 5 && levelHover != null)?";;" + levelHover:""), (short)14));
             col++;
             lvl++;
         }

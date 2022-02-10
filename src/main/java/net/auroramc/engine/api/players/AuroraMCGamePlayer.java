@@ -11,6 +11,7 @@ import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameRewards;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.util.SpectatorUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -76,8 +77,10 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     public void setKit(Kit kit) {
         this.kit = kit;
         if (kit == null) {
+            Bukkit.broadcastMessage("test " + getPlayer().getName());
             kitLevel = null;
         } else {
+            Bukkit.broadcastMessage("test2 " + getPlayer().getName());
             kitLevel = EngineDatabaseManager.getKitLevel(this, kit.getGameId(), kit.getId());
         }
     }
