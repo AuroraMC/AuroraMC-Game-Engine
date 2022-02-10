@@ -59,7 +59,7 @@ public class PlayerTracker extends GUI {
 
             player.getPlayer().closeInventory();
             player.getPlayer().teleport(pl.getPlayer().getLocation());
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You are now spectating **" + player.getPlayer().getName() + "**."));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You are now spectating **" + pl.getPlayer().getName() + "**."));
         } else {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
             return;
