@@ -51,7 +51,7 @@ public class Kits extends GUI {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
         } else {
             if (kit.getCost() == -1 || player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId())) {
-                if (clickType.isLeftClick()) {
+                if (clickType == ClickType.SHIFT_LEFT || clickType == ClickType.LEFT) {
                     player.setKit(kit);
                     player.getPlayer().closeInventory();
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You set your kit to **" + kit.getName() + "**."));
@@ -62,7 +62,7 @@ public class Kits extends GUI {
                             EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
                         }
                     }.runTaskAsynchronously(AuroraMCAPI.getCore());
-                } else {
+                } else if (clickType == ClickType.RIGHT || clickType == ClickType.SHIFT_RIGHT) {
                     new BukkitRunnable(){
                         @Override
                         public void run() {

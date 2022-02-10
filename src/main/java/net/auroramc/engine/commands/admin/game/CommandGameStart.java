@@ -9,10 +9,14 @@ import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.backend.EngineDatabaseManager;
+import net.auroramc.engine.api.games.Kit;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -60,8 +64,25 @@ public class CommandGameStart extends Command {
                 }
             }
             String message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "The game has been started by an admin.");
-            for (Player player1 : Bukkit.getOnlinePlayers()) {
-                player1.sendMessage(message);
+            for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                player1.getPlayer().sendMessage(message);
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        int kitId = EngineDatabaseManager.getDefaultKit(player.getId(), EngineAPI.getActiveGameInfo().getId());
+                        for (Kit kit : EngineAPI.getActiveGame().getKits()) {
+                            if (kitId == kit.getId()) {
+                                ((AuroraMCGamePlayer)player).setKit(kit);
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + kit.getName() + "**."));
+                                break;
+                            }
+                        }
+                        if (((AuroraMCGamePlayer)player).getKit() == null) {
+                            ((AuroraMCGamePlayer)player).setKit(EngineAPI.getActiveGame().getKits().get(0));
+                        }
+                    }
+                }.runTaskAsynchronously(AuroraMCAPI.getCore());
+
             }
         } else {
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You cannot start a game at this time."));
