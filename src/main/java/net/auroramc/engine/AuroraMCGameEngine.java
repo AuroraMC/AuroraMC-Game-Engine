@@ -10,6 +10,7 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.MapRegistry;
+import net.auroramc.engine.api.players.Reward;
 import net.auroramc.engine.commands.CommandDisguiseOverride;
 import net.auroramc.engine.commands.CommandMap;
 import net.auroramc.engine.commands.CommandSpectator;
@@ -31,6 +32,7 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 
 public class AuroraMCGameEngine extends JavaPlugin {
 
@@ -129,6 +131,8 @@ public class AuroraMCGameEngine extends JavaPlugin {
         AuroraMCAPI.registerCommand(new CommandEffect());
         AuroraMCAPI.registerCommand(new CommandTeleport());
         AuroraMCAPI.registerCommand(new CommandSpectator());
+
+        EngineAPI.getKitLevelRewards().put(1, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
 
         getLogger().info("Listeners registered. Waiting for games to be registered...");
 
