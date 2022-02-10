@@ -74,7 +74,7 @@ public class KitLevelMenu extends GUI {
         int col = 3;
         int lvl = level.getLevel() - 1;
 
-        while (lvl >= 0 && col >= 0) {
+        while (lvl >= 0 && col >= 1) {
             this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + lvl, 1, ";&rRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(lvl))?EngineAPI.getKitLevelRewards().get(lvl).getRewardString():"None") + "**;;&aYou have already received this reward."));
             col--;
             lvl--;
@@ -96,7 +96,7 @@ public class KitLevelMenu extends GUI {
             levelHover = AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(String.format("&r &3&l«%s» &r&b&l%s&r &3&l«%s»;&rProgress to Next Level: **%s%%**", level.getLevel() - ((level.getLevel() == 100)?1:0), progress, level.getLevel() + ((level.getLevel() != 100)?1:0), new DecimalFormat("##.#").format(percentage))));
         }
 
-        while (lvl <= 100 && col <= 8) {
+        while (lvl <= 100 && col <= 7) {
             this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + lvl, 1, ";&rRewards:;**&kReward**" + ((col == 5 && levelHover != null)?";;" + levelHover:""), (short)14));
             col++;
             lvl++;
