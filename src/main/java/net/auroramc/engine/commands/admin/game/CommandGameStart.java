@@ -69,16 +69,16 @@ public class CommandGameStart extends Command {
                 new BukkitRunnable(){
                     @Override
                     public void run() {
-                        int kitId = EngineDatabaseManager.getDefaultKit(player.getId(), EngineAPI.getActiveGameInfo().getId());
+                        int kitId = EngineDatabaseManager.getDefaultKit(player1.getId(), EngineAPI.getActiveGameInfo().getId());
                         for (Kit kit : EngineAPI.getActiveGame().getKits()) {
                             if (kitId == kit.getId()) {
-                                ((AuroraMCGamePlayer)player).setKit(kit);
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + kit.getName() + "**."));
+                                ((AuroraMCGamePlayer)player1).setKit(kit);
+                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + kit.getName() + "**."));
                                 break;
                             }
                         }
-                        if (((AuroraMCGamePlayer)player).getKit() == null) {
-                            ((AuroraMCGamePlayer)player).setKit(EngineAPI.getActiveGame().getKits().get(0));
+                        if (((AuroraMCGamePlayer)player1).getKit() == null) {
+                            ((AuroraMCGamePlayer)player1).setKit(EngineAPI.getActiveGame().getKits().get(0));
                         }
                     }
                 }.runTaskAsynchronously(AuroraMCAPI.getCore());

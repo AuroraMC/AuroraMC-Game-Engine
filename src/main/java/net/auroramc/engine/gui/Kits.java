@@ -48,7 +48,24 @@ public class Kits extends GUI {
         }
         Kit kit = EngineAPI.getActiveGame().getKits().get(((row - 1) * 7) + (column - 1));
         if (kit.equals(player.getKit())) {
-            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+            if (clickType == ClickType.RIGHT || clickType == ClickType.SHIFT_RIGHT) {
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        PlayerKitLevel level = EngineDatabaseManager.getKitLevel(player, kit.getGameId(), kit.getId());
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                KitLevelMenu menu = new KitLevelMenu(player, level, kit);
+                                menu.open(player);
+                                AuroraMCAPI.openGUI(player, menu);
+                            }
+                        }.runTask(AuroraMCAPI.getCore());
+                    }
+                }.runTaskAsynchronously(AuroraMCAPI.getCore());
+            } else {
+                player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+            }
         } else {
             if (kit.getCost() == -1 || player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId())) {
                 if (clickType == ClickType.SHIFT_LEFT || clickType == ClickType.LEFT) {
