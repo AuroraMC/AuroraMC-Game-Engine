@@ -97,7 +97,7 @@ public class KitLevelMenu extends GUI {
         }
 
         while (lvl <= 100 && col <= 8) {
-            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + level.getLevel(), 1, ";&rRewards:;**&kReward**" + ((col == 5 && levelHover != null)?";;" + levelHover:""), (short)14));
+            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + lvl, 1, ";&rRewards:;**&kReward**" + ((col == 5 && levelHover != null)?";;" + levelHover:""), (short)14));
             col++;
             lvl++;
         }
