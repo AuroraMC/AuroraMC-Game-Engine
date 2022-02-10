@@ -136,11 +136,13 @@ public class JoinListener implements Listener {
                         if (kitId == kit.getId()) {
                             player.setKit(kit);
                             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + kit.getName() + "**."));
+                            scoreboard.setLine(6, kit.getName());
                             break;
                         }
                     }
                     if (player.getKit() == null) {
                         player.setKit(EngineAPI.getActiveGame().getKits().get(0));
+                        scoreboard.setLine(6, EngineAPI.getActiveGame().getKits().get(0).getName());
                     }
                 }
             }

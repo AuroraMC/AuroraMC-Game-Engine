@@ -90,7 +90,7 @@ public class Kits extends GUI {
                     player.setKit(kit);
                     player.getPlayer().closeInventory();
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You set your kit to **" + kit.getName() + "**."));
-                    player.getScoreboard().setLine(4, player.getKit().getName() + " ");
+                    player.getScoreboard().setLine(6, player.getKit().getName() + " ");
                     new BukkitRunnable(){
                         @Override
                         public void run() {
@@ -122,6 +122,7 @@ public class Kits extends GUI {
                     player.getUnlockedKits().get(kit.getGameId()).add(kit.getId());
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You unlocked and set your kit to **" + kit.getName() + "**."));
                     player.getPlayer().closeInventory();
+                    player.setKit(kit);
                     new BukkitRunnable(){
                         @Override
                         public void run() {
