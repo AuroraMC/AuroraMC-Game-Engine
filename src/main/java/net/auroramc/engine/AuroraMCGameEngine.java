@@ -133,6 +133,9 @@ public class AuroraMCGameEngine extends JavaPlugin {
         AuroraMCAPI.registerCommand(new CommandSpectator());
 
         EngineAPI.getKitLevelRewards().put(1, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(2, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(3, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(4, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
 
         getLogger().info("Listeners registered. Waiting for games to be registered...");
 
