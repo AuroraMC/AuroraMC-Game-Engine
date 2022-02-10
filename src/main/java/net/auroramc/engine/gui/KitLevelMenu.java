@@ -75,7 +75,7 @@ public class KitLevelMenu extends GUI {
         int lvl = level.getLevel() - 1;
 
         while (lvl >= 0 && col >= 0) {
-            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + level.getLevel(), 1, ";&rRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(level.getLevel()))?EngineAPI.getKitLevelRewards().get(level.getLevel()).getRewardString():"None") + "**;;&aYou have already received this reward."));
+            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + lvl, 1, ";&rRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(lvl))?EngineAPI.getKitLevelRewards().get(lvl).getRewardString():"None") + "**;;&aYou have already received this reward."));
             col--;
             lvl--;
         }
