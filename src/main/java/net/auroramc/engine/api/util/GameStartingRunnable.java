@@ -29,14 +29,7 @@ public class GameStartingRunnable extends BukkitRunnable {
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
             player.getScoreboard().setTitle("&3-= &b&lSTARTING IN " + startTime + "&r &3=-");
             switch(startTime) {
-                case 1:{
-                    for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
-                        if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT || entry.getKey() == Cosmetic.CosmeticType.MORPH || entry.getKey() == Cosmetic.CosmeticType.PET || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
-                            entry.getValue().onUnequip(player);
-                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
-                        }
-                    }
-                }
+                case 1:
                 case 5:
                 case 4:
                 case 3:
@@ -54,6 +47,12 @@ public class GameStartingRunnable extends BukkitRunnable {
         if (startTime == 0) {
             if (EngineAPI.getActiveGameInfo().hasTeamCommand()) {
                 for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                    for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
+                        if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT || entry.getKey() == Cosmetic.CosmeticType.MORPH || entry.getKey() == Cosmetic.CosmeticType.PET || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
+                            entry.getValue().onUnequip(player);
+                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
+                        }
+                    }
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
                     if (!gp.isSpectator()) {
                         if (player.getTeam() != null) {
