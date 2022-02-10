@@ -27,11 +27,13 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     private GameRewards rewards;
 
     private final long joinTimestamp;
+    private boolean optedSpec;
 
     public AuroraMCGamePlayer(AuroraMCPlayer oldPlayer) {
         super(oldPlayer);
         spectator = isVanished();
         kit = null;
+        optedSpec = false;
         joinTimestamp = System.currentTimeMillis();
         new BukkitRunnable(){
             @Override
@@ -68,6 +70,14 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
         }
         this.dead = isDead;
 
+    }
+
+    public boolean isOptedSpec() {
+        return optedSpec;
+    }
+
+    public void setOptedSpec(boolean optedSpec) {
+        this.optedSpec = optedSpec;
     }
 
     public Kit getKit() {

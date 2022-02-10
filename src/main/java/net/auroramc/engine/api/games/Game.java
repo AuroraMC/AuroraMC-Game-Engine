@@ -327,7 +327,7 @@ public abstract class Game {
                     } else {
                         player.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
                     }
-                    if (!player.isVanished()) {
+                    if (!player.isVanished() && !player.isOptedSpec()) {
                         player.setSpectator(false, false);
                     } else {
                         for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
