@@ -34,9 +34,17 @@ public class Kits extends GUI {
         for (Kit kit : EngineAPI.getActiveGame().getKits()) {
             if (kit.getCost() == -1 || (player.getUnlockedKits().containsKey(kit.getGameId()) && player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId()))) {
                 this.setItem(row, column, new GUIItem(kit.getMaterial(), "&3&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rLeft Click to equip the **" + kit.getName() + "** kit.;&rRight click to view kit levels.", (short)0, player.getKit().equals(kit)));
+                column++;
+                if (column == 8) {
+                    row++;
+                    column = 1;
+                    if (row == 5) {
+                        return;
+                    }
+                }
                 continue;
             }
-            this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: **" + kit.getCost() + " Crowns**;&r&aClick to purchase  the **" + kit.getName() + "** kit.", (short)0, player.getKit().equals(kit)));
+            this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: &6" + kit.getCost() + " Crowns&r;&r&aClick to purchase  the **" + kit.getName() + "** kit.", (short)0, player.getKit().equals(kit)));
             column++;
             if (column == 8) {
                 row++;
