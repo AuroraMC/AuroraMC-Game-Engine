@@ -19,6 +19,8 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+
 public class Kits extends GUI {
 
     private final AuroraMCGamePlayer player;
@@ -83,7 +85,7 @@ public class Kits extends GUI {
                 player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
             }
         } else {
-            if (kit.getCost() == -1 || player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId())) {
+            if (kit.getCost() == -1 || (player.getUnlockedKits().containsKey(kit.getGameId()) && player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId()))) {
                 if (clickType == ClickType.SHIFT_LEFT || clickType == ClickType.LEFT) {
                     player.setKit(kit);
                     player.getPlayer().closeInventory();
@@ -114,6 +116,9 @@ public class Kits extends GUI {
             } else {
                 if (player.getBank().getCrowns() >= kit.getCost()) {
                     player.getBank().withdrawCrowns(kit.getCost(), false, true);
+                    if (!player.getUnlockedKits().containsKey(kit.getGameId())) {
+                        player.getUnlockedKits().put(kit.getGameId(), new ArrayList<>());
+                    }
                     player.getUnlockedKits().get(kit.getGameId()).add(kit.getId());
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You unlocked and set your kit to **" + kit.getName() + "**."));
                     player.getPlayer().closeInventory();
