@@ -33,7 +33,7 @@ public class Kits extends GUI {
         int row = 1;
         for (Kit kit : EngineAPI.getActiveGame().getKits()) {
             if (kit.getCost() == -1 || (player.getUnlockedKits().containsKey(kit.getGameId()) && player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId()))) {
-                this.setItem(row, column, new GUIItem(kit.getMaterial(), "&3&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rLeft Click to equip the **" + kit.getName() + "** kit.;&rRight click to view kit levels.", (short)0, player.getKit().equals(kit)));
+                this.setItem(row, column, new GUIItem(kit.getMaterial(), "&3&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&aLeft Click to equip the " + kit.getName() + "&a kit.;&aRight click to view kit levels.", (short)0, player.getKit().equals(kit)));
                 column++;
                 if (column == 8) {
                     row++;
@@ -44,7 +44,7 @@ public class Kits extends GUI {
                 }
                 continue;
             }
-            this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: &6" + kit.getCost() + " Crowns&r;&r&aClick to purchase  the " + kit.getName() + "&a kit.", (short)0, player.getKit().equals(kit)));
+            this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: &6" + kit.getCost() + " Crowns&r;&r&aClick to purchase the " + kit.getName() + "&a kit.", (short)0, player.getKit().equals(kit)));
             column++;
             if (column == 8) {
                 row++;
@@ -57,7 +57,7 @@ public class Kits extends GUI {
     }
 
     @Override
-    public void onClick(int column, int row, ItemStack item, ClickType clickType) {
+    public void onClick(int row, int column, ItemStack item, ClickType clickType) {
         if (item.getType() == Material.STAINED_GLASS_PANE) {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
             return;
