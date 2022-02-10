@@ -92,6 +92,7 @@ public class GameRewards {
         player.getBank().addCrowns(crowns + timeXp, true, true);
         player.getBank().addTickets(totalTickets, true, true);
 
+
         if (message) {
             StringBuilder xpBreakdown = new StringBuilder();
             xpBreakdown.append("&r+");
@@ -124,6 +125,10 @@ public class GameRewards {
             xp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(xpBreakdown.toString()))).create()));
             textComponent.addExtra(xp);
 
+            xp = new TextComponent("+" + ((totalXP + timeXp)*4) + " Kit XP\n");
+            xp.setColor(ChatColor.DARK_GREEN);
+            textComponent.addExtra(xp);
+
             TextComponent crowns = new TextComponent("+" + (this.crowns + timeXp) + " Crowns\n");
             crowns.setColor(ChatColor.GOLD);
             textComponent.addExtra(crowns);
@@ -146,6 +151,7 @@ public class GameRewards {
             textComponent.addExtra("\n \n");
             textComponent.addExtra(lines);
             player.getPlayer().spigot().sendMessage(textComponent);
+            player.getKitLevel().addXp(player.getKit(), (totalXP + timeXp) * 4L);
         }
     }
 

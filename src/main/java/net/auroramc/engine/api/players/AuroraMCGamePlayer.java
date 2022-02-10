@@ -21,6 +21,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     private boolean spectator;
     private Kit kit;
+    private PlayerKitLevel kitLevel;
     private Map<Integer, List<Integer>> unlockedKits;
     private GameRewards rewards;
 
@@ -74,6 +75,15 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     public void setKit(Kit kit) {
         this.kit = kit;
+        if (kit == null) {
+            kitLevel = null;
+        } else {
+            kitLevel = EngineDatabaseManager.getKitLevel(this, kit.getGameId(), kit.getId());
+        }
+    }
+
+    public PlayerKitLevel getKitLevel() {
+        return kitLevel;
     }
 
     public long getJoinTimestamp() {

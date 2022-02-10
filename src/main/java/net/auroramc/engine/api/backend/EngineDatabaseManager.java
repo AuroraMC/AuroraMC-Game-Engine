@@ -6,6 +6,8 @@ package net.auroramc.engine.api.backend;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.players.PlayerKitLevel;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
@@ -100,6 +102,24 @@ public class EngineDatabaseManager {
                 kit.add(i + "");
             }
             connection.hset("unlockedkits." + amcId, gameId + "", String.join(";", kit));
+        }
+    }
+
+    public static void setKitLevel(int amcId, int gameId, int kitId, int level, long xpIntoLevel, long totalXpEarned, short latestUpgrade) {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            connection.hset("kitlevel." + amcId, gameId + "." + kitId, level + ";" + xpIntoLevel + ";" + totalXpEarned + ";" + latestUpgrade);
+        }
+    }
+
+    public static PlayerKitLevel getKitLevel(AuroraMCGamePlayer player, int gameId, int kitId) {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            String level = connection.hget("kitlevel." + player.getId(), gameId + "." + kitId);
+            if (level != null) {
+                String[] split = level.split(";");
+                return new PlayerKitLevel(player, gameId, kitId, Integer.parseInt(split[0]), Long.parseLong(split[1]), Long.parseLong(split[2]), Short.parseShort(split[3]));
+            } else {
+                return new PlayerKitLevel(player, gameId, kitId, 0, 0L, 0L, (short)0);
+            }
         }
     }
 
