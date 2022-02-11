@@ -20,7 +20,7 @@ import net.auroramc.engine.commands.admin.CommandGameMode;
 import net.auroramc.engine.commands.admin.CommandGive;
 import net.auroramc.engine.commands.admin.CommandMob;
 import net.auroramc.engine.commands.admin.game.CommandGame;
-import net.auroramc.engine.commands.moderation.CommandTeleport;
+import net.auroramc.engine.commands.admin.CommandTeleport;
 import net.auroramc.engine.listeners.*;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;

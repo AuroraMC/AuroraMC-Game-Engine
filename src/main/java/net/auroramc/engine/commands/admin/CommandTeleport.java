@@ -2,7 +2,7 @@
  * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
  */
 
-package net.auroramc.engine.commands.moderation;
+package net.auroramc.engine.commands.admin;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
