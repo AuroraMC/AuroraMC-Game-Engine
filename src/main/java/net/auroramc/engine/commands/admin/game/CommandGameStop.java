@@ -13,7 +13,9 @@ import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -61,6 +63,10 @@ public class CommandGameStop extends Command {
                     EngineAPI.setActiveGame(null);
                     EngineAPI.setActiveMap(null);
                     EngineAPI.setServerState(ServerState.IDLE);
+                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                        pl.getPlayer().getInventory().setItem(0, new ItemStack(Material.AIR));
+                    }
+
                 }
             }
             String message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "The game has been stopped by an admin.");
