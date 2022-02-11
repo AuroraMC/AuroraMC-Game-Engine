@@ -221,7 +221,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         EngineAPI.getKitLevelRewards().put(87, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(88, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(89, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
-        EngineAPI.getKitLevelRewards().put(90, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(90, new Reward("1000 Tickets;&bCosmetic Reward", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(91, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(92, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(93, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
