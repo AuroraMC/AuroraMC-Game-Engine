@@ -2,7 +2,7 @@
  * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
  */
 
-package net.auroramc.engine.commands.moderation;
+package net.auroramc.engine.commands.admin;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
@@ -19,7 +19,7 @@ import java.util.List;
 public class CommandTeleport extends Command {
 
     public CommandTeleport() {
-        super("Teleport", Arrays.asList("tp", "teleportplayer"), Arrays.asList(Permission.MODERATION, Permission.ADMIN), false, null);
+        super("Teleport", Arrays.asList("tp", "teleportplayer"), Arrays.asList(Permission.ADMIN), false, null);
     }
 
     @Override
