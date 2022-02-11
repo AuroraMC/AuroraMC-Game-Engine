@@ -46,7 +46,7 @@ public class Kits extends GUI {
                 }
                 continue;
             }
-            this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: &6" + kit.getCost() + " Crowns&r;&r&aClick to purchase the " + kit.getName() + "&a kit.", (short)0, player.getKit().equals(kit)));
+            this.setItem(row, column, new GUIItem(Material.BARRIER, "&c&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ";;&rCost: &6" + kit.getCost() + " Crowns&r;&r&aShift-Left-Click to purchase the " + kit.getName() + "&a kit.", (short)0, player.getKit().equals(kit)));
             column++;
             if (column == 8) {
                 row++;
@@ -114,26 +114,30 @@ public class Kits extends GUI {
                     }.runTaskAsynchronously(AuroraMCAPI.getCore());
                 }
             } else {
-                if (player.getBank().getCrowns() >= kit.getCost()) {
-                    player.getBank().withdrawCrowns(kit.getCost(), false, true);
-                    if (!player.getUnlockedKits().containsKey(kit.getGameId())) {
-                        player.getUnlockedKits().put(kit.getGameId(), new ArrayList<>());
-                    }
-                    player.getUnlockedKits().get(kit.getGameId()).add(kit.getId());
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You unlocked and set your kit to **" + kit.getName() + "**."));
-                    player.getPlayer().closeInventory();
-                    player.setKit(kit);
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            EngineDatabaseManager.setUnlockedKits(player.getId(), kit.getGameId(), player.getUnlockedKits().get(kit.getGameId()));
-                            EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
+                if (clickType == ClickType.SHIFT_LEFT) {
+                    if (player.getBank().getCrowns() >= kit.getCost() ) {
+                        player.getBank().withdrawCrowns(kit.getCost(), false, true);
+                        if (!player.getUnlockedKits().containsKey(kit.getGameId())) {
+                            player.getUnlockedKits().put(kit.getGameId(), new ArrayList<>());
                         }
-                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                        player.getUnlockedKits().get(kit.getGameId()).add(kit.getId());
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You unlocked and set your kit to **" + kit.getName() + "**."));
+                        player.getPlayer().closeInventory();
+                        player.setKit(kit);
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                EngineDatabaseManager.setUnlockedKits(player.getId(), kit.getGameId(), player.getUnlockedKits().get(kit.getGameId()));
+                                EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
+                            }
+                        }.runTaskAsynchronously(AuroraMCAPI.getCore());
 
+                    } else {
+                        player.getPlayer().closeInventory();
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You have insufficient funds to buy kit **" + kit.getName() + "**."));
+                    }
                 } else {
-                    player.getPlayer().closeInventory();
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You have insufficient funds to buy kit **" + kit.getName() + "**."));
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
             }
         }
