@@ -19,7 +19,7 @@ import java.util.List;
 public class CommandTeleport extends Command {
 
     public CommandTeleport() {
-        super("Teleport", Arrays.asList("tp", "teleportplayer"), Arrays.asList(Permission.MODERATION, Permission.ADMIN), false, null);
+        super("Teleport", Arrays.asList("tp", "teleportplayer"), Arrays.asList(Permission.ADMIN), false, null);
     }
 
     @Override
