@@ -151,7 +151,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         EngineAPI.getKitLevelRewards().put(17, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(18, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(19, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
-        EngineAPI.getKitLevelRewards().put(20, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(20, new Reward("1000 Tickets;&bLevel 1 Kit Upgrade Available", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(21, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(22, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(23, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
@@ -171,7 +171,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         EngineAPI.getKitLevelRewards().put(37, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(38, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(39, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
-        EngineAPI.getKitLevelRewards().put(40, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(40, new Reward("1000 Tickets;&bLevel 2 Kit Upgrade Available", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(41, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(42, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(43, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
@@ -191,7 +191,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         EngineAPI.getKitLevelRewards().put(57, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(58, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(59, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
-        EngineAPI.getKitLevelRewards().put(60, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(60, new Reward("1000 Tickets;&bLevel 3 Kit Upgrade Available", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(61, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(62, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(63, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
@@ -210,8 +210,8 @@ public class AuroraMCGameEngine extends JavaPlugin {
         EngineAPI.getKitLevelRewards().put(76, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(77, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(78, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
-        EngineAPI.getKitLevelRewards().put(79, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
-        EngineAPI.getKitLevelRewards().put(80, new Reward("1000 Tickets;&bHalf Way There Kill Messages", 0, 1000, 0, Collections.emptyMap(), Collections.singletonList(501)));
+        EngineAPI.getKitLevelRewards().put(79, new Reward("1000 Tickets;&bHalf Way There Kill Messages", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(80, new Reward("1000 Tickets;&bLevel 4 Kit Upgrade Available", 0, 1000, 0, Collections.emptyMap(), Collections.singletonList(501)));
         EngineAPI.getKitLevelRewards().put(81, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(82, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(83, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
@@ -231,7 +231,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         EngineAPI.getKitLevelRewards().put(97, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(98, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(99, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
-        EngineAPI.getKitLevelRewards().put(100, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
+        EngineAPI.getKitLevelRewards().put(100, new Reward("1000 Tickets;&bTwerk Apocalypse Win Effect;&bLevel 5 Kit Upgrade Available", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
 
 
         getLogger().info("Listeners registered. Waiting for games to be registered...");
