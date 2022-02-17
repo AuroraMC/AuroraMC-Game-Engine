@@ -29,6 +29,9 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     private final long joinTimestamp;
     private boolean optedSpec;
 
+    private AuroraMCGamePlayer lastHitBy;
+    private long lastHitAt;
+
     public AuroraMCGamePlayer(AuroraMCPlayer oldPlayer) {
         super(oldPlayer);
         spectator = isVanished();
@@ -115,5 +118,21 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     public void gameOver() {
         rewards = null;
+    }
+
+    public AuroraMCGamePlayer getLastHitBy() {
+        return lastHitBy;
+    }
+
+    public long getLastHitAt() {
+        return lastHitAt;
+    }
+
+    public void setLastHitAt(long lastHitAt) {
+        this.lastHitAt = lastHitAt;
+    }
+
+    public void setLastHitBy(AuroraMCGamePlayer lastHitBy) {
+        this.lastHitBy = lastHitBy;
     }
 }

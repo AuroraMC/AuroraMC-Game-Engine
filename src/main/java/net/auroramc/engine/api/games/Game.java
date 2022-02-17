@@ -427,6 +427,8 @@ public abstract class Game {
 
     public abstract void onPlayerLeave(AuroraMCGamePlayer player);
 
+    public abstract void onRespawn(AuroraMCGamePlayer player);
+
     public List<Kit> getKits() {
         return kits;
     }
