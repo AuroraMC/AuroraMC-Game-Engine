@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,12 +33,17 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     private AuroraMCGamePlayer lastHitBy;
     private long lastHitAt;
 
+    private final Map<AuroraMCGamePlayer, Long> latestHits;
+
     public AuroraMCGamePlayer(AuroraMCPlayer oldPlayer) {
         super(oldPlayer);
         spectator = isVanished();
         kit = null;
         optedSpec = false;
         joinTimestamp = System.currentTimeMillis();
+        lastHitAt = -1;
+        lastHitBy = null;
+        latestHits = new HashMap<>();
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -134,5 +140,9 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     public void setLastHitBy(AuroraMCGamePlayer lastHitBy) {
         this.lastHitBy = lastHitBy;
+    }
+
+    public Map<AuroraMCGamePlayer, Long> getLatestHits() {
+        return latestHits;
     }
 }
