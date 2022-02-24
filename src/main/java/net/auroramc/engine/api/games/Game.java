@@ -91,10 +91,14 @@ public abstract class Game {
             player.sendMessage(startString.toString());
             AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(player);
             if (player1 instanceof AuroraMCGamePlayer) {
+                AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player1;
+                pl.setLastHitAt(-1);
+                pl.setLastHitBy(null);
+                pl.getLatestHits().clear();
                 if (player1.isVanished() || ((AuroraMCGamePlayer) player1).isSpectator()) {
                     player.getPlayer().setAllowFlight(true);
                     player.getPlayer().setFlying(true);
-                    ((AuroraMCGamePlayer) player1).setSpectator(true, true);
+                    pl.setSpectator(true, true);
                     for (Player player2 : Bukkit.getOnlinePlayers()) {
                         player2.hidePlayer(player1.getPlayer());
                     }
@@ -321,6 +325,9 @@ public abstract class Game {
 
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+                    player.setLastHitAt(-1);
+                    player.setLastHitBy(null);
+                    player.getLatestHits().clear();
                     if (player.getJoinTimestamp() > gameSession.getStartTimestamp()) {
                         //The player joined after the game started, go from when they joined.
                         player.getStats().addGameTime(gameSession.getEndTimestamp() - player.getJoinTimestamp(), true);
