@@ -417,7 +417,7 @@ public abstract class Game {
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (EngineAPI.getActiveGame() != null) {
                         player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
-                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && EngineAPI.isTeamBalancingEnabled()) {
+                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
                             player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                         }
                     }

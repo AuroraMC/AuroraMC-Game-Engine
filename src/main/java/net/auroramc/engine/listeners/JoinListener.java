@@ -153,7 +153,7 @@ public class JoinListener implements Listener {
 
             if (EngineAPI.getActiveGame() != null) {
                 player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
-                if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && EngineAPI.isTeamBalancingEnabled()) {
+                if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
                     player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                 }
             }
