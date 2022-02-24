@@ -13,6 +13,7 @@ import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.util.SpectatorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -68,6 +69,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
             getPlayer().setFoodLevel(30);
             if (isDead) {
                 getPlayer().getInventory().clear();
+                getPlayer().getInventory().setArmorContents(new ItemStack[4]);
                 SpectatorUtil.giveItems(this);
                 getPlayer().setExp(0);
                 getPlayer().setLevel(0);

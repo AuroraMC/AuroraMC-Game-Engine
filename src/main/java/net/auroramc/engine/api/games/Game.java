@@ -23,6 +23,7 @@ import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.InGameStartingRunnable;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -85,6 +86,7 @@ public abstract class Game {
             player.getPlayer().setHealth(20);
             player.getPlayer().setFoodLevel(30);
             player.getPlayer().getInventory().clear();
+            player.getInventory().setArmorContents(new ItemStack[4]);
             player.getPlayer().setExp(0);
             player.getPlayer().setLevel(0);
             player.getPlayer().getEnderChest().clear();
@@ -310,6 +312,7 @@ public abstract class Game {
                     pl.getPlayer().setHealth(20);
                     pl.getPlayer().setFoodLevel(30);
                     pl.getPlayer().getInventory().clear();
+                    pl.getPlayer().getInventory().setArmorContents(new ItemStack[4]);
                     pl.getPlayer().setFireTicks(0);
                     pl.getPlayer().setGameMode(GameMode.SURVIVAL);
                     pl.getPlayer().setExp(0);
