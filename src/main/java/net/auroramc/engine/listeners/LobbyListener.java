@@ -142,7 +142,7 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onArmorStandManipulate(PlayerArmorStandManipulateEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
-                e.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 
