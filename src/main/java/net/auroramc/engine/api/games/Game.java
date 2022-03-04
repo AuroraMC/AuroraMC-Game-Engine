@@ -94,6 +94,7 @@ public abstract class Game {
             AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(player);
             if (player1 instanceof AuroraMCGamePlayer) {
                 AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player1;
+                pl.getGameData().clear();
                 pl.setLastHitAt(-1);
                 pl.setLastHitBy(null);
                 pl.getLatestHits().clear();
@@ -328,6 +329,7 @@ public abstract class Game {
 
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+                    player.getGameData().clear();
                     player.setLastHitAt(-1);
                     player.setLastHitBy(null);
                     player.getLatestHits().clear();

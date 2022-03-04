@@ -36,6 +36,8 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     private final Map<AuroraMCGamePlayer, Long> latestHits;
 
+    private final Map<String, Object> gameData;
+
     public AuroraMCGamePlayer(AuroraMCPlayer oldPlayer) {
         super(oldPlayer);
         spectator = isVanished();
@@ -45,6 +47,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
         lastHitAt = -1;
         lastHitBy = null;
         latestHits = new HashMap<>();
+        gameData = new HashMap<>();
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -146,5 +149,9 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     public Map<AuroraMCGamePlayer, Long> getLatestHits() {
         return latestHits;
+    }
+
+    public Map<String, Object> getGameData() {
+        return gameData;
     }
 }
