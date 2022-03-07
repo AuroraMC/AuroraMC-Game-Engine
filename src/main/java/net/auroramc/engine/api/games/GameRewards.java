@@ -55,6 +55,9 @@ public class GameRewards {
     }
 
     public void apply(boolean message) {
+        if (stopTimestamp < 0) {
+            stopTimestamp = System.currentTimeMillis();
+        }
         long totalMs = stopTimestamp - startTimestamp;
         long totalS = totalMs / 1000;
         int timeXp = 0;

@@ -140,7 +140,7 @@ public class CommandGameSet extends Command {
                             pl.setTeam(null);
                         }
                         player1.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
-                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand()) {
+                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
                             player1.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                         }
                     }

@@ -23,6 +23,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.json.JSONArray;
@@ -38,6 +39,7 @@ public class JoinListener implements Listener {
         e.getPlayer().setHealth(20);
         e.getPlayer().setFoodLevel(30);
         e.getPlayer().getInventory().clear();
+        e.getPlayer().getInventory().setArmorContents(new ItemStack[4]);
         e.getPlayer().setExp(0);
         e.getPlayer().setLevel(0);
         e.getPlayer().getEnderChest().clear();
@@ -153,7 +155,7 @@ public class JoinListener implements Listener {
 
             if (EngineAPI.getActiveGame() != null) {
                 player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
-                if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && EngineAPI.isTeamBalancingEnabled()) {
+                if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
                     player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                 }
             }

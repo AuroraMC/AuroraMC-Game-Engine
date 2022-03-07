@@ -23,6 +23,7 @@ import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.InGameStartingRunnable;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -85,6 +86,7 @@ public abstract class Game {
             player.getPlayer().setHealth(20);
             player.getPlayer().setFoodLevel(30);
             player.getPlayer().getInventory().clear();
+            player.getInventory().setArmorContents(new ItemStack[4]);
             player.getPlayer().setExp(0);
             player.getPlayer().setLevel(0);
             player.getPlayer().getEnderChest().clear();
@@ -92,6 +94,7 @@ public abstract class Game {
             AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(player);
             if (player1 instanceof AuroraMCGamePlayer) {
                 AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player1;
+                pl.getGameData().clear();
                 pl.setLastHitAt(-1);
                 pl.setLastHitBy(null);
                 pl.getLatestHits().clear();
@@ -310,6 +313,7 @@ public abstract class Game {
                     pl.getPlayer().setHealth(20);
                     pl.getPlayer().setFoodLevel(30);
                     pl.getPlayer().getInventory().clear();
+                    pl.getPlayer().getInventory().setArmorContents(new ItemStack[4]);
                     pl.getPlayer().setFireTicks(0);
                     pl.getPlayer().setGameMode(GameMode.SURVIVAL);
                     pl.getPlayer().setExp(0);
@@ -325,6 +329,7 @@ public abstract class Game {
 
 
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+                    player.getGameData().clear();
                     player.setLastHitAt(-1);
                     player.setLastHitBy(null);
                     player.getLatestHits().clear();
@@ -417,7 +422,7 @@ public abstract class Game {
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (EngineAPI.getActiveGame() != null) {
                         player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
-                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && EngineAPI.isTeamBalancingEnabled()) {
+                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
                             player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
                         }
                     }
