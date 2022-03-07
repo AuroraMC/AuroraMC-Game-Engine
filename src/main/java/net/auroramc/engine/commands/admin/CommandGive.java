@@ -140,12 +140,12 @@ public class CommandGive extends Command {
                 }
             }
 
-            ItemStack[] is = itemsToGive.toArray(new ItemStack[0]);
-
 
             if (target.equalsIgnoreCase("all")) {
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                    player1.getPlayer().getInventory().addItem(is.clone());
+                    for (ItemStack is : itemsToGive) {
+                        player1.getPlayer().getInventory().addItem(is.clone());
+                    }
                     for (Material material : materials) {
                         player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You were given **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + ((amount > 1)?"s":"") + "** by **" + player.getPlayer().getName() + "**."));
                     }
@@ -159,7 +159,9 @@ public class CommandGive extends Command {
                 for (String target1 : targets) {
                     AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(target1);
                     if (player1 != null) {
-                        player1.getPlayer().getInventory().addItem(is.clone());
+                        for (ItemStack is : itemsToGive) {
+                            player1.getPlayer().getInventory().addItem(is.clone());
+                        }
                         players++;
                         for (Material material : materials) {
                             player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You were given **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + ((amount > 1)?"s":"") + "** by **" + player.getPlayer().getName() + "**."));
