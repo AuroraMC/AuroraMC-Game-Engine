@@ -86,6 +86,8 @@ public abstract class Game {
             player.getPlayer().setHealth(20);
             player.getPlayer().setFoodLevel(30);
             player.getPlayer().getInventory().clear();
+            player.getPlayer().setFallDistance(0);
+            player.getPlayer().setVelocity(new Vector());
             player.getInventory().setArmorContents(new ItemStack[4]);
             player.getPlayer().setExp(0);
             player.getPlayer().setLevel(0);
