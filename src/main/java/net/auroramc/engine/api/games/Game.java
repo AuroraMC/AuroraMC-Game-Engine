@@ -379,7 +379,7 @@ public abstract class Game {
                     scoreboard.setLine(4, "&b&l«SERVER»");
                     scoreboard.setLine(3, AuroraMCAPI.getServerInfo().getName());
                     scoreboard.setLine(2, "    ");
-                    scoreboard.setLine(1, "&7auroramc.net");
+                    scoreboard.setLine(1, "&7You're playing on auroramc.net");
 
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                         if (player1.getRank().getId() >= player.getRank().getId()) {
