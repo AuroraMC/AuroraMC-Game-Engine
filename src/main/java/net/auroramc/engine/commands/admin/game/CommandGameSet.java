@@ -10,6 +10,7 @@ import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.GameUtils;
+import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
@@ -41,8 +42,15 @@ public class CommandGameSet extends Command {
                     String gameString = args.remove(0);
                     GameInfo info = EngineAPI.getGames().get(gameString.toUpperCase());
                     if (info == null) {
-                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
-                        return;
+                        for (GameInfo gameInfo : EngineAPI.getGames().values()) {
+                            if (gameInfo.getRegistryKey().toUpperCase().startsWith(gameString.toUpperCase())) {
+                                info = gameInfo;
+                            }
+                        }
+                        if (info == null) {
+                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
+                            return;
+                        }
                     }
                     GameVariation gameVariation = null;
                     GameMap map = null;
