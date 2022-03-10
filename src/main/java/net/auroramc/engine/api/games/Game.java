@@ -443,7 +443,7 @@ public abstract class Game {
 
     public abstract void onRespawn(AuroraMCGamePlayer player);
 
-    public abstract void onDeath(AuroraMCGamePlayer player);
+    public abstract boolean onDeath(AuroraMCGamePlayer player);
 
     public List<Kit> getKits() {
         return kits;
