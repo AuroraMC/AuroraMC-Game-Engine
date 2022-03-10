@@ -445,6 +445,8 @@ public abstract class Game {
 
     public abstract boolean onDeath(AuroraMCGamePlayer player);
 
+    public abstract void onFinalKill(AuroraMCGamePlayer player);
+
     public List<Kit> getKits() {
         return kits;
     }
