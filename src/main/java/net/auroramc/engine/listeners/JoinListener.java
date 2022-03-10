@@ -100,7 +100,7 @@ public class JoinListener implements Listener {
             EngineAPI.getActiveGame().onPlayerJoin(player);
         } else {
             PlayerScoreboard scoreboard = player.getScoreboard();
-            scoreboard.setTitle("&3&l-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
+            scoreboard.setTitle("&3-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3=-");
             scoreboard.setLine(13, "&b&l«GAME»");
             scoreboard.setLine(12, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
             scoreboard.setLine(11, " ");
@@ -113,7 +113,7 @@ public class JoinListener implements Listener {
             scoreboard.setLine(4, "&b&l«SERVER»");
             scoreboard.setLine(3, AuroraMCAPI.getServerInfo().getName());
             scoreboard.setLine(2, "    ");
-            scoreboard.setLine(1, "&7You're playing on auroramc.net");
+            scoreboard.setLine(1, "&7auroramc.net");
 
             if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
                 if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() + 1 >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {

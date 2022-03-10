@@ -366,7 +366,7 @@ public abstract class Game {
                     player.setKit(null);
                     player.setTeam(null);
                     PlayerScoreboard scoreboard = player.getScoreboard();
-                    scoreboard.setTitle("&3&l-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3&l=-");
+                    scoreboard.setTitle("&3-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3=-");
                     scoreboard.setLine(13, "&b&l«GAME»");
                     scoreboard.setLine(12, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
                     scoreboard.setLine(11, " ");
@@ -379,7 +379,7 @@ public abstract class Game {
                     scoreboard.setLine(4, "&b&l«SERVER»");
                     scoreboard.setLine(3, AuroraMCAPI.getServerInfo().getName());
                     scoreboard.setLine(2, "    ");
-                    scoreboard.setLine(1, "&7You're playing on auroramc.net");
+                    scoreboard.setLine(1, "&7auroramc.net");
 
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                         if (player1.getRank().getId() >= player.getRank().getId()) {
