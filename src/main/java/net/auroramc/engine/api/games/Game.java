@@ -204,7 +204,7 @@ public abstract class Game {
         gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", winner.getName())));
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
-        winnerString.append(" \n");
+        winnerString.append(" \n \n");
         winnerString.append("§");
         winnerString.append(winner.getTeamColor());
         winnerString.append("§l");
