@@ -443,7 +443,7 @@ public abstract class Game {
 
     public abstract void onRespawn(AuroraMCGamePlayer player);
 
-    public abstract boolean onDeath(AuroraMCGamePlayer player);
+    public abstract boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer killer);
 
     public abstract void onFinalKill(AuroraMCGamePlayer player);
 
