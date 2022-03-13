@@ -42,7 +42,7 @@ public class KitLevelMenu extends GUI {
 
         if (level.getLatestUpgrade() < level.getLevel() / 20) {
             int cost;
-            switch (level.getLevel()) {
+            switch (level.getLatestUpgrade()) {
                 case 0: {
                     cost = 25000;
                     break;
@@ -68,7 +68,7 @@ public class KitLevelMenu extends GUI {
                     break;
                 }
             }
-            this.setItem(2, 4, new GUIItem(Material.DIAMOND, "&a&lClick to upgrade your kit!", 1, ";&rCurrent Upgrade: **Level " + level.getLatestUpgrade() + "**;&rUpgrade to: **" + level.getLatestUpgrade() + "**;;&rCost: &6" + cost + " Crowns"));
+            this.setItem(2, 4, new GUIItem(Material.DIAMOND, "&a&lClick to upgrade your kit!", 1, ";&rCurrent Upgrade: **Level " + level.getLatestUpgrade() + "**;&rUpgrade to: **" + (level.getLatestUpgrade() + 1) + "**;;&rCost: &6" + cost + " Crowns"));
         }
 
         int col = 3;
@@ -107,7 +107,7 @@ public class KitLevelMenu extends GUI {
     public void onClick(int row, int column, ItemStack itemClicked, ClickType clickType) {
         if (itemClicked.getType() == Material.DIAMOND) {
             int cost;
-            switch (kitLevel.getLevel()) {
+            switch (kitLevel.getLatestUpgrade()) {
                 case 0: {
                     cost = 25000;
                     break;
