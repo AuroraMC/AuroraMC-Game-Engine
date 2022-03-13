@@ -366,6 +366,7 @@ public abstract class Game {
                     player.setKit(null);
                     player.setTeam(null);
                     PlayerScoreboard scoreboard = player.getScoreboard();
+                    scoreboard.clear();
                     scoreboard.setTitle("&3-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3=-");
                     scoreboard.setLine(13, "&b&l«GAME»");
                     scoreboard.setLine(12, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
