@@ -104,7 +104,7 @@ public class CommandKitXP extends Command {
                 }
 
                 game = EngineAPI.getGames().get(gameName);
-                if (gameName == null) {
+                if (game == null) {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "That is not a valid game!"));
                     return;
                 }
