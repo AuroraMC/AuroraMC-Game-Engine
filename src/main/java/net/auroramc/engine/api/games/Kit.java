@@ -68,4 +68,6 @@ public abstract class Kit {
     public int hashCode() {
         return Objects.hash(id, gameId);
     }
+
+    public abstract String getUpgradeReward(int level);
 }
