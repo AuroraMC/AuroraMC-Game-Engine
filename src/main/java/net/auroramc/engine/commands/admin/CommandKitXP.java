@@ -61,6 +61,9 @@ public class CommandKitXP extends Command {
                         AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
                         Bukkit.broadcastMessage(gp + "");
                         Bukkit.broadcastMessage(gp.getKitLevel() + "");
+                        Bukkit.broadcastMessage(gp.getKitLevel().getGameId() + "");
+                        Bukkit.broadcastMessage(gp.getKitLevel().getKitId() + "");
+                        Bukkit.broadcastMessage(game + "");
                         if (gp.getKitLevel() != null && gp.getKitLevel().getGameId() == game.getId() && gp.getKitLevel().getKitId() == kid) {
                             gp.getKitLevel().addXp(gp.getKit(), amount);
                             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**" + amount +"** XP added to kit **" + gp.getKit().getName() + "** in game **" + game.getName() + "**."));
