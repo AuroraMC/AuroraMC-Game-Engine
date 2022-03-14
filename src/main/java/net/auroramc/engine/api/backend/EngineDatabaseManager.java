@@ -123,6 +123,18 @@ public class EngineDatabaseManager {
         }
     }
 
+    public static PlayerKitLevel getKitLevel(int player, int gameId, int kitId) {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            String level = connection.hget("kitlevel." + player, gameId + "." + kitId);
+            if (level != null) {
+                String[] split = level.split(";");
+                return new PlayerKitLevel(player, gameId, kitId, Integer.parseInt(split[0]), Long.parseLong(split[1]), Long.parseLong(split[2]), Short.parseShort(split[3]));
+            } else {
+                return new PlayerKitLevel(player, gameId, kitId, 0, 0L, 0L, (short)0);
+            }
+        }
+    }
+
     public static float getXpMultiplier() {
         try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
             if (connection.hexists("xpboost", "multiplier")) {

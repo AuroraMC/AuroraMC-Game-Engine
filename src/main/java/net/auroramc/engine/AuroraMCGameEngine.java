@@ -15,12 +15,8 @@ import net.auroramc.engine.commands.CommandDisguiseOverride;
 import net.auroramc.engine.commands.CommandMap;
 import net.auroramc.engine.commands.CommandSpectator;
 import net.auroramc.engine.commands.CommandUndisguiseOverride;
-import net.auroramc.engine.commands.admin.CommandEffect;
-import net.auroramc.engine.commands.admin.CommandGameMode;
-import net.auroramc.engine.commands.admin.CommandGive;
-import net.auroramc.engine.commands.admin.CommandMob;
+import net.auroramc.engine.commands.admin.*;
 import net.auroramc.engine.commands.admin.game.CommandGame;
-import net.auroramc.engine.commands.admin.CommandTeleport;
 import net.auroramc.engine.listeners.*;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -131,6 +127,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         AuroraMCAPI.registerCommand(new CommandEffect());
         AuroraMCAPI.registerCommand(new CommandTeleport());
         AuroraMCAPI.registerCommand(new CommandSpectator());
+        AuroraMCAPI.registerCommand(new CommandKitXP());
 
         EngineAPI.getKitLevelRewards().put(1, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(2, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));

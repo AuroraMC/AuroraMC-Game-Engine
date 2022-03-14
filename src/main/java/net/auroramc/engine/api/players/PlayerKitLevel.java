@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class PlayerKitLevel {
 
     private final AuroraMCGamePlayer player;
+    private final int id;
     private final int gameId;
     private final int kitId;
     private int level;
@@ -23,6 +24,18 @@ public class PlayerKitLevel {
 
     public PlayerKitLevel(AuroraMCGamePlayer player, int gameId, int kitId, int level, long xpIntoLevel, long totalXpEarned, short latestUpgrade) {
         this.player = player;
+        this.id = player.getId();
+        this.gameId = gameId;
+        this.kitId = kitId;
+        this.level = level;
+        this.xpIntoLevel = xpIntoLevel;
+        this.totalXpEarned = totalXpEarned;
+        this.latestUpgrade = latestUpgrade;
+    }
+
+    public PlayerKitLevel(int player, int gameId, int kitId, int level, long xpIntoLevel, long totalXpEarned, short latestUpgrade) {
+        this.player = null;
+        this.id = player;
         this.gameId = gameId;
         this.kitId = kitId;
         this.level = level;
@@ -58,23 +71,54 @@ public class PlayerKitLevel {
         if (this.level < 100 && this.xpIntoLevel >= LevelUtils.xpForLevel((this.level + 1))) {
             do {
                 ++this.level;
-                this.xpIntoLevel -= LevelUtils.xpForLevel((long)this.level);
-                if (EngineAPI.getKitLevelRewards().containsKey(this.level)) {
-                    EngineAPI.getKitLevelRewards().get(this.level).apply(player);
+                this.xpIntoLevel -= LevelUtils.xpForLevel(this.level);
+                if (player != null) {
+                    if (EngineAPI.getKitLevelRewards().containsKey(this.level)) {
+                        EngineAPI.getKitLevelRewards().get(this.level).apply(player);
+                    }
+                } else {
+                    if (EngineAPI.getKitLevelRewards().containsKey(this.level)) {
+                        EngineAPI.getKitLevelRewards().get(this.level).apply(id, AuroraMCAPI.getDbManager().getStatistics(AuroraMCAPI.getDbManager().getUUIDFromID(id)));
+                    }
                 }
-            } while(this.xpIntoLevel >= LevelUtils.xpForLevel((long)(this.level + 1)) && this.level < 100);
+            } while(this.xpIntoLevel >= LevelUtils.xpForLevel(this.level + 1) && this.level < 100);
 
             levelUp = true;
         }
         new BukkitRunnable(){
             @Override
             public void run() {
-                EngineDatabaseManager.setKitLevel(player.getId(), gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
+                EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
             }
         }.runTaskAsynchronously(AuroraMCAPI.getCore());
-        if (levelUp) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You just levelled up kit **" + kit.getName() + "** to level **" + level + "**!"));
+        if (levelUp && player != null) {
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You just levelled up kit **" + kit.getName() + "** to level **" + latestUpgrade + "**!"));
         }
+    }
+
+    public void removeXP(long amount) {
+        this.xpIntoLevel += amount;
+        this.totalXpEarned += amount;
+
+        if (amount > xpIntoLevel) {
+            do {
+                level--;
+                amount -= xpIntoLevel;
+                xpIntoLevel = LevelUtils.xpForLevel(level + 1);
+            } while (amount > xpIntoLevel && LevelUtils.xpForLevel(level) != -1);
+        }
+        xpIntoLevel -= amount;
+
+        if (level / 20 < latestUpgrade) {
+            latestUpgrade = (short)(level / 20);
+        }
+
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
+            }
+        }.runTaskAsynchronously(AuroraMCAPI.getCore());
     }
 
     public void upgrade() {
@@ -82,7 +126,7 @@ public class PlayerKitLevel {
         new BukkitRunnable(){
             @Override
             public void run() {
-                EngineDatabaseManager.setKitLevel(player.getId(), gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
+                EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
             }
         }.runTaskAsynchronously(AuroraMCAPI.getCore());
     }
