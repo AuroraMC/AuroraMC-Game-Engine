@@ -68,7 +68,7 @@ public class KitLevelMenu extends GUI {
                     break;
                 }
             }
-            this.setItem(2, 4, new GUIItem(Material.DIAMOND, "&a&lClick to upgrade your kit!", 1, ";&rCurrent Upgrade: **Level " + level.getLatestUpgrade() + "**;&rUpgrade to: **" + (level.getLatestUpgrade() + 1) + "**;;&rCost: &6" + cost + " Crowns"));
+            this.setItem(2, 4, new GUIItem(Material.DIAMOND, "&a&lClick to upgrade your kit!", 1, ";&rCurrent Upgrade: **Level " + level.getLatestUpgrade() + "**;&rUpgrade to: **" + (level.getLatestUpgrade() + 1) + "**;;&rUnlocks:;" + kit.getUpgradeReward(level.getLatestUpgrade() + 1) + ";&rCost: &6" + cost + " Crowns"));
         }
 
         int col = 3;
