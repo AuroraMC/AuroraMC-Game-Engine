@@ -92,7 +92,7 @@ public class PlayerKitLevel {
             }
         }.runTaskAsynchronously(AuroraMCAPI.getCore());
         if (levelUp && player != null) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You just levelled up kit **" + kit.getName() + "** to level **" + latestUpgrade + "**!"));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You just levelled up kit **" + kit.getName() + "** to level **" + level + "**!"));
         }
     }
 

@@ -137,7 +137,7 @@ public class KitLevelMenu extends GUI {
                 player.getBank().withdrawCrowns(cost, false, true);
                 kitLevel.upgrade();
                 player.getPlayer().closeInventory();
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You purchased **" + kit.getName() + " Kit Level " + kitLevel.getLevel() + "**!"));
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You purchased **" + kit.getName() + " Kit Level " + kitLevel.getLatestUpgrade() + "**!"));
             } else {
                 player.getPlayer().closeInventory();
                 player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You have insufficient funds to buy this kit upgrade!"));
