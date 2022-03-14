@@ -15,6 +15,7 @@ import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.players.PlayerKitLevel;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,11 +59,19 @@ public class CommandKitXP extends Command {
                     player1 = AuroraMCAPI.getPlayer(target);
                     if (player1 != null) {
                         AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
+                        Bukkit.broadcastMessage(gp + "");
+                        Bukkit.broadcastMessage(gp.getKitLevel() + "");
                         if (gp.getKitLevel() != null && gp.getKitLevel().getGameId() == game.getId() && gp.getKitLevel().getKitId() == kid) {
                             gp.getKitLevel().addXp(gp.getKit(), amount);
                             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**" + amount +"** XP added to kit **" + gp.getKit().getName() + "** in game **" + game.getName() + "**."));
                             return;
                         }
+                    }
+                } else {
+                    AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
+                    if (gp.getKitLevel() != null && gp.getKitLevel().getGameId() == game.getId() && gp.getKitLevel().getKitId() == kid) {
+                        gp.getKitLevel().addXp(gp.getKit(), amount);
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**" + amount +"** XP added to kit **" + gp.getKit().getName() + "** in game **" + game.getName() + "**."));
                         return;
                     }
                 }
