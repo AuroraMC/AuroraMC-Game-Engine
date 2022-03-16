@@ -119,6 +119,12 @@ public class CommandKitXP extends Command {
                             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**" + amount + "** XP removed from kit **" + gp.getKit().getName() + "** in game **" + game.getName() + "**."));
                             return;
                         }
+                    }
+                } else {
+                    AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
+                    if (gp.getKitLevel() != null && gp.getKitLevel().getGameId() == game.getId() && gp.getKitLevel().getKitId() == kid) {
+                        gp.getKitLevel().removeXP(amount);
+                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**" + amount +"** XP removed from kit **" + gp.getKit().getName() + "** in game **" + game.getName() + "**."));
                         return;
                     }
                 }
