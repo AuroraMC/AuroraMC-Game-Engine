@@ -97,8 +97,7 @@ public class PlayerKitLevel {
     }
 
     public void removeXP(long amount) {
-        this.xpIntoLevel += amount;
-        this.totalXpEarned += amount;
+        totalXpEarned -= amount;
 
         if (amount > xpIntoLevel) {
             do {

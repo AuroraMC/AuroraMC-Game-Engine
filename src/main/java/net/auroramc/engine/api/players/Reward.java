@@ -87,11 +87,11 @@ public class Reward {
     }
 
     public void apply(int id, PlayerStatistics statistics) {
-        statistics.addXp(this.xp, true);
-        statistics.addTicketsEarned(this.tickets, true);
-        statistics.addCrownsEarned(this.crowns, true);
+        statistics.addXp(this.xp, false);
+        statistics.addTicketsEarned(this.tickets, false);
+        statistics.addCrownsEarned(this.crowns, false);
         for (Map.Entry<Integer, Integer> entry : achievements.entrySet()) {
-            statistics.achievementGained(AuroraMCAPI.getAchievement(entry.getKey()), entry.getValue(), true);
+            statistics.achievementGained(AuroraMCAPI.getAchievement(entry.getKey()), entry.getValue(), false);
         }
         UUID uuid = AuroraMCAPI.getDbManager().getUUIDFromID(id);
         AuroraMCAPI.getDbManager().crownsAdded(uuid, this.crowns);
