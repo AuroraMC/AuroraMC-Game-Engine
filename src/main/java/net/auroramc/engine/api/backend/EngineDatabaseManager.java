@@ -151,4 +151,11 @@ public class EngineDatabaseManager {
         }
     }
 
+    public static void updateServerData() {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            connection.set("serverdata." + AuroraMCAPI.getServerInfo().getNetwork() + "." + AuroraMCAPI.getServerInfo().getName(), AuroraMCAPI.getPlayers().stream().filter(player -> !player.isVanished()).count() + "/" + AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") + ";" + ((EngineAPI.getActiveGameInfo()==null)?"None":EngineAPI.getActiveGameInfo().getName()) + ";" + ((EngineAPI.getActiveMap()==null)?"None":EngineAPI.getActiveMap().getName()));
+            connection.expire("serverdata." + AuroraMCAPI.getServerInfo().getNetwork() + "." + AuroraMCAPI.getServerInfo().getName(), 15);
+        }
+    }
+
 }

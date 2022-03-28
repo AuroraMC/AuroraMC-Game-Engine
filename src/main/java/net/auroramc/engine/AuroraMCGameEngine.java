@@ -111,7 +111,6 @@ public class AuroraMCGameEngine extends JavaPlugin {
         getLogger().info("Waiting lobby copied. Registering listeners and commands...");
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new LobbyListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PingListener(), this);
         Bukkit.getPluginManager().registerEvents(new WorldListener(), this);
         Bukkit.getPluginManager().registerEvents(new ServerCloseRequestListener(), this);
         Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
