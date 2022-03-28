@@ -115,7 +115,7 @@ public class JoinListener implements Listener {
             scoreboard.setLine(2, "    ");
             scoreboard.setLine(1, "&7auroramc.net");
 
-            if (!player.isVanished() && EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
+            if (!player.isVanished() && EngineAPI.getServerState() == ServerState.WAITING_FOR_PLAYERS && EngineAPI.getActiveGame() != null) {
                 if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
                     EngineAPI.setServerState(ServerState.STARTING);
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));

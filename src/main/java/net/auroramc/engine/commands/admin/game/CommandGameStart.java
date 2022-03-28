@@ -52,6 +52,7 @@ public class CommandGameStart extends Command {
                 if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null) {
                     EngineAPI.getGameStartingRunnable().setStartTime(i);
                 } else {
+                    EngineAPI.setServerState(ServerState.STARTING);
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(i));
                     EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
                 }
@@ -59,6 +60,7 @@ public class CommandGameStart extends Command {
                 if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null) {
                     EngineAPI.getGameStartingRunnable().setStartTime(EngineAPI.getGameStartingRunnable().getStartTime() - 2);
                 } else {
+                    EngineAPI.setServerState(ServerState.STARTING);
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
                     EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
                 }
