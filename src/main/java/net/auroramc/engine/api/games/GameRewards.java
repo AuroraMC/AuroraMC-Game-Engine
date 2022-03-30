@@ -95,11 +95,11 @@ public class GameRewards {
         long totalTickets = Math.round((tickets + timeXp)*multiplier);
 
         player.getStats().addXp(totalXp, true);
-        player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "xp_earned", totalXp, true);
+        player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "xpEarned", totalXp, true);
         player.getBank().addCrowns(crowns + timeXp, true, true);
-        player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "crowns_earned", crowns + timeXp, true);
+        player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "crownsEarned", crowns + timeXp, true);
         player.getBank().addTickets(totalTickets, true, true);
-        player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "tickets_earned", totalTickets, true);
+        player.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "ticketsEarned", totalTickets, true);
 
 
         if (message) {
