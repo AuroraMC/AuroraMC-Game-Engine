@@ -230,7 +230,7 @@ public abstract class Game {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
             pl.getStats().addGamePlayed(winner.getPlayers().contains(pl));
-            if (!pl.isVanished() && !pl.isSpectator()) {
+            if (!pl.isVanished() && !pl.isOptedSpec() && pl.getRewards() != null) {
                 pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
                 if (winner.getPlayers().contains(pl)) {
                     pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
