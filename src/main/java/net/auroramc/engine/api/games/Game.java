@@ -110,6 +110,14 @@ public abstract class Game {
                 } else {
                     player.getPlayer().setFlying(false);
                     player.getPlayer().setAllowFlight(false);
+                    if (player1.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(8))) {
+                        player1.getStats().achievementGained(AuroraMCAPI.getAchievement(8), 1, true);
+                    }
+                    if (player1.getStats().getGamesPlayed() >= 10) {
+                        if (player1.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(9))) {
+                            player1.getStats().achievementGained(AuroraMCAPI.getAchievement(9), 1, true);
+                        }
+                    }
                 }
             } else {
                 player.getPlayer().setFlying(false);
@@ -172,6 +180,13 @@ public abstract class Game {
                     pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
                     if (winner.equals(pl)) {
                         pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
+                        if (pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(21))) {
+                            pl.getStats().achievementGained(AuroraMCAPI.getAchievement(21), 1, true);
+                        }
+                    } else {
+                        if (pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(20))) {
+                            pl.getStats().achievementGained(AuroraMCAPI.getAchievement(20), 1, true);
+                        }
                     }
                 }
                 pl.getRewards().stop();
@@ -234,6 +249,13 @@ public abstract class Game {
                 pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
                 if (winner.getPlayers().contains(pl)) {
                     pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
+                    if (pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(21))) {
+                        pl.getStats().achievementGained(AuroraMCAPI.getAchievement(21), 1, true);
+                    }
+                } else {
+                    if (pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(20))) {
+                        pl.getStats().achievementGained(AuroraMCAPI.getAchievement(20), 1, true);
+                    }
                 }
                 if (pl.getRewards() != null) {
                     pl.getRewards().stop();

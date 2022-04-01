@@ -55,6 +55,9 @@ public class LobbyListener implements Listener {
     public void onBreak(BlockBreakEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                if (AuroraMCAPI.getPlayer(e.getPlayer()).getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(5))) {
+                    AuroraMCAPI.getPlayer(e.getPlayer()).getStats().achievementGained(AuroraMCAPI.getAchievement(5), 1, true);
+                }
                 e.setCancelled(true);
             }
         }
