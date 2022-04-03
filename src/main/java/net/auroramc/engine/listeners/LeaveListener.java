@@ -33,8 +33,11 @@ public class LeaveListener implements Listener {
         }
         if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null) {
             if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isSpectator()).count() < AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
-                EngineAPI.getGameStartingRunnable().cancel();
-                EngineAPI.setGameStartingRunnable(null);
+                if (EngineAPI.getGameStartingRunnable() != null) {
+                    EngineAPI.getGameStartingRunnable().cancel();
+                    EngineAPI.setGameStartingRunnable(null);
+                }
+                EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
                 for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Server Manager", "A player has left the game so there are no longer enough players to start the game!"));
                 }
