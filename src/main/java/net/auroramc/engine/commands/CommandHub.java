@@ -28,7 +28,7 @@ public class CommandHub extends Command {
 
     @Override
     public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
-        if (player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(16))) {
+        if (!player.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(16))) {
             player.getStats().achievementGained(AuroraMCAPI.getAchievement(16), 1, true);
         }
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
