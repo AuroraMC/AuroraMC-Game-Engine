@@ -151,9 +151,17 @@ public class EngineDatabaseManager {
         }
     }
 
+    public static void activateXpMultiplier(int days, float multiplier, String message  ) {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            connection.hset("xpboost", "multiplier", multiplier + "");
+            connection.hset("xpboost", "message", message);
+            connection.expire("xpboost", days * 86400);
+        }
+    }
+
     public static void updateServerData() {
         try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
-            connection.set("serverdata." + AuroraMCAPI.getServerInfo().getNetwork().name() + "." + AuroraMCAPI.getServerInfo().getName(), EngineAPI.getServerState().name() + ";" + AuroraMCAPI.getPlayers().stream().filter(player -> !player.isVanished()).count() + "/" + AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") + ";" + ((EngineAPI.getActiveGameInfo()==null)?"None":EngineAPI.getActiveGameInfo().getName()) + ";" + ((EngineAPI.getActiveMap()==null)?"None":EngineAPI.getActiveMap().getName()));
+            connection.set("serverdata." + AuroraMCAPI.getServerInfo().getNetwork().name() + "." + AuroraMCAPI.getServerInfo().getName(), EngineAPI.getServerState().name() + ";" + AuroraMCAPI.getPlayers().stream().filter(player -> !player.isVanished() && (player instanceof AuroraMCGamePlayer && !((AuroraMCGamePlayer) player).isOptedSpec())).count() + "/" + AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") + ";" + ((EngineAPI.getActiveGameInfo()==null)?"None":EngineAPI.getActiveGameInfo().getName()) + ";" + ((EngineAPI.getActiveMap()==null)?"None":EngineAPI.getActiveMap().getName()));
             connection.expire("serverdata." + AuroraMCAPI.getServerInfo().getNetwork().name() + "." + AuroraMCAPI.getServerInfo().getName(), 15);
         }
     }

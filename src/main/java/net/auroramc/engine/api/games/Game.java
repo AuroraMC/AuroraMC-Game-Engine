@@ -416,6 +416,15 @@ public abstract class Game {
                     player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
                 }
 
+                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                    for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                        if (player1.getRank().getId() >= player.getRank().getId()) {
+                            player1.getPlayer().showPlayer(player.getPlayer());
+                            player1.updateNametag(player);
+                        }
+                    }
+                }
+
 
 
                 if (EngineAPI.getNextGame() != null) {

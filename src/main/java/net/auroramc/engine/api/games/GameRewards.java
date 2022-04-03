@@ -134,7 +134,7 @@ public class GameRewards {
             xp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(xpBreakdown.toString()))).create()));
 
             if (EngineAPI.getXpBoostMessage() != null) {
-                xp.addExtra(" " + EngineAPI.getXpBoostMessage() + "\n");
+                xp.addExtra(" " + AuroraMCAPI.getFormatter().convert(EngineAPI.getXpBoostMessage()) + "\n");
             } else {
                 xp.addExtra("\n");
             }

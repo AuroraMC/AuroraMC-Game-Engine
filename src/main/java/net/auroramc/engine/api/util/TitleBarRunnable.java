@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,7 +25,7 @@ public class TitleBarRunnable extends BukkitRunnable {
             }
         } else {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                player.sendHotBar("Players: §b" + AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() + "§r/§b" + AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") + "§r - Lobby: §b" + EngineAPI.getWaitingLobbyMap().getName() + " §rby §b" + EngineAPI.getWaitingLobbyMap().getAuthor(), ChatColor.WHITE, false);
+                player.sendHotBar("Players: §b" + AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && (player1 instanceof AuroraMCGamePlayer && !((AuroraMCGamePlayer) player1).isOptedSpec())).count() + "§r/§b" + AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") + "§r - Lobby: §b" + EngineAPI.getWaitingLobbyMap().getName() + " §rby §b" + EngineAPI.getWaitingLobbyMap().getAuthor(), ChatColor.WHITE, false);
             }
         }
 

@@ -125,6 +125,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
         AuroraMCAPI.registerCommand(new CommandSpectator());
         AuroraMCAPI.registerCommand(new CommandKitXP());
         AuroraMCAPI.registerCommand(new CommandHub());
+        AuroraMCAPI.registerCommand(new CommandXPBoost());
 
         EngineAPI.getKitLevelRewards().put(1, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
         EngineAPI.getKitLevelRewards().put(2, new Reward("1000 Tickets", 0, 1000, 0, Collections.emptyMap(), Collections.emptyList()));
