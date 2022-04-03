@@ -174,7 +174,7 @@ public abstract class Game {
             player.sendTitle((winner == null)?"Nobody won the game":winner.getPlayer().getName() + " won the game!", "", 10, 160, 10, ChatColor.AQUA, ChatColor.AQUA, true, false);
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
-            if (pl.getRewards() != null && !pl.isVanished() && !pl.isSpectator()) {
+            if (pl.getRewards() != null && !pl.isVanished() && !pl.isOptedSpec()) {
                 if (winner != null) {
                     pl.getStats().addGamePlayed(winner.equals(pl));
                     pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
