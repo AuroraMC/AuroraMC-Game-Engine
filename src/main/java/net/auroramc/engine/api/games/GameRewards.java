@@ -49,7 +49,7 @@ public class GameRewards {
     }
 
     public void stop() {
-        if (stopTimestamp == -1) {
+        if (stopTimestamp < 0) {
             stopTimestamp = System.currentTimeMillis();
         }
     }

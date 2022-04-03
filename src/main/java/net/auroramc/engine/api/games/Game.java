@@ -180,11 +180,11 @@ public abstract class Game {
                     pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
                     if (winner.equals(pl)) {
                         pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
-                        if (pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(21))) {
+                        if (!pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(21))) {
                             pl.getStats().achievementGained(AuroraMCAPI.getAchievement(21), 1, true);
                         }
                     } else {
-                        if (pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(20))) {
+                        if (!pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(20))) {
                             pl.getStats().achievementGained(AuroraMCAPI.getAchievement(20), 1, true);
                         }
                     }
@@ -217,6 +217,7 @@ public abstract class Game {
             runnable.cancel();
         }
         gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", winner.getName())));
+        gameSession.end(false);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n \n");
@@ -249,11 +250,11 @@ public abstract class Game {
                 pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
                 if (winner.getPlayers().contains(pl)) {
                     pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
-                    if (pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(21))) {
+                    if (!pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(21))) {
                         pl.getStats().achievementGained(AuroraMCAPI.getAchievement(21), 1, true);
                     }
                 } else {
-                    if (pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(20))) {
+                    if (!pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(20))) {
                         pl.getStats().achievementGained(AuroraMCAPI.getAchievement(20), 1, true);
                     }
                 }
