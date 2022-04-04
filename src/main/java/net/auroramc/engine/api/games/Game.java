@@ -446,11 +446,11 @@ public abstract class Game {
                         }
                     }
                     for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                        if (player1.getRank().getId() >= player.getRank().getId()) {
+                        if (player1.getRank().getId() >= player.getRank().getId() || !player.isVanished()) {
                             player1.getPlayer().showPlayer(player.getPlayer());
                             player1.updateNametag(player);
                         }
-                        if (player.getRank().getId() >= player1.getRank().getId()) {
+                        if (player.getRank().getId() >= player1.getRank().getId() || !player1.isVanished()) {
                             player.getPlayer().showPlayer(player1.getPlayer());
                             player.updateNametag(player1);
                         }
