@@ -111,7 +111,11 @@ public class JoinListener implements Listener {
             scoreboard.setLine(6, ((player.getKit() != null)?player.getKit().getName():"None "));
             scoreboard.setLine(5, "   ");
             scoreboard.setLine(4, "&b&l«SERVER»");
-            scoreboard.setLine(3, AuroraMCAPI.getServerInfo().getName());
+            if (player.getPreferences().isHideDisguiseNameEnabled() && player.isDisguised()) {
+                scoreboard.setLine(3, "&oHidden");
+            } else {
+                scoreboard.setLine(3, AuroraMCAPI.getServerInfo().getName());
+            }
             scoreboard.setLine(2, "    ");
             scoreboard.setLine(1, "&7auroramc.net");
 
