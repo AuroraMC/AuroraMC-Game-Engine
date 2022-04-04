@@ -387,7 +387,7 @@ public abstract class Game {
                     }
 
                     player.setKit(null);
-                    player.setTeam(null);
+                    pl.setTeam(null);
                     PlayerScoreboard scoreboard = player.getScoreboard();
                     scoreboard.clear();
                     scoreboard.setTitle("&3-= &b&l" + EngineAPI.getServerState().getName().toUpperCase() + "&r &3=-");
@@ -407,19 +407,6 @@ public abstract class Game {
                     player.getPlayer().getInventory().setItem(8, EngineAPI.getLobbyItem().getItem());
                     player.getPlayer().getInventory().setItem(7, EngineAPI.getPrefsItem().getItem());
                     player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
-                }
-
-                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                    for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                        if (player1.getRank().getId() >= player.getRank().getId()) {
-                            player1.getPlayer().showPlayer(player.getPlayer());
-                            player1.updateNametag(player);
-                        }
-                        if (player.getRank().getId() >= player1.getRank().getId()) {
-                            player.getPlayer().showPlayer(player1.getPlayer());
-                            player.updateNametag(player1);
-                        }
-                    }
                 }
 
 
@@ -444,7 +431,7 @@ public abstract class Game {
                 }
 
                 if (EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
-                    if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
+                    if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isOptedSpec()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
                         EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
                         EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
                     }
@@ -456,6 +443,16 @@ public abstract class Game {
                         player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
                         if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
                             player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
+                        }
+                    }
+                    for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                        if (player1.getRank().getId() >= player.getRank().getId()) {
+                            player1.getPlayer().showPlayer(player.getPlayer());
+                            player1.updateNametag(player);
+                        }
+                        if (player.getRank().getId() >= player1.getRank().getId()) {
+                            player.getPlayer().showPlayer(player1.getPlayer());
+                            player.updateNametag(player1);
                         }
                     }
                 }
