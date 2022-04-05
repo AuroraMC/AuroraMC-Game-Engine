@@ -113,11 +113,7 @@ public abstract class Game {
                     if (!player1.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(8))) {
                         player1.getStats().achievementGained(AuroraMCAPI.getAchievement(8), 1, true);
                     }
-                    if (player1.getStats().getGamesPlayed() >= 10) {
-                        if (!player1.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(9))) {
-                            player1.getStats().achievementGained(AuroraMCAPI.getAchievement(9), 1, true);
-                        }
-                    }
+                    player1.getStats().addProgress(AuroraMCAPI.getAchievement(9), 1, player1.getStats().getAchievementsGained().getOrDefault(AuroraMCAPI.getAchievement(9), 0), true);
                 }
             } else {
                 player.getPlayer().setFlying(false);
