@@ -34,11 +34,11 @@ public class EngineDatabaseManager {
             }
             file.mkdirs();
             while (set.next()) {
-                File zipFile = new File(file, set.getInt(1) + ".zip");
+                File zipFile = new File(file, set.getInt(2) + ".zip");
                 FileOutputStream output = new FileOutputStream(zipFile);
 
                 System.out.println("Writing to file " + zipFile.getAbsolutePath());
-                InputStream input = set.getBinaryStream(6);
+                InputStream input = set.getBinaryStream(7);
                 byte[] buffer = new byte[1024];
                 while (input.read(buffer) > 0) {
                     output.write(buffer);
