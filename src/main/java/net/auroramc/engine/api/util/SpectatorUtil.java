@@ -8,7 +8,6 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 public class SpectatorUtil {
 

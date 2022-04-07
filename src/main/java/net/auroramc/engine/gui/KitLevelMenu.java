@@ -5,7 +5,6 @@
 package net.auroramc.engine.gui;
 
 import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.utils.LevelUtils;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
@@ -13,7 +12,6 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.players.PlayerKitLevel;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
