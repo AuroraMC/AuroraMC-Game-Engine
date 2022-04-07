@@ -409,25 +409,36 @@ public abstract class Game {
                     player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
                 }
 
-
-
-                if (EngineAPI.getNextGame() != null) {
-                    if (EngineAPI.getNextMap() != null) {
-                        GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
-                    } else {
-                        GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextVariation());
-                    }
-
-                    EngineAPI.setNextMap(null);
-                    EngineAPI.setNextGame(null);
-                    EngineAPI.setNextVariation(null);
-                } else if (EngineAPI.getGameRotation().size() > 0) {
-                    GameUtils.loadNextGame();
-                } else {
+                if (EngineAPI.isAwaitingMapReload()) {
                     EngineAPI.setActiveGameInfo(null);
                     EngineAPI.setActiveGame(null);
                     EngineAPI.setActiveMap(null);
                     EngineAPI.setServerState(ServerState.IDLE);
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            EngineAPI.reloadMaps();
+                        }
+                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                } else {
+                    if (EngineAPI.getNextGame() != null) {
+                        if (EngineAPI.getNextMap() != null) {
+                            GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                        } else {
+                            GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextVariation());
+                        }
+
+                        EngineAPI.setNextMap(null);
+                        EngineAPI.setNextGame(null);
+                        EngineAPI.setNextVariation(null);
+                    } else if (EngineAPI.getGameRotation().size() > 0) {
+                        GameUtils.loadNextGame();
+                    } else {
+                        EngineAPI.setActiveGameInfo(null);
+                        EngineAPI.setActiveGame(null);
+                        EngineAPI.setActiveMap(null);
+                        EngineAPI.setServerState(ServerState.IDLE);
+                    }
                 }
 
                 if (EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {

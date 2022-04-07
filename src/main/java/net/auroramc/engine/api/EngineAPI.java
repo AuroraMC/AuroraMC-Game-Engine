@@ -5,11 +5,14 @@
 package net.auroramc.engine.api;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.utils.ZipUtil;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.AuroraMCGameEngine;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.events.ServerStateChangeEvent;
 import net.auroramc.engine.api.games.*;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.players.Reward;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
@@ -20,8 +23,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -268,6 +276,115 @@ public class EngineAPI {
 
     public static void setAwaitingMapReload(boolean awaitingMapReload) {
         EngineAPI.awaitingMapReload = awaitingMapReload;
+    }
+
+    public static void reloadMaps() {
+        for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+            pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "The server is currently updating its map register. Please wait..."));
+        }
+        setServerState(ServerState.RELOADING_MAPS);
+        EngineAPI.maps.clear();
+        gameEngine.getLogger().info("Downloading all live maps...");
+        File zipFolder = new File(gameEngine.getDataFolder(), "zips");
+        if (zipFolder.exists()) {
+            try {
+                FileUtils.deleteDirectory(zipFolder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        EngineDatabaseManager.downloadMaps();
+        File[] zips = new File(gameEngine.getDataFolder(), "zips").listFiles();
+        assert zips != null;
+
+        gameEngine.getLogger().info(zips.length + " zips downloaded. Extracting maps...");
+        File mapsFolder = new File(gameEngine.getDataFolder(), "maps");
+        if (mapsFolder.exists()) {
+            try {
+                FileUtils.deleteDirectory(mapsFolder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        mapsFolder.mkdirs();
+        for (File zip : zips) {
+            try {
+                ZipUtil.unzip(zip.toPath().toAbsolutePath().toString(), mapsFolder.toPath().toAbsolutePath() + "/" + zip.getName().split("\\.")[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        File[] maps = new File(gameEngine.getDataFolder(), "maps").listFiles();
+        assert maps != null;
+
+        gameEngine.getLogger().info(maps.length + " maps extracted. Loading map registry...");
+        for (File map : maps) {
+            File data = new File(map, "map.json");
+            JSONParser parser = new JSONParser();
+            Object object;
+            JSONObject jsonObject;
+            try {
+                FileReader fileReader = new FileReader(data);
+                object = parser.parse(fileReader);
+                jsonObject = new JSONObject(((org.json.simple.JSONObject)  object).toJSONString());
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+                gameEngine.getLogger().info("Map loading for a map failed, skipping...");
+                continue;
+            }
+
+            String gameType = jsonObject.getString("game_type");
+            int id = Integer.parseInt(map.getName().split("\\.")[0]);
+            String name = jsonObject.getString("name");
+            String author = jsonObject.getString("author");
+            if (EngineAPI.maps.containsKey(gameType)) {
+                EngineAPI.maps.get(gameType).getMaps().add(new GameMap(map, id, name, author, jsonObject));
+            } else {
+                MapRegistry registry = new MapRegistry(gameType);
+                registry.getMaps().add(new GameMap(map, id, name, author, jsonObject));
+                EngineAPI.maps.put(gameType, registry);
+            }
+        }
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                if (EngineAPI.getNextGame() != null) {
+                    if (EngineAPI.getNextMap() != null) {
+                        GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextMap(), EngineAPI.getNextVariation());
+                    } else {
+                        GameUtils.loadGame(EngineAPI.getNextGame(), EngineAPI.getNextVariation());
+                    }
+
+                    EngineAPI.setNextMap(null);
+                    EngineAPI.setNextGame(null);
+                    EngineAPI.setNextVariation(null);
+                } else if (EngineAPI.getGameRotation().size() > 0) {
+                    GameUtils.loadNextGame();
+                } else {
+                    EngineAPI.setActiveGameInfo(null);
+                    EngineAPI.setActiveGame(null);
+                    EngineAPI.setActiveMap(null);
+                    EngineAPI.setServerState(ServerState.IDLE);
+                }
+                if (EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
+                    if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isOptedSpec()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
+                        EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
+                        EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+                    }
+                }
+
+                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                    pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Maps have finished loading! Play will now continue!"));
+                    AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
+                    if (EngineAPI.getActiveGame() != null) {
+                        player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                        if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
+                            player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
+                        }
+                    }
+                }
+            }
+        }.runTask(AuroraMCAPI.getCore());
     }
 
     public static void setRestartType(String restartType) {

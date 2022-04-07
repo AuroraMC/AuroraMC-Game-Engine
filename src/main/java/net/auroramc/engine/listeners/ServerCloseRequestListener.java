@@ -6,6 +6,7 @@ package net.auroramc.engine.listeners;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.backend.communication.CommunicationUtils;
 import net.auroramc.core.api.backend.communication.Protocol;
@@ -56,6 +57,21 @@ public class ServerCloseRequestListener implements Listener {
         if (e.getMessage().getProtocol() == Protocol.UPDATE_PLAYER_COUNT) {
             EngineAPI.setXpBoostMessage(EngineDatabaseManager.getXpMessage());
             EngineAPI.setXpBoostMultiplier(EngineDatabaseManager.getXpMultiplier());
+        } else if (e.getMessage().getProtocol() == Protocol.UPDATE_MAPS) {
+            if (EngineAPI.getServerState() == ServerState.IDLE || EngineAPI.getServerState() == ServerState.WAITING_FOR_PLAYERS) {
+                EngineAPI.setActiveGameInfo(null);
+                EngineAPI.setActiveGame(null);
+                EngineAPI.setActiveMap(null);
+                EngineAPI.setServerState(ServerState.IDLE);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        EngineAPI.reloadMaps();
+                    }
+                }.runTaskAsynchronously(AuroraMCAPI.getCore());
+            } else {
+                EngineAPI.setAwaitingMapReload(true);
+            }
         }
     }
 

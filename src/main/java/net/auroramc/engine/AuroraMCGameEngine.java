@@ -35,6 +35,14 @@ public class AuroraMCGameEngine extends JavaPlugin {
         EngineAPI.init(this);
 
         getLogger().info("Downloading all live maps...");
+        File zipFolder = new File(getDataFolder(), "zips");
+        if (zipFolder.exists()) {
+            try {
+                FileUtils.deleteDirectory(zipFolder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         EngineDatabaseManager.downloadMaps();
         File[] zips = new File(getDataFolder(), "zips").listFiles();
         assert zips != null;
