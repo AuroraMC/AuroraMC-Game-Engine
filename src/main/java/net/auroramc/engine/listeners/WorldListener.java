@@ -22,6 +22,7 @@ public class WorldListener implements Listener {
             e.getWorld().setGameRuleValue("doMobSpawning", "false");
             e.getWorld().setGameRuleValue("doDaylightCycle", "false");
             e.getWorld().setGameRuleValue("doFireTick", "false");
+            e.getWorld().setGameRuleValue("randomTickSpeed", "0");
         }
     }
 
@@ -30,6 +31,7 @@ public class WorldListener implements Listener {
         if (e.getWorld().getName().equalsIgnoreCase("world")) {
             e.getWorld().setGameRuleValue("doMobSpawning", "false");
             e.getWorld().setGameRuleValue("doDaylightCycle", "false");
+            e.getWorld().setGameRuleValue("randomTickSpeed", "0");
             JSONObject mapData = EngineAPI.getWaitingLobbyMap().getMapData();
             if (mapData.has("time")) {
                 e.getWorld().setTime(mapData.getInt("time"));

@@ -56,6 +56,7 @@ public class GameUtils {
             world.setGameRuleValue("doDaylightCycle", "false");
             world.setGameRuleValue("doMobSpawning", "false");
             world.setGameRuleValue("doFireTick", "false");
+            world.setGameRuleValue("randomTickSpeed", "0");
             if (map.getMapData().has("time")) {
                 world.setTime(map.getMapData().getInt("time"));
             }
