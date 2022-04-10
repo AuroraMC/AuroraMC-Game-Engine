@@ -13,6 +13,7 @@ import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.VoidGenerator;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -78,7 +79,7 @@ public class GameUtils {
                                 }
                             }
                             gp.setKit(kit);
-                            player.getScoreboard().setLine(6, kit.getName() + " ");
+                            player.getScoreboard().setLine(6, ChatColor.stripColor(kit.getName()) + " ");
                             Kit finalKit = kit;
                             new BukkitRunnable(){
                                 @Override

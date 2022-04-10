@@ -17,6 +17,7 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -108,7 +109,7 @@ public class JoinListener implements Listener {
             scoreboard.setLine(9, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None  "));
             scoreboard.setLine(8, "  ");
             scoreboard.setLine(7, "&b&l«KIT»");
-            scoreboard.setLine(6, ((player.getKit() != null)?player.getKit().getName():"None "));
+            scoreboard.setLine(6, ((player.getKit() != null)? ChatColor.stripColor(player.getKit().getName()) :"None "));
             scoreboard.setLine(5, "   ");
             scoreboard.setLine(4, "&b&l«SERVER»");
             if (player.getPreferences().isHideDisguiseNameEnabled() && player.isDisguised()) {
