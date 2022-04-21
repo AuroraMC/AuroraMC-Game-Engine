@@ -17,6 +17,7 @@ import net.auroramc.core.api.players.Team;
 import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.GameUtils;
+import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
@@ -134,6 +135,12 @@ public abstract class Game {
         runnable = new InGameStartingRunnable(this);
         runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
         gameSession.start();
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                EngineDatabaseManager.gameStarted();
+            }
+        }.runTaskAsynchronously(EngineAPI.getGameEngine());
     }
 
     public void inProgress() {
