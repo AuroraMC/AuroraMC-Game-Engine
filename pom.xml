@@ -161,7 +161,7 @@
         <dependency>
             <groupId>net.auroramc</groupId>
             <artifactId>AuroraMC-Core</artifactId>
-            <version>1.0-20220413.193755-278</version>
+            <version>1.0-20220421.114831-279</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
