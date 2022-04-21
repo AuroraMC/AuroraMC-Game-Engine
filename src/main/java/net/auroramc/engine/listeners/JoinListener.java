@@ -100,14 +100,9 @@ public class JoinListener implements Listener {
         AuroraMCGamePlayer player = new AuroraMCGamePlayer(e.getPlayer());
         e.setPlayer(player);
         if (!player.isVanished()) {
-            String message;
-            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.SERVER_MESSAGE)) {
-                message = ((ServerMessage)player.getActiveCosmetics().get(Cosmetic.CosmeticType.SERVER_MESSAGE)).onJoin(player);
-            } else {
-                message = ((ServerMessage)AuroraMCAPI.getCosmetics().get(400)).onJoin(player);
-            }
+            ServerMessage message = ((ServerMessage)player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.SERVER_MESSAGE, AuroraMCAPI.getCosmetics().get(400)));
             for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Join", message));
+                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Join", message.onJoin(player1, player)));
             }
         }
         if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame() != null) {
