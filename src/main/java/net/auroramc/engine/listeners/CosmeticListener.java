@@ -18,7 +18,7 @@ public class CosmeticListener implements Listener {
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
         if (e.getEntity().getShooter() instanceof Player) {
-            AuroraMCPlayer player = AuroraMCAPI.getPlayer((Player)e.getEntity());
+            AuroraMCPlayer player = AuroraMCAPI.getPlayer((Player)e.getEntity().getShooter());
             if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.PROJECTILE_TRAIL)) {
                 ((ProjectileTrail)player.getActiveCosmetics().get(Cosmetic.CosmeticType.PROJECTILE_TRAIL)).onShoot(e.getEntity());
             }
