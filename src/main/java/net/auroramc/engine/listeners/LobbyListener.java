@@ -8,6 +8,8 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.VanishEvent;
+import net.auroramc.core.api.events.cosmetics.CosmeticEnableEvent;
+import net.auroramc.core.api.events.cosmetics.CosmeticSwitchEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.gui.cosmetics.Cosmetics;
 import net.auroramc.core.gui.preferences.Preferences;
@@ -263,6 +265,21 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onVanish(VanishEvent e) {
         if (e.isVanish() && (EngineAPI.getServerState() == ServerState.ENDING || EngineAPI.getServerState() == ServerState.IN_GAME)) {
+            e.setCancelled(true);
+        }
+    }
+
+
+    @EventHandler
+    public void onCosmeticEnable(CosmeticEnableEvent e) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onCosmeticSwitch(CosmeticSwitchEvent e) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
             e.setCancelled(true);
         }
     }
