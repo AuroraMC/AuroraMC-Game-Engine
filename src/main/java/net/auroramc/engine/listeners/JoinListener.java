@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
 import net.auroramc.core.api.cosmetics.ServerMessage;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
+import net.auroramc.core.api.permissions.Rank;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
@@ -23,6 +24,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -30,6 +32,17 @@ import org.bukkit.potion.PotionEffectType;
 import org.json.JSONArray;
 
 public class JoinListener implements Listener {
+
+    @EventHandler
+    public void onJoin(AsyncPlayerPreLoginEvent e) {
+        Rank rank = AuroraMCAPI.getDbManager().getRank(e.getUniqueId());
+        boolean isVanished = AuroraMCAPI.getDbManager().isVanished(e.getUniqueId());
+        if (!(rank.hasPermission("moderation") && isVanished) && !rank.hasPermission("master")) {
+            if (AuroraMCAPI.getPlayers().stream().filter(player -> !player.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") && AuroraMCAPI.getServerInfo().getServerType().has("enforce_limit")) {
+                e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_FULL, "This server is currently full. In order to bypass this, you need to purchase a rank!");
+            }
+        }
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -87,14 +100,9 @@ public class JoinListener implements Listener {
         AuroraMCGamePlayer player = new AuroraMCGamePlayer(e.getPlayer());
         e.setPlayer(player);
         if (!player.isVanished()) {
-            String message;
-            if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.SERVER_MESSAGE)) {
-                message = ((ServerMessage)player.getActiveCosmetics().get(Cosmetic.CosmeticType.SERVER_MESSAGE)).onJoin(player);
-            } else {
-                message = ((ServerMessage)AuroraMCAPI.getCosmetics().get(400)).onJoin(player);
-            }
+            ServerMessage message = ((ServerMessage)player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.SERVER_MESSAGE, AuroraMCAPI.getCosmetics().get(400)));
             for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Join", message));
+                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Join", message.onJoin(player1, player)));
             }
         }
         if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame() != null) {

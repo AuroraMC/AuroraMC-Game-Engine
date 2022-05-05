@@ -8,6 +8,8 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.events.VanishEvent;
+import net.auroramc.core.api.events.cosmetics.CosmeticEnableEvent;
+import net.auroramc.core.api.events.cosmetics.CosmeticSwitchEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.gui.cosmetics.Cosmetics;
 import net.auroramc.core.gui.preferences.Preferences;
@@ -35,6 +37,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -95,13 +98,13 @@ public class LobbyListener implements Listener {
             }
         }
 
-        if (e.getEntity() instanceof Rabbit && !((Rabbit)e.getEntity()).isAdult()) {
+        if (e.getEntity() instanceof Rabbit && !((Rabbit) e.getEntity()).isAdult()) {
             if (e.getEntity().isInsideVehicle()) {
                 if (e.getEntity().getVehicle() instanceof Damageable) {
                     e.setCancelled(true);
                     Damageable damageable = (Damageable) e.getEntity().getVehicle();
                     if (e instanceof EntityDamageByEntityEvent) {
-                        damageable.damage(e.getDamage(), ((EntityDamageByEntityEvent)e).getDamager());
+                        damageable.damage(e.getDamage(), ((EntityDamageByEntityEvent) e).getDamager());
                     } else {
                         damageable.damage(e.getDamage());
                     }
@@ -113,7 +116,7 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity().getPassenger() != null) {
-            if (e.getEntity().getPassenger() instanceof Rabbit && !((Rabbit)e.getEntity().getPassenger()).isAdult()) {
+            if (e.getEntity().getPassenger() instanceof Rabbit && !((Rabbit) e.getEntity().getPassenger()).isAdult()) {
                 if (e.getEntity().getPassenger().getPassenger() != null) {
                     e.getEntity().getPassenger().getPassenger().remove();
                 }
@@ -153,11 +156,11 @@ public class LobbyListener implements Listener {
         if (e.getState() != ServerState.ENDING && e.getState() != ServerState.IN_GAME) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 player.getScoreboard().setTitle("&3-= &b&l" + e.getState().getName().toUpperCase() + "&r &3=-");
-                player.getScoreboard().setLine(12, ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName():"None   "));
-                player.getScoreboard().setLine(9, ((EngineAPI.getActiveMap() != null)?EngineAPI.getActiveMap().getName():"None  "));
+                player.getScoreboard().setLine(12, ((EngineAPI.getActiveGameInfo() != null) ? EngineAPI.getActiveGameInfo().getName() : "None   "));
+                player.getScoreboard().setLine(9, ((EngineAPI.getActiveMap() != null) ? EngineAPI.getActiveMap().getName() : "None  "));
                 if (player instanceof AuroraMCGamePlayer) {
                     AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
-                    player.getScoreboard().setLine(6, ((pl.getKit() != null)?pl.getKit().getName():"None "));
+                    player.getScoreboard().setLine(6, ((pl.getKit() != null) ? pl.getKit().getName() : "None "));
                 }
                 updateHeaderFooter((CraftPlayer) player.getPlayer());
             }
@@ -173,7 +176,7 @@ public class LobbyListener implements Listener {
 
     public static void updateHeaderFooter(CraftPlayer player2) {
         try {
-            IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null)?EngineAPI.getActiveGameInfo().getName().toUpperCase():EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
+            IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null) ? EngineAPI.getActiveGameInfo().getName().toUpperCase() : EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
             IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"Purchase ranks, cosmetics and more at store.auroramc.net!\",\"color\":\"aqua\",\"bold\":\"false\"}");
 
             PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
@@ -267,4 +270,18 @@ public class LobbyListener implements Listener {
         }
     }
 
+
+    @EventHandler
+    public void onCosmeticEnable(CosmeticEnableEvent e) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onCosmeticSwitch(CosmeticSwitchEvent e) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+            e.setCancelled(true);
+        }
+    }
 }

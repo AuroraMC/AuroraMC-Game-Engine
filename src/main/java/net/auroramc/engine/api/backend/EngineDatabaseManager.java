@@ -166,4 +166,17 @@ public class EngineDatabaseManager {
         }
     }
 
+    public static void gameStarted() {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            connection.hincrBy(String.format("stat.gamesstarted.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "DAILY", 1);
+            connection.hincrBy(String.format("stat.gamesstarted.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "WEEKLY", 1);
+            connection.hincrBy(String.format("stat.gamesstarted.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "ALLTIME", 1);
+
+            int amount = (int) AuroraMCAPI.getPlayers().stream().filter(player -> !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).count();
+            connection.hincrBy(String.format("stat.playerspergame.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "DAILY", amount);
+            connection.hincrBy(String.format("stat.playerspergame.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "WEEKLY", amount);
+            connection.hincrBy(String.format("stat.playerspergame.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "ALLTIME", amount);
+        }
+    }
+
 }
