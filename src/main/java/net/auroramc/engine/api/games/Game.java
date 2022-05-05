@@ -166,8 +166,24 @@ public abstract class Game {
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
 
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.getPlayer().sendMessage(winnerString.toString());
-            player.sendTitle((winner == null)?"Nobody won the game":winner.getPlayer().getName() + " won the game!", "", 10, 160, 10, ChatColor.AQUA, ChatColor.AQUA, true, false);
+            if (player.equals(winner) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled()) {
+                String winnerString2 = "§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n" +
+                        " \n \n" +
+                        "§b§l" +
+                        winner.getName() +
+                        " won the game!" +
+                        "\n \n \n" +
+                        "§b§lMap: §r" +
+                        map.getName() +
+                        " by " +
+                        map.getAuthor() +
+                        "\n" +
+                        "§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n";
+                player.getPlayer().sendMessage(winnerString2);
+            } else {
+                player.getPlayer().sendMessage(winnerString.toString());
+            }
+            player.sendTitle((winner == null)?"Nobody won the game":((player.equals(winner) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?winner.getName():winner.getPlayer().getName()) + " won the game!", "", 10, 160, 10, ChatColor.AQUA, ChatColor.AQUA, true, false);
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
             if (pl.getRewards() != null && !pl.isVanished() && !pl.isOptedSpec()) {
@@ -237,7 +253,36 @@ public abstract class Game {
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
 
         for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            player.getPlayer().sendMessage(winnerString.toString());
+            if (winner.getPlayers().contains(player) && player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled()) {
+                StringBuilder winnerString2 = new StringBuilder();
+                winnerString2.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
+                winnerString2.append(" \n \n");
+                winnerString2.append("§");
+                winnerString2.append(winner.getTeamColor());
+                winnerString2.append("§l");
+                winnerString2.append((winnerName != null)?winnerName:winner.getName());
+                winnerString2.append(" won the game!");
+                winnerString2.append("\n§rPlayers: §b");
+                winners = new ArrayList<>();
+                for (AuroraMCPlayer player2 : winner.getPlayers()) {
+                    if (player2.equals(player)) {
+                        winners.add(player2.getName());
+                    } else {
+                        winners.add(player2.getPlayer().getName());
+                    }
+                }
+                winnerString2.append(String.join("§r, §b", winners));
+                winnerString2.append("\n \n");
+                winnerString2.append("§b§lMap: §r");
+                winnerString2.append(map.getName());
+                winnerString2.append(" by ");
+                winnerString2.append(map.getAuthor());
+                winnerString2.append("\n");
+                winnerString2.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
+                player.getPlayer().sendMessage(winnerString2.toString());
+            } else {
+                player.getPlayer().sendMessage(winnerString.toString());
+            }
             player.sendTitle(winner.getName() + " won the game!", "", 10, 160, 10, ChatColor.getByChar(winner.getTeamColor()), ChatColor.AQUA, true, false);
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
