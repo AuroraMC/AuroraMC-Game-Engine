@@ -92,12 +92,14 @@ public class Kits extends GUI {
                     player.getPlayer().closeInventory();
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You set your kit to **" + kit.getName() + "**."));
                     player.getScoreboard().setLine(6, ChatColor.stripColor(player.getKit().getName()) + " ");
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
-                        }
-                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                    if (!AuroraMCAPI.isTestServer()) {
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
+                            }
+                        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                    }
                 } else if (clickType == ClickType.RIGHT || clickType == ClickType.SHIFT_RIGHT) {
                     new BukkitRunnable(){
                         @Override
@@ -126,14 +128,15 @@ public class Kits extends GUI {
                         player.getPlayer().closeInventory();
                         player.setKit(kit);
                         player.getScoreboard().setLine(6, ChatColor.stripColor(player.getKit().getName()) + " ");
-                        new BukkitRunnable(){
-                            @Override
-                            public void run() {
-                                EngineDatabaseManager.setUnlockedKits(player.getId(), kit.getGameId(), player.getUnlockedKits().get(kit.getGameId()));
-                                EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
-                            }
-                        }.runTaskAsynchronously(AuroraMCAPI.getCore());
-
+                        if (!AuroraMCAPI.isTestServer()) {
+                            new BukkitRunnable(){
+                                @Override
+                                public void run() {
+                                    EngineDatabaseManager.setUnlockedKits(player.getId(), kit.getGameId(), player.getUnlockedKits().get(kit.getGameId()));
+                                    EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
+                                }
+                            }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                        }
                     } else {
                         player.getPlayer().closeInventory();
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You have insufficient funds to buy kit **" + kit.getName() + "**."));

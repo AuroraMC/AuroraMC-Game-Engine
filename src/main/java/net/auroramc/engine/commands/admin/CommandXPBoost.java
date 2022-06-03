@@ -39,7 +39,9 @@ public class CommandXPBoost extends Command {
                return;
            }
            String message = String.join(" ", args);
-           EngineDatabaseManager.activateXpMultiplier(duration, multiplier, message);
+           if (!AuroraMCAPI.isTestServer()) {
+               EngineDatabaseManager.activateXpMultiplier(duration, multiplier, message);
+           }
            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("XP Boost", "XP Boost activated! Please give up to a minute for the change to be reflected in-game!"));
        } else {
            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("XP Boost", "Invalid syntax. Correct syntax: **/xpboost [duration in days] [multiplier] [message...]**"));

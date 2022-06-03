@@ -26,7 +26,7 @@ public class EngineDatabaseManager {
 
     public static void downloadMaps() {
         try (Connection connection = AuroraMCAPI.getDbManager().getMySQLConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM maps WHERE parse_version = 'LIVE'");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM maps" + ((AuroraMCAPI.isTestServer())?" ORDER BY last_modified DESC":" WHERE parse_version = 'LIVE'"));
             ResultSet set = statement.executeQuery();
             File file = new File(EngineAPI.getGameEngine().getDataFolder(), "zips");
             if (file.exists()) {
@@ -35,6 +35,10 @@ public class EngineDatabaseManager {
             file.mkdirs();
             while (set.next()) {
                 File zipFile = new File(file, set.getInt(2) + ".zip");
+                if (zipFile.exists()) {
+                    //There is already a map here and is newer so ignore.
+                    continue;
+                }
                 FileOutputStream output = new FileOutputStream(zipFile);
 
                 System.out.println("Writing to file " + zipFile.getAbsolutePath());

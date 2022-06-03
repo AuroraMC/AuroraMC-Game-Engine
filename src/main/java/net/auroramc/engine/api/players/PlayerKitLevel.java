@@ -85,12 +85,15 @@ public class PlayerKitLevel {
 
             levelUp = true;
         }
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
-            }
-        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        if (!AuroraMCAPI.isTestServer()) {
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
+                }
+            }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        }
+
         if (levelUp && player != null) {
             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You just levelled up kit **" + kit.getName() + "** to level **" + level + "**!"));
         }
@@ -112,22 +115,26 @@ public class PlayerKitLevel {
             latestUpgrade = (short)(level / 20);
         }
 
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
-            }
-        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        if (!AuroraMCAPI.isTestServer()) {
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
+                }
+            }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        }
     }
 
     public void upgrade() {
         latestUpgrade++;
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
-            }
-        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        if (!AuroraMCAPI.isTestServer()) {
+            new BukkitRunnable(){
+                @Override
+                public void run() {
+                    EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
+                }
+            }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        }
     }
 
     public short getLatestUpgrade() {
