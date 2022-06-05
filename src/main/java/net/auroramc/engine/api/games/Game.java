@@ -22,6 +22,10 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
 import net.auroramc.engine.api.util.GameStartingRunnable;
 import net.auroramc.engine.api.util.InGameStartingRunnable;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -460,6 +464,40 @@ public abstract class Game {
                     player.getPlayer().getInventory().setItem(7, EngineAPI.getPrefsItem().getItem());
                     player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
                 }
+
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        TextComponent textComponent = new TextComponent("");
+
+                        TextComponent lines = new TextComponent("-----------------------------------------------------\n");
+                        lines.setStrikethrough(true);
+                        lines.setColor(net.md_5.bungee.api.ChatColor.DARK_AQUA);
+                        textComponent.addExtra(lines);
+
+                        TextComponent enjoy = new TextComponent("Did you enjoy this game?");
+                        enjoy.setBold(true);
+                        enjoy.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                        textComponent.addExtra(enjoy);
+
+                        TextComponent purchase = new TextComponent("\n \nConsider supporting AuroraMC by purchasing a premium rank! Check out our latest offerings at ");
+                        textComponent.addExtra(purchase);
+
+                        TextComponent store = new TextComponent("store.auroramc.net");
+                        store.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(AuroraMCAPI.getFormatter().convert("&aClickt to visit the store!")).create()));
+                        store.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://store.auroramc.net"));
+                        store.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                        textComponent.addExtra(store);
+                        textComponent.addExtra(lines);
+
+
+                        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                            if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
+                                player.getPlayer().spigot().sendMessage(textComponent);
+                            }
+                        }
+                    }
+                }.runTaskLater(AuroraMCAPI.getCore(), 100);
 
                 if (EngineAPI.isAwaitingMapReload()) {
                     EngineAPI.setActiveGameInfo(null);
