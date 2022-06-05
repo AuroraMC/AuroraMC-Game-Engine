@@ -5,6 +5,7 @@
 package net.auroramc.engine.api.players;
 
 import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.core.api.cosmetics.Gadget;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.GameRewards;
@@ -35,6 +36,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     private final Map<AuroraMCGamePlayer, Long> latestHits;
 
     private final Map<String, Object> gameData;
+    private final Map<Gadget, Long> lastUsed;
 
     public AuroraMCGamePlayer(AuroraMCPlayer oldPlayer) {
         super(oldPlayer);
@@ -46,6 +48,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
         lastHitBy = null;
         latestHits = new HashMap<>();
         gameData = new HashMap<>();
+        lastUsed = new HashMap<>();
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -151,5 +154,9 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
 
     public Map<String, Object> getGameData() {
         return gameData;
+    }
+
+    public Map<Gadget, Long> getLastUsed() {
+        return lastUsed;
     }
 }
