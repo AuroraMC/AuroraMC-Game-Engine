@@ -29,6 +29,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 
 import java.util.Map;
@@ -110,7 +111,12 @@ public class JoinListener implements Listener {
         if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame() != null) {
             for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
                 if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT  || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
-                    entry.getValue().onUnequip(player);
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            entry.getValue().onUnequip(player);
+                        }
+                    }.runTaskLater(AuroraMCAPI.getCore(), 1);
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
                 }
             }
