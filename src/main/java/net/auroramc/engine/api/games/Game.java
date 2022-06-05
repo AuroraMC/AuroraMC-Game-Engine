@@ -36,10 +36,7 @@ import org.bukkit.util.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Game {
 
@@ -465,39 +462,88 @@ public abstract class Game {
                     player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
                 }
 
-                new BukkitRunnable(){
-                    @Override
-                    public void run() {
-                        TextComponent textComponent = new TextComponent("");
+                if (new Random().nextBoolean()) {
+                    new BukkitRunnable(){
+                        @Override
+                        public void run() {
+                            TextComponent textComponent = new TextComponent("");
 
-                        TextComponent lines = new TextComponent("-----------------------------------------------------\n");
-                        lines.setStrikethrough(true);
-                        lines.setColor(net.md_5.bungee.api.ChatColor.DARK_AQUA);
-                        textComponent.addExtra(lines);
+                            TextComponent lines = new TextComponent("-----------------------------------------------------");
+                            lines.setStrikethrough(true);
+                            lines.setColor(net.md_5.bungee.api.ChatColor.DARK_AQUA);
+                            textComponent.addExtra(lines);
 
-                        TextComponent enjoy = new TextComponent("Did you enjoy this game?");
-                        enjoy.setBold(true);
-                        enjoy.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                        textComponent.addExtra(enjoy);
+                            textComponent.addExtra("\n");
 
-                        TextComponent purchase = new TextComponent("\n \nConsider supporting AuroraMC by purchasing a premium rank! Check out our latest offerings at ");
-                        textComponent.addExtra(purchase);
+                            String title;
 
-                        TextComponent store = new TextComponent("store.auroramc.net");
-                        store.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(AuroraMCAPI.getFormatter().convert("&aClickt to visit the store!")).create()));
-                        store.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://store.auroramc.net"));
-                        store.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                        textComponent.addExtra(store);
-                        textComponent.addExtra(lines);
+                            switch (new Random().nextInt(5)) {
+                                case 1:
+
+                                    break;
+                                case 2:
+                                    break;
+                                case 3:
+
+                                    break;
+                                case 4:
+                                    break;
+                                default:
+
+                                    break;
+                            }
+
+                            String msg;
+
+                            switch (new Random().nextInt(5)) {
+                                case 1:
+                                    title = "Support the network by subscribing to AuroraMC Plus!";
+                                    msg = "A Plus subscription gives you some awesome new features, and supports us in the process! View all of our packages at ";
+                                    break;
+                                case 2:
+                                    title = "Take your AuroraMC experience to the next level!";
+                                    msg = "Purchase the AuroraMC Starter Pack to get a head start, it comes with Elite and 11 exclusive cosmetics! Purchase the bundle at ";
+                                    break;
+                                case 3:
+                                    title = "Want some cool limited-time cosmetics and other extras?!";
+                                    msg = "Our Grand Celebration bundle is on sale for a limited-time only! This bundle is only live for 30 days, so grab it while you can! Purchase the bundle at ";
+                                    break;
+                                case 4:
+                                    title = "You seem cool... and cool people deserve ranks!";
+                                    msg = "Ranks are a great way to support the network, and you get loads of benefits too! See all rank benefits at ";
+                                    break;
+                                default:
+                                    title = "Did you enjoy this game?";
+                                    msg = "Consider supporting AuroraMC by purchasing a premium rank! Check out our latest offerings at ";
+                                    break;
+                            }
+
+                            TextComponent enjoy = new TextComponent(title);
+                            enjoy.setBold(true);
+                            enjoy.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                            textComponent.addExtra(enjoy);
+
+                            textComponent.addExtra("\n \n");
+
+                            TextComponent purchase = new TextComponent(msg);
+                            textComponent.addExtra(purchase);
+
+                            TextComponent store = new TextComponent("store.auroramc.net");
+                            store.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(AuroraMCAPI.getFormatter().convert("&aClickt to visit the store!")).create()));
+                            store.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://store.auroramc.net"));
+                            store.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                            textComponent.addExtra(store);
+                            textComponent.addExtra(lines);
 
 
-                        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                            if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
-                                player.getPlayer().spigot().sendMessage(textComponent);
+                            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                                if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
+                                    player.getPlayer().spigot().sendMessage(textComponent);
+                                }
                             }
                         }
-                    }
-                }.runTaskLater(AuroraMCAPI.getCore(), 100);
+                    }.runTaskLater(AuroraMCAPI.getCore(), 100);
+                }
 
                 if (EngineAPI.isAwaitingMapReload()) {
                     EngineAPI.setActiveGameInfo(null);
