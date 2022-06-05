@@ -213,7 +213,7 @@ public class LobbyListener implements Listener {
                             if (amount1 < 0) {
                                 amount1 = 0;
                             }
-                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Gadgets", "You cannot use this gadget for **" + (amount1 / 10f) + "**."));
+                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Gadgets", "You cannot use this gadget for **" + (amount1 / 10f) + "** seconds."));
                             return;
                         }
                         if (e.getClickedBlock() != null) {
