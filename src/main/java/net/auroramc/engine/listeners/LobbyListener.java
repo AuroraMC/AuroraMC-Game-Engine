@@ -29,6 +29,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -205,8 +206,11 @@ public class LobbyListener implements Listener {
             if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
                 if (e.getPlayer().getInventory().getHeldItemSlot() == 3) {
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
-                    if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.GADGET)) {
+                    if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.GADGET) && EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
                         Gadget gadget = (Gadget) player.getActiveCosmetics().get(Cosmetic.CosmeticType.GADGET);
+                        if (e.getItem().getType() == Material.FISHING_ROD && e.getClickedBlock() != null) {
+                            return;
+                        }
                         if (System.currentTimeMillis() - player.getLastUsed().getOrDefault(gadget, 0L) < gadget.getCooldown() * 1000L) {
                             double amount = ((player.getLastUsed().getOrDefault(gadget, 0L) + (gadget.getCooldown() * 1000L)) - System.currentTimeMillis()) / 100d;
                             long amount1 = Math.round(amount);
@@ -214,7 +218,12 @@ public class LobbyListener implements Listener {
                                 amount1 = 0;
                             }
                             player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Gadgets", "You cannot use this gadget for **" + (amount1 / 10f) + " seconds**."));
+                            e.setUseItemInHand(Event.Result.DENY);
+                            e.setUseInteractedBlock(Event.Result.DENY);
                             return;
+                        }
+                        if (gadget.getId() == 801) {
+                            e.setCancelled(false);
                         }
                         if (e.getClickedBlock() != null) {
                             gadget.onUse(player, e.getClickedBlock().getLocation());
@@ -222,7 +231,6 @@ public class LobbyListener implements Listener {
                             gadget.onUse(player, player.getPlayer().getLocation());
                         }
                         player.getLastUsed().put(gadget, System.currentTimeMillis());
-
                     }
                     return;
                 }
