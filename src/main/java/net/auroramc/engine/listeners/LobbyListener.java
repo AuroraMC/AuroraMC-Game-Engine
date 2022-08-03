@@ -298,7 +298,7 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void onVanish(VanishEvent e) {
-        if (e.isVanish() && (EngineAPI.getServerState() == ServerState.ENDING || EngineAPI.getServerState() == ServerState.IN_GAME)) {
+        if (EngineAPI.getServerState() == ServerState.ENDING || EngineAPI.getServerState() == ServerState.IN_GAME) {
             e.setCancelled(true);
         }
     }
