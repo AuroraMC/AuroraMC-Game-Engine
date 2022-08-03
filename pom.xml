@@ -123,7 +123,7 @@
                                         <!--suppress UnresolvedMavenProperty -->
                                         <Jenkins-Build-Number>${BUILD_NUMBER}</Jenkins-Build-Number>
                                         <!--suppress UnresolvedMavenProperty -->
-                                        <Jenkins-Branch>${BRANCH_NAME}</Jenkins-Branch>
+                                        <Branch>${BRANCH_NAME}</Branch>
                                         <!--suppress UnresolvedMavenProperty -->
                                         <Jenkins-Build-Url>${BUILD_URL}</Jenkins-Build-Url>
                                         <!--suppress UnresolvedMavenProperty -->
