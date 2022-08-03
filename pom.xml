@@ -120,9 +120,15 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
+                                        <!--suppress UnresolvedMavenProperty -->
                                         <Jenkins-Build-Number>${BUILD_NUMBER}</Jenkins-Build-Number>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <Jenkins-Branch>${BRANCH_NAME}</Jenkins-Branch>
+                                        <!--suppress UnresolvedMavenProperty -->
                                         <Jenkins-Build-Url>${BUILD_URL}</Jenkins-Build-Url>
+                                        <!--suppress UnresolvedMavenProperty -->
                                         <Git-Commit>${GIT_COMMIT}</Git-Commit>
+                                        <!--suppress UnresolvedMavenProperty -->
                                         <Implementation-Version>${project.version}.${GIT_COMMIT}.${BUILD_NUMBER}</Implementation-Version>
                                         <Module-Name>AuroraMC-Game-Engine</Module-Name>
                                     </manifestEntries>
