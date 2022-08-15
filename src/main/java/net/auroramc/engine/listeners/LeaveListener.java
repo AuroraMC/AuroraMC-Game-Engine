@@ -20,6 +20,9 @@ public class LeaveListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerLeaveEvent e) {
+        if (!e.getPlayer().isLoaded()) {
+            return;
+        }
         if (!e.getPlayer().isVanished()) {
             ServerMessage message = ((ServerMessage)e.getPlayer().getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.SERVER_MESSAGE, AuroraMCAPI.getCosmetics().get(400)));
             for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
