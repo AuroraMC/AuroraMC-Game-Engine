@@ -36,7 +36,7 @@ public class KitLevelMenu extends GUI {
         this.setItem(0, 0, new GUIItem(Material.ARROW, "&3&lBack"));
         this.setItem(0, 4, new GUIItem(kit.getMaterial(), "&3&l" + kit.getName(), 1, ";&7" + WordUtils.wrap(kit.getDescription(), 40, ";&7", false) + ""));
 
-        this.setItem(1, 4, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + level.getLevel(), 1, ";&rRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(level.getLevel()))?EngineAPI.getKitLevelRewards().get(level.getLevel()).getRewardString():"None") + "**;;&aThis is your current level.", (short)5));
+        this.setItem(1, 4, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + level.getLevel(), 1, ";&r&fRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(level.getLevel()))?EngineAPI.getKitLevelRewards().get(level.getLevel()).getRewardString():"None") + "**;;&aThis is your current level.", (short)5));
 
         if (level.getLatestUpgrade() < level.getLevel() / 20) {
             int cost;
@@ -66,14 +66,14 @@ public class KitLevelMenu extends GUI {
                     break;
                 }
             }
-            this.setItem(2, 4, new GUIItem(Material.DIAMOND, "&a&lClick to upgrade your kit!", 1, ";&rCurrent Upgrade: **Level " + level.getLatestUpgrade() + "**;&rUpgrade to: **" + (level.getLatestUpgrade() + 1) + "**;;&rUnlocks:;&r - **" + kit.getUpgradeReward(level.getLatestUpgrade() + 1) + "**;&rCost: &6" + cost + " Crowns"));
+            this.setItem(2, 4, new GUIItem(Material.DIAMOND, "&a&lClick to upgrade your kit!", 1, ";&r&fCurrent Upgrade: **Level " + level.getLatestUpgrade() + "**;&r&fUpgrade to: **" + (level.getLatestUpgrade() + 1) + "**;;&r&fUnlocks:;&r&f - **" + kit.getUpgradeReward(level.getLatestUpgrade() + 1) + "**;&r&fCost: &6" + cost + " Crowns"));
         }
 
         int col = 3;
         int lvl = level.getLevel() - 1;
 
         while (lvl >= 0 && col >= 1) {
-            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + lvl, 1, ";&rRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(lvl))?EngineAPI.getKitLevelRewards().get(lvl).getRewardString():"None") + "**;;&aYou have already received this reward."));
+            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + lvl, 1, ";&r&fRewards:;**" + ((EngineAPI.getKitLevelRewards().containsKey(lvl))?EngineAPI.getKitLevelRewards().get(lvl).getRewardString():"None") + "**;;&aYou have already received this reward."));
             col--;
             lvl--;
         }
@@ -87,15 +87,15 @@ public class KitLevelMenu extends GUI {
             double percentage = (((double) level.getXpIntoLevel() / LevelUtils.xpForLevel(level.getLevel() + 1))*100);
             if (level.getLevel() != 100) {
                 int amountToColour = (int) Math.floor(((percentage) / 100)*30);
-                progress = ((progress.substring(0, amountToColour) + "&r&l" + progress.substring(amountToColour + 1)));
+                progress = ((progress.substring(0, amountToColour) + "&r&f&l" + progress.substring(amountToColour + 1)));
             } else {
                 percentage = 100.0;
             }
-            levelHover = AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(String.format("&r &3&l«%s» &r&b&l%s&r &3&l«%s»;&rProgress to Next Level: **%s%%**", level.getLevel() - ((level.getLevel() == 100)?1:0), progress, level.getLevel() + ((level.getLevel() != 100)?1:0), new DecimalFormat("##.#").format(percentage))));
+            levelHover = AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(String.format("&r&f &3&l«%s» &r&f&b&l%s&r&f &3&l«%s»;&r&fProgress to Next Level: **%s%%**", level.getLevel() - ((level.getLevel() == 100)?1:0), progress, level.getLevel() + ((level.getLevel() != 100)?1:0), new DecimalFormat("##.#").format(percentage))));
         }
 
         while (lvl <= 100 && col <= 7) {
-            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + lvl, 1, ";&rRewards:;**&kReward**" + ((col == 5 && levelHover != null)?";;" + levelHover:""), (short)14));
+            this.setItem(1, col, new GUIItem(Material.STAINED_GLASS_PANE, "&b&lLevel " + lvl, 1, ";&r&fRewards:;**&kReward**" + ((col == 5 && levelHover != null)?";;" + levelHover:""), (short)14));
             col++;
             lvl++;
         }

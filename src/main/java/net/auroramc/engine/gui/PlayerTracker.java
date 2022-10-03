@@ -30,7 +30,7 @@ public class PlayerTracker extends GUI {
         for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
             if (player1 instanceof AuroraMCGamePlayer) {
                 if (!player1.isVanished() && !((AuroraMCGamePlayer) player1).isSpectator() && !player1.isDead()) {
-                    this.setItem(row, column, new GUIItem(Material.SKULL_ITEM, "&3&l" + player1.getPlayer().getName(), 1, ";&rKit: **" + ((AuroraMCGamePlayer) player1).getKit().getName() + "**;;&aClick to teleport!", (short)3, false, player1.getPlayer().getName()));
+                    this.setItem(row, column, new GUIItem(Material.SKULL_ITEM, "&3&l" + player1.getPlayer().getName(), 1, ";&r&fKit: **" + ((AuroraMCGamePlayer) player1).getKit().getName() + "**;;&aClick to teleport!", (short)3, false, player1.getPlayer().getName()));
                     column++;
                     if (column == 8) {
                         row++;

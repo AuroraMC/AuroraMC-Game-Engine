@@ -29,18 +29,18 @@ public class Teams extends GUI {
 
         switch (EngineAPI.getActiveGame().getTeams().size()) {
             case 3: {
-                this.setItem(1, 4, new GUIItem(Material.STAINED_CLAY, "&a&lGreen Team", 1, ";&rClick here to join &aGreen&r team!", (short) 5, (player.getTeam().getName().equalsIgnoreCase("green"))));
+                this.setItem(1, 4, new GUIItem(Material.STAINED_CLAY, "&a&lGreen Team", 1, ";&r&fClick here to join &aGreen&r&f team!", (short) 5, (player.getTeam().getName().equalsIgnoreCase("green"))));
             }
             case 2: {
-                this.setItem(1, 2, new GUIItem(Material.STAINED_CLAY, "&c&lRed Team", 1, ";&rClick here to join &cRed&r team!", (short)14, (player.getTeam().getName().equalsIgnoreCase("red"))));
-                this.setItem(1, 6, new GUIItem(Material.STAINED_CLAY, "&b&lBlue Team", 1, ";&rClick here to join &bBlue&r team!", (short)11, (player.getTeam().getName().equalsIgnoreCase("blue"))));
+                this.setItem(1, 2, new GUIItem(Material.STAINED_CLAY, "&c&lRed Team", 1, ";&r&fClick here to join &cRed&r&f team!", (short)14, (player.getTeam().getName().equalsIgnoreCase("red"))));
+                this.setItem(1, 6, new GUIItem(Material.STAINED_CLAY, "&b&lBlue Team", 1, ";&r&fClick here to join &bBlue&r&f team!", (short)11, (player.getTeam().getName().equalsIgnoreCase("blue"))));
                 break;
             }
             case 4: {
-                this.setItem(1, 1, new GUIItem(Material.STAINED_CLAY, "&c&lRed Team", 1, ";&rClick here to join &cRed&r team!", (short)14, (player.getTeam().getName().equalsIgnoreCase("red"))));
-                this.setItem(1, 3, new GUIItem(Material.STAINED_CLAY, "&a&lGreen Team", 1, ";&rClick here to join &aGreen&r team!", (short)5, (player.getTeam().getName().equalsIgnoreCase("green"))));
-                this.setItem(1, 5, new GUIItem(Material.STAINED_CLAY, "&b&lBlue Team", 1, ";&rClick here to join &bBlue&r team!", (short)11, (player.getTeam().getName().equalsIgnoreCase("blue"))));
-                this.setItem(1, 7, new GUIItem(Material.STAINED_CLAY, "&e&lYellow Team", 1, ";&rClick here to join &eYellow&r team!", (short)4, (player.getTeam().getName().equalsIgnoreCase("yellow"))));
+                this.setItem(1, 1, new GUIItem(Material.STAINED_CLAY, "&c&lRed Team", 1, ";&r&fClick here to join &cRed&r&f team!", (short)14, (player.getTeam().getName().equalsIgnoreCase("red"))));
+                this.setItem(1, 3, new GUIItem(Material.STAINED_CLAY, "&a&lGreen Team", 1, ";&r&fClick here to join &aGreen&r&f team!", (short)5, (player.getTeam().getName().equalsIgnoreCase("green"))));
+                this.setItem(1, 5, new GUIItem(Material.STAINED_CLAY, "&b&lBlue Team", 1, ";&r&fClick here to join &bBlue&r&f team!", (short)11, (player.getTeam().getName().equalsIgnoreCase("blue"))));
+                this.setItem(1, 7, new GUIItem(Material.STAINED_CLAY, "&e&lYellow Team", 1, ";&r&fClick here to join &eYellow&r&f team!", (short)4, (player.getTeam().getName().equalsIgnoreCase("yellow"))));
                 break;
             }
         }
@@ -58,7 +58,7 @@ public class Teams extends GUI {
         } else {
             Team team = EngineAPI.getActiveGame().getTeams().get(teamString);
             player.setTeam(team);
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You joined team &" + team.getTeamColor() + team.getName() + "&r."));
+            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You joined team &" + team.getTeamColor() + team.getName() + "&r&f."));
             player.getPlayer().closeInventory();
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 player.updateNametag(this.player);
