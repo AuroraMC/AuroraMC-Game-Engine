@@ -77,4 +77,27 @@ public class GameMap {
         return location.getX() >= lowX && location.getX() <= highX && location.getY() >= lowY && location.getY() <= highY && location.getZ() >= lowZ && location.getZ() <= highZ;
     }
 
+    public int getHighX() {
+        return highX;
+    }
+
+    public int getHighY() {
+        return highY;
+    }
+
+    public int getHighZ() {
+        return highZ;
+    }
+
+    public int getLowX() {
+        return lowX;
+    }
+
+    public int getLowY() {
+        return lowY;
+    }
+
+    public int getLowZ() {
+        return lowZ;
+    }
 }
