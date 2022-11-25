@@ -4,6 +4,8 @@
 
 package net.auroramc.engine.api.games;
 
+import net.auroramc.engine.api.EngineAPI;
+import org.bukkit.Location;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -15,6 +17,7 @@ public class GameMap {
     private final String name;
     private final String author;
     private final JSONObject mapData;
+    private final int lowX,highX,lowY,highY,lowZ,highZ;
 
     public GameMap(File regionFolder, int id, String name, String author, JSONObject mapData) {
         this.regionFolder = regionFolder;
@@ -22,6 +25,32 @@ public class GameMap {
         this.name = name;
         this.author = author;
         this.mapData = mapData;
+
+        JSONObject a = mapData.getJSONObject("border_a");
+        JSONObject b = mapData.getJSONObject("border_b");
+        if (a.getInt("x") > b.getInt("x")) {
+            highX = a.getInt("x");
+            lowX = b.getInt("x");
+        } else {
+            highX = b.getInt("x");
+            lowX = a.getInt("x");
+        }
+
+        if (a.getInt("y") > b.getInt("y")) {
+            highY = a.getInt("y");
+            lowY = b.getInt("y");
+        } else {
+            highY = b.getInt("y");
+            lowY = a.getInt("y");
+        }
+
+        if (a.getInt("z") > b.getInt("z")) {
+            highZ = a.getInt("z");
+            lowZ = b.getInt("z");
+        } else {
+            highZ = b.getInt("z");
+            lowZ = a.getInt("z");
+        }
     }
 
     public File getRegionFolder() {
@@ -42,6 +71,10 @@ public class GameMap {
 
     public JSONObject getMapData() {
         return mapData;
+    }
+
+    public boolean isInBorder(Location location) {
+        return location.getX() >= lowX && location.getX() <= highX && location.getY() >= lowY && location.getY() <= highY && location.getZ() >= lowZ && location.getZ() <= highZ;
     }
 
 }
