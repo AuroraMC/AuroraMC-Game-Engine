@@ -6,6 +6,7 @@ package net.auroramc.engine.listeners;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
 import net.auroramc.core.api.cosmetics.Gadget;
@@ -179,8 +180,12 @@ public class LobbyListener implements Listener {
 
     public static void updateHeaderFooter(CraftPlayer player2) {
         try {
-            IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null) ? EngineAPI.getActiveGameInfo().getName().toUpperCase() : EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
-            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"Purchase ranks, cosmetics and more at store.auroramc.net!\",\"color\":\"aqua\",\"bold\":\"false\"}");
+            IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"§3§lAURORAMC NETWORK         §b§lAURORAMC.NET\",\"color\":\"dark_aqua\",\"bold\":\"false\"}");
+            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"\n§fYou are currently connected to §b" + AuroraMCAPI.getServerInfo().getName() + "\n\n" +
+                    "§rStatus §3§l» §b" + EngineAPI.getServerState().getName() + "\n" +
+                    "§rGame §3§l» §b" + ((EngineAPI.getActiveGameInfo() != null) ? EngineAPI.getActiveGameInfo().getName() : "None") + "\n" +
+                    "§rMap §3§l» §b" + ((EngineAPI.getActiveMap() != null) ? EngineAPI.getActiveMap().getName() : "None") + "\n" +
+                    "\",\"color\":\"aqua\",\"bold\":\"false\"}");
 
             PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
             Field ff = packet.getClass().getDeclaredField("a");
