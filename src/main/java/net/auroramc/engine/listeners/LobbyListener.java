@@ -156,6 +156,9 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void onStateChange(ServerStateChangeEvent e) {
+        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            updateHeaderFooter((CraftPlayer) player.getPlayer());
+        }
         if (e.getState() != ServerState.ENDING && e.getState() != ServerState.IN_GAME) {
             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                 player.getScoreboard().setTitle("&3-= &b&l" + e.getState().getName().toUpperCase() + "&r &3=-");
@@ -165,7 +168,7 @@ public class LobbyListener implements Listener {
                     AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
                     player.getScoreboard().setLine(6, ((pl.getKit() != null) ? pl.getKit().getName() : "None "));
                 }
-                updateHeaderFooter((CraftPlayer) player.getPlayer());
+
             }
         }
     }
@@ -179,8 +182,12 @@ public class LobbyListener implements Listener {
 
     public static void updateHeaderFooter(CraftPlayer player2) {
         try {
-            IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ((EngineAPI.getActiveGameInfo() != null) ? EngineAPI.getActiveGameInfo().getName().toUpperCase() : EngineAPI.getServerState().getName().toUpperCase()) + "\",\"color\":\"dark_aqua\",\"bold\":\"true\"}");
-            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"Purchase ranks, cosmetics and more at store.auroramc.net!\",\"color\":\"aqua\",\"bold\":\"false\"}");
+            IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"§3§lAURORAMC NETWORK         §b§lAURORAMC.NET\",\"color\":\"dark_aqua\",\"bold\":\"false\"}");
+            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"\n§fYou are currently connected to §b" + ((AuroraMCAPI.getPlayer(player2).isDisguised() && AuroraMCAPI.getPlayer(player2).getPreferences().isHideDisguiseNameEnabled())?"§oHidden":AuroraMCAPI.getServerInfo().getName()) + "\n\n" +
+                    "§rStatus §3§l» §b" + EngineAPI.getServerState().getName() + "\n" +
+                    "§rGame §3§l» §b" + ((EngineAPI.getActiveGameInfo() != null) ? EngineAPI.getActiveGameInfo().getName() : "None") + "\n" +
+                    "§rMap §3§l» §b" + ((EngineAPI.getActiveMap() != null) ? EngineAPI.getActiveMap().getName() : "None") + "\n" +
+                    "\",\"color\":\"aqua\",\"bold\":\"false\"}");
 
             PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
             Field ff = packet.getClass().getDeclaredField("a");
