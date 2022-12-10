@@ -6,7 +6,6 @@ package net.auroramc.engine.listeners;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.cosmetics.Cosmetic;
 import net.auroramc.core.api.cosmetics.Gadget;
