@@ -136,6 +136,7 @@ public abstract class Game {
         runnable = new InGameStartingRunnable(this);
         runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
         gameSession.start();
+        gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.START, new JSONObject()));
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -147,6 +148,7 @@ public abstract class Game {
     public void inProgress() {
         starting = false;
         runnable = null;
+        gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.RELEASED, new JSONObject()));
     }
 
     /**
@@ -157,7 +159,7 @@ public abstract class Game {
         if (runnable != null) {
             runnable.cancel();
         }
-        gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", ((winner == null)?"NONE":winner.getName()))));
+        gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.END, new JSONObject().put("winner", ((winner == null)?"NONE":winner.getName()))));
         gameSession.end(false);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
@@ -236,7 +238,7 @@ public abstract class Game {
         if (runnable != null) {
             runnable.cancel();
         }
-        gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", winner.getName())));
+        gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.END, new JSONObject().put("winner", winner.getName())));
         gameSession.end(false);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");

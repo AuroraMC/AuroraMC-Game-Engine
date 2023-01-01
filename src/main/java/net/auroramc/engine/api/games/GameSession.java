@@ -79,9 +79,11 @@ public class GameSession {
     public static class GameLogEntry {
 
         private final long timestamp;
+        private final GameEvent event;
         private final JSONObject data;
 
-        public GameLogEntry(JSONObject data) {
+        public GameLogEntry(GameEvent event, JSONObject data) {
+            this.event = event;
             this.timestamp = System.currentTimeMillis();
             this.data = data;
         }
@@ -100,6 +102,14 @@ public class GameSession {
             object.put("data", data);
             return object.toString();
         }
+    }
+
+    public static enum GameEvent {
+        START,
+        RELEASED,
+        GAME_EVENT,
+        DEATH,
+        END
     }
 
     public static class GamePlayer {
