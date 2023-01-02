@@ -61,7 +61,7 @@ public class GameSession {
         new BukkitRunnable(){
             @Override
             public void run() {
-                EngineDatabaseManager.uploadGameSession(uuid, gameRegistryKey, obj);
+                EngineDatabaseManager.uploadGameSession(uuid, gameRegistryKey, obj, players);
             }
         }.runTaskAsynchronously(AuroraMCAPI.getCore());
     }
