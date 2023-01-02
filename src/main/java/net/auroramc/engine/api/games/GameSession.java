@@ -13,6 +13,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GameSession {
@@ -21,13 +23,13 @@ public class GameSession {
     private final String gameRegistryKey;
     private final String gameVariation;
     private long startTimestamp;
-    private final JSONArray players;
+    private final List<GamePlayer> players;
     private final JSONArray gameLog;
     private long endTimestamp;
 
     public GameSession(String gameRegistryKey, GameVariation gameVariation) {
         this.uuid = UUID.randomUUID();
-        this.players = new JSONArray();
+        this.players = new ArrayList<>();
         this.gameLog = new JSONArray();
         this.gameRegistryKey = gameRegistryKey;
         this.gameVariation = ((gameVariation == null)?"None":gameVariation.getRegistryKey());
@@ -36,7 +38,7 @@ public class GameSession {
     public void start() {
         this.startTimestamp = System.currentTimeMillis();
         for (AuroraMCPlayer gamePlayer : AuroraMCAPI.getPlayers()) {
-            this.players.put(new GamePlayer(gamePlayer).toJSON());
+            this.players.add(new GamePlayer(gamePlayer));
         }
     }
 
@@ -50,7 +52,11 @@ public class GameSession {
         obj.put("end", endTimestamp);
         obj.put("void", isVoid);
         obj.put("log", gameLog);
-        obj.put("players", players);
+        JSONArray array = new JSONArray();
+        for (GamePlayer player : players) {
+            array.put(player.toJSON());
+        }
+        obj.put("players", array);
 
         new BukkitRunnable(){
             @Override
