@@ -10,6 +10,8 @@ import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Disguise;
 import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -129,6 +131,7 @@ public class GameSession {
         private final Disguise disguise;
         private final boolean vanished;
         private final Team team;
+        private final Kit kit;
 
         public GamePlayer(AuroraMCPlayer player) {
             this.uuid = player.getPlayer().getUniqueId();
@@ -138,6 +141,7 @@ public class GameSession {
             this.disguise = player.getActiveDisguise();
             this.vanished = player.isVanished();
             this.team = player.getTeam();
+            this.kit = ((AuroraMCGamePlayer)player).getKit();
         }
 
         public String getName() {
@@ -182,6 +186,7 @@ public class GameSession {
             object.put("disguise", disguise);
             object.put("vanished", vanished);
             object.put("team", team.getName());
+            object.put("kit", ChatColor.stripColor(AuroraMCAPI.getFormatter().convert(kit.getName())));
             return object.toString();
         }
     }
