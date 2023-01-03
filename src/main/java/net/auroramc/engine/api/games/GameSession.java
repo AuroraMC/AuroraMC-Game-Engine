@@ -185,8 +185,8 @@ public class GameSession {
             }
             object.put("disguise", disguise);
             object.put("vanished", vanished);
-            object.put("team", team.getName());
-            object.put("kit", ChatColor.stripColor(AuroraMCAPI.getFormatter().convert(kit.getName())));
+            object.put("team", ((team == null)?"Spectator":team.getName()));
+            object.put("kit", ChatColor.stripColor(AuroraMCAPI.getFormatter().convert(((kit == null)?"None":kit.getName()))));
             return object.toString();
         }
     }
