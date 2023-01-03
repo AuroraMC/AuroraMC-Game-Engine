@@ -105,6 +105,7 @@ public class GameSession {
         public String toJSON() {
             JSONObject object = new JSONObject();
             object.put("timestamp", timestamp);
+            object.put("event", event.name());
             object.put("data", data);
             return object.toString();
         }
