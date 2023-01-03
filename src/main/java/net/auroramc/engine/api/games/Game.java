@@ -526,6 +526,7 @@ public abstract class Game {
                             TextComponent log = new TextComponent(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
                             log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
                             log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
+                            log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 
                             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                                 if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
@@ -535,6 +536,15 @@ public abstract class Game {
                             }
                         }
                     }.runTaskLater(AuroraMCAPI.getCore(), 100);
+                } else {
+                    TextComponent log = new TextComponent(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
+                    log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
+                    log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
+                    log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+
+                    for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                        player.getPlayer().spigot().sendMessage(log);
+                    }
                 }
 
                 if (EngineAPI.isAwaitingMapReload()) {
