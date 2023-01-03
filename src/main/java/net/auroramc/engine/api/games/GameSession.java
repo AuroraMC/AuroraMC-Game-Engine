@@ -126,6 +126,7 @@ public class GameSession {
         private final int amcId;
         private final Rank rank;
         private final Disguise disguise;
+        private final boolean vanished;
 
         public GamePlayer(AuroraMCPlayer player) {
             this.uuid = player.getPlayer().getUniqueId();
@@ -133,6 +134,7 @@ public class GameSession {
             this.amcId = player.getId();
             this.rank = player.getRank();
             this.disguise = player.getActiveDisguise();
+            this.vanished = player.isVanished();
         }
 
         public String getName() {
@@ -155,6 +157,10 @@ public class GameSession {
             return disguise;
         }
 
+        public boolean isVanished() {
+            return vanished;
+        }
+
         public String toJSON() {
             JSONObject object = new JSONObject();
             object.put("name", name);
@@ -167,6 +173,7 @@ public class GameSession {
                 disguise.put("rank", this.disguise.getRank());
             }
             object.put("disguise", disguise);
+            object.put("vanished", vanished);
             return object.toString();
         }
     }
