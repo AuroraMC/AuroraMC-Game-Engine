@@ -140,7 +140,7 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void onWeather(WeatherChangeEvent e) {
-        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME || e.getWorld().getName().equals("world")) {
             if (e.toWeatherState()) {
                 e.setCancelled(true);
             }

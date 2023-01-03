@@ -136,6 +136,7 @@ public abstract class Game {
         runnable = new InGameStartingRunnable(this);
         runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
         gameSession.start();
+        gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.START, new JSONObject()));
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -147,6 +148,7 @@ public abstract class Game {
     public void inProgress() {
         starting = false;
         runnable = null;
+        gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.RELEASED, new JSONObject()));
     }
 
     /**
@@ -157,7 +159,7 @@ public abstract class Game {
         if (runnable != null) {
             runnable.cancel();
         }
-        gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", ((winner == null)?"NONE":winner.getName()))));
+        gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.END, new JSONObject().put("winner", ((winner == null)?"NONE":winner.getName()))));
         gameSession.end(false);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
@@ -236,7 +238,7 @@ public abstract class Game {
         if (runnable != null) {
             runnable.cancel();
         }
-        gameSession.log(new GameSession.GameLogEntry(new JSONObject().put("event", "END").put("winner", winner.getName())));
+        gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.END, new JSONObject().put("winner", winner.getName())));
         gameSession.end(false);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
@@ -435,6 +437,8 @@ public abstract class Game {
                         player.gameOver();
                     }
 
+
+
                     player.setKit(null);
                     pl.setTeam(null);
                     PlayerScoreboard scoreboard = player.getScoreboard();
@@ -476,22 +480,6 @@ public abstract class Game {
                             textComponent.addExtra("\n");
 
                             String title;
-
-                            switch (new Random().nextInt(5)) {
-                                case 1:
-
-                                    break;
-                                case 2:
-                                    break;
-                                case 3:
-
-                                    break;
-                                case 4:
-                                    break;
-                                default:
-
-                                    break;
-                            }
 
                             String msg;
 
@@ -535,14 +523,28 @@ public abstract class Game {
                             textComponent.addExtra(store);
                             textComponent.addExtra(lines);
 
+                            TextComponent log = new TextComponent(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
+                            log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
+                            log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
+                            log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 
                             for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
                                 if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
                                     player.getPlayer().spigot().sendMessage(textComponent);
                                 }
+                                player.getPlayer().spigot().sendMessage(log);
                             }
                         }
                     }.runTaskLater(AuroraMCAPI.getCore(), 100);
+                } else {
+                    TextComponent log = new TextComponent(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
+                    log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
+                    log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
+                    log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+
+                    for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                        player.getPlayer().spigot().sendMessage(log);
+                    }
                 }
 
                 if (EngineAPI.isAwaitingMapReload()) {

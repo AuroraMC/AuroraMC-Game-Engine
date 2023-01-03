@@ -6,6 +6,8 @@ package net.auroramc.engine.api.backend;
 
 import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.Game;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.players.PlayerKitLevel;
 import org.apache.commons.io.FileUtils;
@@ -54,13 +56,18 @@ public class EngineDatabaseManager {
         }
     }
 
-    public static void uploadGameSession(UUID uuid, String game, JSONObject json) {
+    public static void uploadGameSession(UUID uuid, String game, JSONObject json, List<GameSession.GamePlayer> players) {
         try (Connection connection = AuroraMCAPI.getDbManager().getMySQLConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO game_session(game_uuid, game, server, game_data) VALUES (?,?,?,?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO game_session(game_uuid, game, server, game_data, players) VALUES (?,?,?,?,?)");
             statement.setString(1, uuid.toString());
             statement.setString(2, game);
             statement.setString(3, AuroraMCAPI.getServerInfo().getName());
             statement.setString(4, json.toString());
+            List<String> ints = new ArrayList<>();
+            for (GameSession.GamePlayer player : players) {
+                ints.add(player.getAmcId() + "");
+            }
+            statement.setString(5, String.join(",", ints));
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
