@@ -8,6 +8,7 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.permissions.Rank;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Disguise;
+import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
@@ -127,6 +128,7 @@ public class GameSession {
         private final Rank rank;
         private final Disguise disguise;
         private final boolean vanished;
+        private final Team team;
 
         public GamePlayer(AuroraMCPlayer player) {
             this.uuid = player.getPlayer().getUniqueId();
@@ -135,6 +137,7 @@ public class GameSession {
             this.rank = player.getRank();
             this.disguise = player.getActiveDisguise();
             this.vanished = player.isVanished();
+            this.team = player.getTeam();
         }
 
         public String getName() {
@@ -161,6 +164,10 @@ public class GameSession {
             return vanished;
         }
 
+        public Team getTeam() {
+            return team;
+        }
+
         public String toJSON() {
             JSONObject object = new JSONObject();
             object.put("name", name);
@@ -174,6 +181,7 @@ public class GameSession {
             }
             object.put("disguise", disguise);
             object.put("vanished", vanished);
+            object.put("team", team.getName());
             return object.toString();
         }
     }
