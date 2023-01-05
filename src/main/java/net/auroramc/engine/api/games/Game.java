@@ -160,7 +160,7 @@ public abstract class Game {
             runnable.cancel();
         }
         gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.END, new JSONObject().put("winner", ((winner == null)?"NONE":winner.getName()))));
-        gameSession.end(false);
+        gameSession.end(AuroraMCAPI.isTestServer());
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n \n");
@@ -239,7 +239,7 @@ public abstract class Game {
             runnable.cancel();
         }
         gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.END, new JSONObject().put("winner", winner.getName())));
-        gameSession.end(false);
+        gameSession.end(AuroraMCAPI.isTestServer());
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n \n");
