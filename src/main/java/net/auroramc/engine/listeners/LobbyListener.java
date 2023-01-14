@@ -12,6 +12,7 @@ import net.auroramc.core.api.cosmetics.Gadget;
 import net.auroramc.core.api.events.VanishEvent;
 import net.auroramc.core.api.events.cosmetics.CosmeticEnableEvent;
 import net.auroramc.core.api.events.cosmetics.CosmeticSwitchEvent;
+import net.auroramc.core.api.events.player.PlayerUseCosmeticEvent;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.gui.cosmetics.Cosmetics;
 import net.auroramc.core.gui.preferences.Preferences;
@@ -201,6 +202,13 @@ public class LobbyListener implements Listener {
             player2.getHandle().playerConnection.sendPacket(packet);
         } catch (NoSuchFieldException | IllegalAccessException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onGadget(PlayerUseCosmeticEvent e) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+            e.setCancelled(true);
         }
     }
 
