@@ -48,6 +48,8 @@ public abstract class Game {
     protected boolean starting;
     protected InGameStartingRunnable runnable;
 
+    protected boolean voided;
+
 
     public Game(GameVariation gameVariation) {
         this.gameVariation = gameVariation;
@@ -55,6 +57,7 @@ public abstract class Game {
         this.kits = new ArrayList<>();
         gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),gameVariation);
         starting = false;
+        voided = AuroraMCAPI.isTestServer();
     }
 
     public abstract void preLoad();
@@ -160,7 +163,7 @@ public abstract class Game {
             runnable.cancel();
         }
         gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.END, new JSONObject().put("winner", ((winner == null)?"NONE":winner.getName()))));
-        gameSession.end(AuroraMCAPI.isTestServer());
+        gameSession.end(voided);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n \n");
@@ -197,7 +200,7 @@ public abstract class Game {
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
             if (pl.getRewards() != null && !pl.isVanished() && !pl.isOptedSpec()) {
-                if (winner != null) {
+                if (winner != null && !voided) {
                     pl.getStats().addGamePlayed(winner.equals(pl));
                     pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
                     if (winner.equals(pl)) {
@@ -216,7 +219,7 @@ public abstract class Game {
 
         }
 
-        if (winner != null) {
+        if (winner != null && !voided) {
             Cosmetic cosmetic = winner.getActiveCosmetics().get(Cosmetic.CosmeticType.WIN_EFFECT);
             if (cosmetic != null) {
                 WinEffect winEffect = (WinEffect) cosmetic;
@@ -239,7 +242,7 @@ public abstract class Game {
             runnable.cancel();
         }
         gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.END, new JSONObject().put("winner", winner.getName())));
-        gameSession.end(AuroraMCAPI.isTestServer());
+        gameSession.end(voided);
         StringBuilder winnerString = new StringBuilder();
         winnerString.append("§3§l▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆\n");
         winnerString.append(" \n \n");
@@ -296,35 +299,39 @@ public abstract class Game {
             player.sendTitle(winner.getName() + " won the game!", "", 10, 160, 10, ChatColor.getByChar(winner.getTeamColor()), ChatColor.AQUA, true, false);
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.LEVEL_UP, 100, 1);
             AuroraMCGamePlayer pl = (AuroraMCGamePlayer) player;
-            pl.getStats().addGamePlayed(winner.getPlayers().contains(pl));
-            if (!pl.isVanished() && !pl.isOptedSpec() && pl.getRewards() != null) {
-                pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
-                if (winner.getPlayers().contains(pl)) {
-                    pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
-                    if (!pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(21))) {
-                        pl.getStats().achievementGained(AuroraMCAPI.getAchievement(21), 1, true);
+            if (!voided) {
+                pl.getStats().addGamePlayed(winner.getPlayers().contains(pl));
+                if (!pl.isVanished() && !pl.isOptedSpec() && pl.getRewards() != null) {
+                    pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesPlayed", 1, true);
+                    if (winner.getPlayers().contains(pl)) {
+                        pl.getStats().incrementStatistic(EngineAPI.getActiveGameInfo().getId(), "gamesWon", 1, true);
+                        if (!pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(21))) {
+                            pl.getStats().achievementGained(AuroraMCAPI.getAchievement(21), 1, true);
+                        }
+                    } else {
+                        if (!pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(20))) {
+                            pl.getStats().achievementGained(AuroraMCAPI.getAchievement(20), 1, true);
+                        }
                     }
-                } else {
-                    if (!pl.getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(20))) {
-                        pl.getStats().achievementGained(AuroraMCAPI.getAchievement(20), 1, true);
+                    if (pl.getRewards() != null) {
+                        pl.getRewards().stop();
                     }
-                }
-                if (pl.getRewards() != null) {
-                    pl.getRewards().stop();
                 }
             }
         }
 
-        for (AuroraMCPlayer amcPlayer : winner.getPlayers()) {
-            AuroraMCGamePlayer player = (AuroraMCGamePlayer) amcPlayer;
-            player.getRewards().addXp("Winner Bonus", 150);
-            player.getRewards().addTickets(150);
-            player.getRewards().addCrowns(150);
-            if (!player.isSpectator()) {
-                Cosmetic cosmetic = player.getActiveCosmetics().get(Cosmetic.CosmeticType.WIN_EFFECT);
-                if (cosmetic != null) {
-                    WinEffect winEffect = (WinEffect) cosmetic;
-                    winEffect.onWin(player);
+        if (!voided) {
+            for (AuroraMCPlayer amcPlayer : winner.getPlayers()) {
+                AuroraMCGamePlayer player = (AuroraMCGamePlayer) amcPlayer;
+                player.getRewards().addXp("Winner Bonus", 150);
+                player.getRewards().addTickets(150);
+                player.getRewards().addCrowns(150);
+                if (!player.isSpectator()) {
+                    Cosmetic cosmetic = player.getActiveCosmetics().get(Cosmetic.CosmeticType.WIN_EFFECT);
+                    if (cosmetic != null) {
+                        WinEffect winEffect = (WinEffect) cosmetic;
+                        winEffect.onWin(player);
+                    }
                 }
             }
         }
@@ -339,19 +346,24 @@ public abstract class Game {
                 if (EngineAPI.isAwaitingRestart()) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         AuroraMCGamePlayer player1 = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(player);
-                        if (player1 != null) {
-                            if (player1.getJoinTimestamp() > gameSession.getStartTimestamp()) {
-                                //The player joined after the game started, go from when they joined.
-                                player1.getStats().addGameTime(gameSession.getEndTimestamp() - player1.getJoinTimestamp(), true);
-                            } else {
-                                player1.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
-                            }
-                            if (player1.getRewards() != null) {
-                                if (!player1.isSpectator() && !player1.isVanished()) {
-                                    player1.getRewards().apply(true);
+                        if (player1 != null && !voided) {
+                            if (!voided) {
+                                if (player1.getJoinTimestamp() > gameSession.getStartTimestamp()) {
+                                    //The player joined after the game started, go from when they joined.
+                                    player1.getStats().addGameTime(gameSession.getEndTimestamp() - player1.getJoinTimestamp(), true);
+                                } else {
+                                    player1.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
                                 }
-                                player1.gameOver();
+                                if (player1.getRewards() != null) {
+                                    if (!player1.isSpectator() && !player1.isVanished()) {
+                                        player1.getRewards().apply(true);
+                                    }
+                                    player1.gameOver();
+                                }
+                            } else {
+                                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "This game was void, so any rewards or statistics earned during this game did not apply to your account."));
                             }
+
                         }
 
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Server Manager", "This server is restarting for an update. You are being sent to a lobby."));
@@ -409,11 +421,13 @@ public abstract class Game {
                     player.setLastHitAt(-1);
                     player.setLastHitBy(null);
                     player.getLatestHits().clear();
-                    if (player.getJoinTimestamp() > gameSession.getStartTimestamp()) {
-                        //The player joined after the game started, go from when they joined.
-                        player.getStats().addGameTime(gameSession.getEndTimestamp() - player.getJoinTimestamp(), true);
-                    } else {
-                        player.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
+                    if (!voided) {
+                        if (player.getJoinTimestamp() > gameSession.getStartTimestamp()) {
+                            //The player joined after the game started, go from when they joined.
+                            player.getStats().addGameTime(gameSession.getEndTimestamp() - player.getJoinTimestamp(), true);
+                        } else {
+                            player.getStats().addGameTime(gameSession.getEndTimestamp() - gameSession.getStartTimestamp(), true);
+                        }
                     }
                     if (!player.isVanished() && !player.isOptedSpec()) {
                         player.setSpectator(false, false);
@@ -432,7 +446,11 @@ public abstract class Game {
                     }
                     if (player.getRewards() != null) {
                         if (!player.isSpectator() && !player.isVanished()) {
-                            player.getRewards().apply(true);
+                            if (!voided) {
+                                player.getRewards().apply(true);
+                            } else {
+                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "This game was void, so any rewards or statistics earned during this game did not apply to your account."));
+                            }
                         }
                         player.gameOver();
                     }
@@ -637,5 +655,15 @@ public abstract class Game {
 
     public boolean isStarting() {
         return starting;
+    }
+
+    public void voidGame(String reason) {
+        if (!voided) {
+            voided = true;
+            gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "This game has now been voided" + ((reason != null)?" because " + reason:"") + ".")));
+            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "This game has now been voided" + ((reason != null)?" because " + reason:"") + ". Any statistics or rewards earned after this point will not apply to your account. Achievements earned up until this point in the game will still apply."));
+            }
+        }
     }
 }

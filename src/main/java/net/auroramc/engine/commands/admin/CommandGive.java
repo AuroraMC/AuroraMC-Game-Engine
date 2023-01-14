@@ -8,12 +8,17 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.server.ServerState;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -141,29 +146,47 @@ public class CommandGive extends Command {
 
 
             if (target.equalsIgnoreCase("all")) {
+                int playersInGame = 0;
+                List<String> item = new ArrayList<>();
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+                    if (!player1.isVanished() && !((AuroraMCGamePlayer)player1).isSpectator()) {
+                        playersInGame++;
+                    }
                     for (ItemStack is : itemsToGive) {
                         player1.getPlayer().getInventory().addItem(is.clone());
                     }
                     for (Material material : materials) {
                         player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You were given **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + ((amount > 1)?"s":"") + "** by **" + player.getPlayer().getName() + "**."));
+                        item.add(WordUtils.capitalizeFully(material.name().replace("_", " ")));
                     }
                 }
                 for (Material material : materials) {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You gave **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + ((amount > 1)?"s":"") + "** to **" + AuroraMCAPI.getPlayers().size() + "** players."));
                 }
+                if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+                    if (playersInGame > 0) {
+                        EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
+                    }
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", amount + " " + String.join(", ", item) + " given to all players.").put("player", player.getPlayer().getName())));
+                }
             } else {
                 String[] targets = target.split(",");
                 int players = 0;
+                int playersInGame = 0;
+                List<String> item = new ArrayList<>();
                 for (String target1 : targets) {
                     AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(target1);
                     if (player1 != null) {
+                        if (!player1.isVanished() && !((AuroraMCGamePlayer)player1).isSpectator()) {
+                            playersInGame++;
+                        }
                         for (ItemStack is : itemsToGive) {
                             player1.getPlayer().getInventory().addItem(is.clone());
                         }
                         players++;
                         for (Material material : materials) {
                             player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You were given **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + ((amount > 1)?"s":"") + "** by **" + player.getPlayer().getName() + "**."));
+                            item.add(WordUtils.capitalizeFully(material.name().replace("_", " ")));
                         }
                     } else {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "Target **" + target1 + "** not found."));
@@ -174,6 +197,12 @@ public class CommandGive extends Command {
                 } else {
                     for (Material material : materials) {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "You gave **" + amount + " " + WordUtils.capitalizeFully(material.name().replace("_", " ")) + ((amount > 1)?"s":"") + "** to **" + players + "** players."));
+                    }
+                    if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+                        if (playersInGame > 0) {
+                            EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
+                        }
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", amount + " " + String.join(", ", item) + " given to " + amount + " players.").put("player", player.getPlayer().getName())));
                     }
                 }
             }
