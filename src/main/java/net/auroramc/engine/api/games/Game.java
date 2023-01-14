@@ -219,16 +219,18 @@ public abstract class Game {
 
         }
 
-        if (winner != null && !voided) {
+        if (winner != null) {
             Cosmetic cosmetic = winner.getActiveCosmetics().get(Cosmetic.CosmeticType.WIN_EFFECT);
             if (cosmetic != null) {
                 WinEffect winEffect = (WinEffect) cosmetic;
                 winEffect.onWin(winner);
             }
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) winner;
-            player.getRewards().addXp("Winner Bonus", 150);
-            player.getRewards().addTickets(150);
-            player.getRewards().addCrowns(150);
+            if (!voided) {
+                player.getRewards().addXp("Winner Bonus", 150);
+                player.getRewards().addTickets(150);
+                player.getRewards().addCrowns(150);
+            }
         }
         startEndRunnable();
     }
@@ -320,12 +322,14 @@ public abstract class Game {
             }
         }
 
-        if (!voided) {
+
             for (AuroraMCPlayer amcPlayer : winner.getPlayers()) {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) amcPlayer;
-                player.getRewards().addXp("Winner Bonus", 150);
-                player.getRewards().addTickets(150);
-                player.getRewards().addCrowns(150);
+                if (!voided) {
+                    player.getRewards().addXp("Winner Bonus", 150);
+                    player.getRewards().addTickets(150);
+                    player.getRewards().addCrowns(150);
+                }
                 if (!player.isSpectator()) {
                     Cosmetic cosmetic = player.getActiveCosmetics().get(Cosmetic.CosmeticType.WIN_EFFECT);
                     if (cosmetic != null) {
@@ -334,7 +338,6 @@ public abstract class Game {
                     }
                 }
             }
-        }
 
         startEndRunnable();
     }
