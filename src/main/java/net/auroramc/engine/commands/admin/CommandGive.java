@@ -202,7 +202,7 @@ public class CommandGive extends Command {
                         if (playersInGame > 0) {
                             EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
                         }
-                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", amount + " " + String.join(", ", item) + " given to " + amount + " players.").put("player", player.getPlayer().getName())));
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", amount + " " + String.join(", ", item) + " given to " + players + " players.").put("player", player.getPlayer().getName())));
                     }
                 }
             }
