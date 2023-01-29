@@ -227,9 +227,9 @@ public abstract class Game {
             }
             AuroraMCGamePlayer player = (AuroraMCGamePlayer) winner;
             if (!voided) {
-                player.getRewards().addXp("Winner Bonus", 150);
-                player.getRewards().addTickets(150);
-                player.getRewards().addCrowns(150);
+                player.getRewards().addXp("Winner Bonus", 1000);
+                player.getRewards().addTickets(1000);
+                player.getRewards().addCrowns(1000);
             }
         }
         startEndRunnable();
@@ -326,9 +326,9 @@ public abstract class Game {
             for (AuroraMCPlayer amcPlayer : winner.getPlayers()) {
                 AuroraMCGamePlayer player = (AuroraMCGamePlayer) amcPlayer;
                 if (!voided) {
-                    player.getRewards().addXp("Winner Bonus", 150);
-                    player.getRewards().addTickets(150);
-                    player.getRewards().addCrowns(150);
+                    player.getRewards().addXp("Winner Bonus", 1000);
+                    player.getRewards().addTickets(1000);
+                    player.getRewards().addCrowns(1000);
                 }
                 if (!player.isSpectator()) {
                     Cosmetic cosmetic = player.getActiveCosmetics().get(Cosmetic.CosmeticType.WIN_EFFECT);
