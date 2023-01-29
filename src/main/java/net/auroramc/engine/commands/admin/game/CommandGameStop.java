@@ -10,13 +10,16 @@ import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.GameUtils;
+import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +36,8 @@ public class CommandGameStop extends Command {
     public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
         if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getServerState() == ServerState.WAITING_FOR_PLAYERS) {
             if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+                EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Game was forced to end.").put("player", player.getPlayer().getName())));
+                EngineAPI.getActiveGame().voidGame("an admin stopped the game");
                 EngineAPI.getActiveGame().end(null);
             } else {
                 if (EngineAPI.getGameStartingRunnable() != null) {

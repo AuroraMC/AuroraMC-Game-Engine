@@ -8,6 +8,9 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
+import net.auroramc.engine.api.server.ServerState;
 import net.minecraft.server.v1_8_R3.EntityInsentient;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.apache.commons.lang.WordUtils;
@@ -20,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -189,6 +193,10 @@ public class CommandMob extends Command {
                         "Held Item: **" + ((item != null)?item.name():"None") + "**\n" +
                         "Custom Name: **" + ((name != null)?name:"None") + "**\n" +
                         "Total Health: **" + ((totalHealth > -1)?totalHealth:"Default") + "hp**"));
+                if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+                    EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", amount + " " + WordUtils.capitalizeFully(type.name().replace("_", " ")) + " spawned in world.").put("player", player.getPlayer().getName())));
+                }
 
                 while (amount > 0) {
                     LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, type);

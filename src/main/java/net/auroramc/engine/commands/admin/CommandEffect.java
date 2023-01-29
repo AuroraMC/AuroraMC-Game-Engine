@@ -8,10 +8,15 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.command.Command;
 import net.auroramc.core.api.permissions.Permission;
 import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.engine.api.EngineAPI;
+import net.auroramc.engine.api.games.GameSession;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import net.auroramc.engine.api.server.ServerState;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,6 +92,10 @@ public class CommandEffect extends Command {
             }
 
             if (target.equalsIgnoreCase("all")) {
+                if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+                    EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
+                    EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Effect " + WordUtils.capitalizeFully(type.getName().replace("_", " ")) + " " + multiplier + " given to all players for " + duration + " seconds.").put("player", player.getPlayer().getName())));
+                }
                 for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
                     player1.getPlayer().addPotionEffect(new PotionEffect(type, duration*20, multiplier));
                     player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "You were given effect **" + WordUtils.capitalizeFully(type.getName().replace("_", " ")) + " " + multiplier + "** for **" + duration + "** seconds by **" + player.getPlayer().getName() + "**."));
@@ -95,12 +104,16 @@ public class CommandEffect extends Command {
             } else {
                 String[] targets = target.split(",");
                 int players = 0;
+                int playersInGame = 0;
                 for (String target1 : targets) {
                     AuroraMCPlayer player1 = AuroraMCAPI.getPlayer(target1);
                     if (player1 != null) {
                         player1.getPlayer().addPotionEffect(new PotionEffect(type, duration*20, multiplier));
                         players++;
                         player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "You were given effect **" + WordUtils.capitalizeFully(type.getName().replace("_", " ")) + " " + multiplier + "** for **" + duration + "** seconds by **" + player.getPlayer().getName() + "**."));
+                        if (!player1.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()) {
+                            playersInGame++;
+                        }
                     } else {
                         player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "Target **" + target1 + "** not found."));
                     }
@@ -108,6 +121,12 @@ public class CommandEffect extends Command {
                 if (players == 0) {
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Give", "No targets were found, so nothing was given out."));
                 } else {
+                    if (EngineAPI.getServerState() == ServerState.IN_GAME) {
+                        if (playersInGame > 0) {
+                            EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
+                        }
+                        EngineAPI.getActiveGame().getGameSession().log(new GameSession.GameLogEntry(GameSession.GameEvent.GAME_EVENT, new JSONObject().put("description", "Effect " + WordUtils.capitalizeFully(type.getName().replace("_", " ")) + " " + multiplier + " given to " + players + " players for " + duration + " seconds.").put("player", player.getPlayer().getName())));
+                    }
                     player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Effect", "You gave effect **" + WordUtils.capitalizeFully(type.getName().replace("_", " ")) + " " + multiplier + "** for **" + duration + " seconds** to **" + players + "** players."));
                 }
             }

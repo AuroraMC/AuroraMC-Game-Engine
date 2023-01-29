@@ -8,11 +8,16 @@ import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.permissions.Rank;
 import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.core.api.players.Disguise;
+import net.auroramc.core.api.players.Team;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
+import net.auroramc.engine.api.players.AuroraMCGamePlayer;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GameSession {
@@ -21,13 +26,13 @@ public class GameSession {
     private final String gameRegistryKey;
     private final String gameVariation;
     private long startTimestamp;
-    private final JSONArray players;
+    private final List<GamePlayer> players;
     private final JSONArray gameLog;
     private long endTimestamp;
 
     public GameSession(String gameRegistryKey, GameVariation gameVariation) {
         this.uuid = UUID.randomUUID();
-        this.players = new JSONArray();
+        this.players = new ArrayList<>();
         this.gameLog = new JSONArray();
         this.gameRegistryKey = gameRegistryKey;
         this.gameVariation = ((gameVariation == null)?"None":gameVariation.getRegistryKey());
@@ -36,7 +41,7 @@ public class GameSession {
     public void start() {
         this.startTimestamp = System.currentTimeMillis();
         for (AuroraMCPlayer gamePlayer : AuroraMCAPI.getPlayers()) {
-            this.players.put(new GamePlayer(gamePlayer).toJSON());
+            this.players.add(new GamePlayer(gamePlayer));
         }
     }
 
@@ -50,12 +55,16 @@ public class GameSession {
         obj.put("end", endTimestamp);
         obj.put("void", isVoid);
         obj.put("log", gameLog);
-        obj.put("players", players);
+        JSONArray array = new JSONArray();
+        for (GamePlayer player : players) {
+            array.put(player.toJSON());
+        }
+        obj.put("players", array);
 
         new BukkitRunnable(){
             @Override
             public void run() {
-                EngineDatabaseManager.uploadGameSession(uuid, gameRegistryKey, obj);
+                EngineDatabaseManager.uploadGameSession(uuid, gameRegistryKey, obj, players);
             }
         }.runTaskAsynchronously(AuroraMCAPI.getCore());
     }
@@ -79,9 +88,11 @@ public class GameSession {
     public static class GameLogEntry {
 
         private final long timestamp;
+        private final GameEvent event;
         private final JSONObject data;
 
-        public GameLogEntry(JSONObject data) {
+        public GameLogEntry(GameEvent event, JSONObject data) {
+            this.event = event;
             this.timestamp = System.currentTimeMillis();
             this.data = data;
         }
@@ -97,9 +108,18 @@ public class GameSession {
         public String toJSON() {
             JSONObject object = new JSONObject();
             object.put("timestamp", timestamp);
+            object.put("event", event.name());
             object.put("data", data);
             return object.toString();
         }
+    }
+
+    public static enum GameEvent {
+        START,
+        RELEASED,
+        GAME_EVENT,
+        DEATH,
+        END
     }
 
     public static class GamePlayer {
@@ -109,6 +129,9 @@ public class GameSession {
         private final int amcId;
         private final Rank rank;
         private final Disguise disguise;
+        private final boolean vanished;
+        private final Team team;
+        private final Kit kit;
 
         public GamePlayer(AuroraMCPlayer player) {
             this.uuid = player.getPlayer().getUniqueId();
@@ -116,6 +139,9 @@ public class GameSession {
             this.amcId = player.getId();
             this.rank = player.getRank();
             this.disguise = player.getActiveDisguise();
+            this.vanished = player.isVanished();
+            this.team = player.getTeam();
+            this.kit = ((AuroraMCGamePlayer)player).getKit();
         }
 
         public String getName() {
@@ -138,6 +164,14 @@ public class GameSession {
             return disguise;
         }
 
+        public boolean isVanished() {
+            return vanished;
+        }
+
+        public Team getTeam() {
+            return team;
+        }
+
         public String toJSON() {
             JSONObject object = new JSONObject();
             object.put("name", name);
@@ -150,6 +184,9 @@ public class GameSession {
                 disguise.put("rank", this.disguise.getRank());
             }
             object.put("disguise", disguise);
+            object.put("vanished", vanished);
+            object.put("team", ((team == null)?"Spectator":team.getName()));
+            object.put("kit", ChatColor.stripColor(AuroraMCAPI.getFormatter().convert(((kit == null)?"None":kit.getName()))));
             return object.toString();
         }
     }
