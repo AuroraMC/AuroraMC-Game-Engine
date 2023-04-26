@@ -60,7 +60,7 @@ public class GameStartingRunnable extends BukkitRunnable {
                                 if (team.getPlayers().size() == 1) {
                                     team.getPlayers().add(player);
                                     player.setTeam(team);
-                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the &%s%s&r team", team.getTeamColor(), team.getName())));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the %s%s§r team", team.getTeamColor(), team.getName())));
                                     for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                                         pl.updateNametag(player);
                                     }
@@ -239,7 +239,7 @@ public class GameStartingRunnable extends BukkitRunnable {
                 if (leastPlayers != null) {
                     leastPlayers.getPlayers().add(player1);
                     player1.setTeam(leastPlayers);
-                    player1.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the &%s%s&r team", leastPlayers.getTeamColor(), leastPlayers.getName())));
+                    player1.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the %s%s§r team", leastPlayers.getTeamColor(), leastPlayers.getName())));
                     for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                         pl.updateNametag(player1);
                     }
@@ -260,7 +260,7 @@ public class GameStartingRunnable extends BukkitRunnable {
                         Team team = provisionalTeamAssignments.get(gp.getPartyUUID());
                         team.getPlayers().add(player1);
                         player1.setTeam(team);
-                        player1.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the &%s%s&r team", team.getTeamColor(), team.getName())));
+                        player1.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the %s%s§r team", team.getTeamColor(), team.getName())));
                         for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                             pl.updateNametag(player1);
                         }

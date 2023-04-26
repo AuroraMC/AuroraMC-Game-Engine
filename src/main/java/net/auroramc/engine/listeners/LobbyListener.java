@@ -284,12 +284,18 @@ public class LobbyListener implements Listener {
                     }
                     case CHEST: {
                         e.setCancelled(true);
+                        if (EngineAPI.getServerState() != ServerState.WAITING_FOR_PLAYERS && EngineAPI.getServerState() != ServerState.STARTING) {
+                            return;
+                        }
                         Kits kits = new Kits((AuroraMCGamePlayer) e.getPlayer());
                         kits.open(e.getPlayer());
                         break;
                     }
                     case LEATHER_CHESTPLATE: {
                         e.setCancelled(true);
+                        if (EngineAPI.getServerState() != ServerState.WAITING_FOR_PLAYERS && EngineAPI.getServerState() != ServerState.STARTING) {
+                            return;
+                        }
                         Teams teams = new Teams((AuroraMCGamePlayer) e.getPlayer());
                         teams.open(e.getPlayer());
                         break;
@@ -303,6 +309,7 @@ public class LobbyListener implements Listener {
     public void onInventoryOpen(InventoryOpenEvent e) {
         if (EngineAPI.getServerState() == ServerState.STARTING && EngineAPI.getGameStartingRunnable() != null && EngineAPI.getGameStartingRunnable().getStartTime() <= 5) {
             e.setCancelled(true);
+            ServerAPI.closeGUI(e.getPlayer());
         }
     }
 

@@ -625,6 +625,7 @@ public abstract class Game {
                             store.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://store.auroramc.net"));
                             store.setColor(net.md_5.bungee.api.ChatColor.AQUA);
                             textComponent.addExtra(store);
+                            textComponent.addExtra("\n");
                             textComponent.addExtra(lines);
 
                             TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));

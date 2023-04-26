@@ -36,7 +36,7 @@ public class CommandGameMode extends ServerCommand {
 
             if (pl.getGameMode().equals(GameMode.CREATIVE)) {
                 pl.setGameMode(GameMode.SURVIVAL);
-                pl.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative Mode: &cDisabled"));
+                pl.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative Mode: §cDisabled"));
                 if (EngineAPI.getServerState() == ServerState.IN_GAME) {
                     if (!player.isVanished() && !((AuroraMCGamePlayer) player).isSpectator()) {
                         EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
@@ -45,7 +45,7 @@ public class CommandGameMode extends ServerCommand {
                 }
             } else {
                 pl.setGameMode(GameMode.CREATIVE);
-                pl.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative Mode: &aEnabled"));
+                pl.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative Mode: §aEnabled"));
                 if (EngineAPI.getServerState() == ServerState.IN_GAME) {
                     if (!player.isVanished() && !((AuroraMCGamePlayer) player).isSpectator()) {
                         EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
@@ -58,8 +58,8 @@ public class CommandGameMode extends ServerCommand {
             if (pl != null) {
                 if (pl.getGameMode().equals(GameMode.CREATIVE)) {
                     pl.setGameMode(GameMode.SURVIVAL);
-                    pl.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative Mode: &cDisabled"));
-                    player.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative mode for player **" + pl.getName() + "**: &cDisabled"));
+                    pl.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative Mode: §cDisabled"));
+                    player.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative mode for player **" + pl.getName() + "**: §cDisabled"));
                     if (EngineAPI.getServerState() == ServerState.IN_GAME) {
                         if (!pl.isVanished() && !pl.isSpectator()) {
                             EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");
@@ -68,8 +68,8 @@ public class CommandGameMode extends ServerCommand {
                     }
                 } else {
                     pl.setGameMode(GameMode.CREATIVE);
-                    pl.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative Mode: &aEnabled"));
-                    player.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative mode for player **" + pl.getName() + "**: &aEnabled"));
+                    pl.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative Mode: §aEnabled"));
+                    player.sendMessage(TextFormatter.pluginMessage("GameMode", "Creative mode for player **" + pl.getName() + "**: §aEnabled"));
                     if (EngineAPI.getServerState() == ServerState.IN_GAME) {
                         if (!pl.isVanished() && !pl.isSpectator()) {
                             EngineAPI.getActiveGame().voidGame("an admin used a command that effects gameplay");

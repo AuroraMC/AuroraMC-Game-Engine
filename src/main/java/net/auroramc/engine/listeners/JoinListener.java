@@ -108,7 +108,7 @@ public class JoinListener implements Listener {
         if (!player.isVanished()) {
             ServerMessage message = ((ServerMessage)player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.SERVER_MESSAGE, AuroraMCAPI.getCosmetics().get(400)));
             for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
-                player1.sendMessage(TextFormatter.pluginMessage("Join", message.onJoin(player1, player)));
+                player1.sendMessage(TextFormatter.pluginMessage("Join", TextFormatter.convert(message.onJoin(player1, player))));
             }
         }
         if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame() != null) {
@@ -146,7 +146,7 @@ public class JoinListener implements Listener {
             scoreboard.setLine(1, "&7auroramc.net");
 
             if (!player.isVanished() && EngineAPI.getServerState() == ServerState.WAITING_FOR_PLAYERS && EngineAPI.getActiveGame() != null && EngineAPI.getGameStartingRunnable() == null) {
-                if (ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("min_players")) {
+                if (ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && ((AuroraMCGamePlayer)player1).isOptedSpec()).count() >= ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("min_players")) {
                     EngineAPI.setServerState(ServerState.STARTING);
                     EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30, false));
                     EngineAPI.getGameStartingRunnable().runTaskTimer(ServerAPI.getCore(), 0, 20);
@@ -169,7 +169,7 @@ public class JoinListener implements Listener {
                     for (Kit kit : EngineAPI.getActiveGame().getKits()) {
                         if (kitId == kit.getId()) {
                             player.setKit(kit);
-                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Your kit was set to **" + kit.getName() + "**."));
+                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Your kit was set to **" + TextFormatter.convert(kit.getName()) + "**."));
                             scoreboard.setLine(6, kit.getName());
                             break;
                         }

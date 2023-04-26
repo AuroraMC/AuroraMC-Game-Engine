@@ -29,11 +29,11 @@ public class LeaveListener implements Listener {
         if (!e.getPlayer().isVanished()) {
             ServerMessage message = ((ServerMessage)e.getPlayer().getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.SERVER_MESSAGE, AuroraMCAPI.getCosmetics().get(400)));
             for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
-                player1.sendMessage(TextFormatter.pluginMessage("Leave", message.onLeave(player1, e.getPlayer())));
+                player1.sendMessage(TextFormatter.pluginMessage("Leave", TextFormatter.convert(message.onLeave(player1, e.getPlayer()))));
             }
         }
         if (EngineAPI.getServerState() == ServerState.STARTING || EngineAPI.getGameStartingRunnable() != null && !EngineAPI.getGameStartingRunnable().isForced()) {
-            if (ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isSpectator()).count() < ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("min_players")) {
+            if (ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isOptedSpec()).count() < ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("min_players")) {
                 if (EngineAPI.getGameStartingRunnable() != null) {
                     EngineAPI.getGameStartingRunnable().cancel();
                     EngineAPI.setGameStartingRunnable(null);

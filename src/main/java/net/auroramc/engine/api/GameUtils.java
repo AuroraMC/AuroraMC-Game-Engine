@@ -38,9 +38,9 @@ public class GameUtils {
 
     public static void loadGame(GameInfo gameInfo, GameMap map, GameVariation gameVariation) {
         try {
+            EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGameInfo(gameInfo);
             Game game = gameInfo.getGameClass().getConstructor(GameVariation.class).newInstance(gameVariation);
-            EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGame(game);
             game.preLoad();
 
@@ -65,7 +65,6 @@ public class GameUtils {
             EngineAPI.setMapWorld(world);
             game.load(map);
             EngineAPI.setActiveMap(map);
-            EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
             for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 if (!player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()) {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
@@ -85,13 +84,14 @@ public class GameUtils {
                             new BukkitRunnable(){
                                 @Override
                                 public void run() {
-                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Your kit was set to **" + finalKit.getName() + "**."));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Your kit was set to **" + TextFormatter.convert(finalKit.getName()) + "**."));
                                 }
                             }.runTask(ServerAPI.getCore());
                         }
                     }.runTaskAsynchronously(ServerAPI.getCore());
                 }
             }
+            EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
             e.printStackTrace();
         }
