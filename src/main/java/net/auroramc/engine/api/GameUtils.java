@@ -4,8 +4,9 @@
 
 package net.auroramc.engine.api;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -65,7 +66,7 @@ public class GameUtils {
             game.load(map);
             EngineAPI.setActiveMap(map);
             EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 if (!player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()) {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
                     new BukkitRunnable(){
@@ -84,11 +85,11 @@ public class GameUtils {
                             new BukkitRunnable(){
                                 @Override
                                 public void run() {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + finalKit.getName() + "**."));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Your kit was set to **" + finalKit.getName() + "**."));
                                 }
-                            }.runTask(AuroraMCAPI.getCore());
+                            }.runTask(ServerAPI.getCore());
                         }
-                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                    }.runTaskAsynchronously(ServerAPI.getCore());
                 }
             }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {

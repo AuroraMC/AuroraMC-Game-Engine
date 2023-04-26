@@ -4,11 +4,12 @@
 
 package net.auroramc.engine.api.games;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.permissions.Rank;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Disguise;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.permissions.Rank;
+import net.auroramc.api.player.Disguise;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.ChatColor;
@@ -40,7 +41,7 @@ public class GameSession {
 
     public void start() {
         this.startTimestamp = System.currentTimeMillis();
-        for (AuroraMCPlayer gamePlayer : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer gamePlayer : ServerAPI.getPlayers()) {
             this.players.add(new GamePlayer(gamePlayer));
         }
     }
@@ -66,7 +67,7 @@ public class GameSession {
             public void run() {
                 EngineDatabaseManager.uploadGameSession(uuid, gameRegistryKey, obj, players);
             }
-        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        }.runTaskAsynchronously(ServerAPI.getCore());
     }
 
     public void log(GameLogEntry gameLogEntry) {
@@ -133,8 +134,8 @@ public class GameSession {
         private final Team team;
         private final Kit kit;
 
-        public GamePlayer(AuroraMCPlayer player) {
-            this.uuid = player.getPlayer().getUniqueId();
+        public GamePlayer(AuroraMCServerPlayer player) {
+            this.uuid = player.getUniqueId();
             this.name = player.getName();
             this.amcId = player.getId();
             this.rank = player.getRank();
@@ -186,7 +187,7 @@ public class GameSession {
             object.put("disguise", disguise);
             object.put("vanished", vanished);
             object.put("team", ((team == null)?"Spectator":team.getName()));
-            object.put("kit", ChatColor.stripColor(AuroraMCAPI.getFormatter().convert(((kit == null)?"None":kit.getName()))));
+            object.put("kit", ChatColor.stripColor(TextFormatter.convert(((kit == null)?"None":kit.getName()))));
             return object.toString();
         }
     }
