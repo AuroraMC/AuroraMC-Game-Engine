@@ -114,8 +114,8 @@ public class CommandGameSet extends ServerCommand {
                             }
                         }
                     }
-                    for (Player player1 : Bukkit.getOnlinePlayers()) {
-                        LobbyListener.updateHeaderFooter((CraftPlayer) player1);
+                    for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
+                        LobbyListener.updateHeaderFooter(player1);
 
                     }
                     if (map == null) {

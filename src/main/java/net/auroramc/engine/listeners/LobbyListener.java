@@ -192,7 +192,7 @@ public class LobbyListener implements Listener {
         }
     }
 
-    static void updateHeaderFooter(AuroraMCServerPlayer player) {
+    public static void updateHeaderFooter(AuroraMCServerPlayer player) {
         try {
             CraftPlayer player2 = player.getCraft();
             IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"§3§lAURORAMC NETWORK         §b§lAURORAMC.NET\",\"color\":\"dark_aqua\",\"bold\":\"false\"}");

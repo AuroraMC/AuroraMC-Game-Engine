@@ -5,10 +5,8 @@
 package net.auroramc.engine.api.util;
 
 import net.auroramc.api.utils.TextFormatter;
-import net.auroramc.core.api.AuroraMCAPI;
 import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
-import net.auroramc.core.api.players.AuroraMCPlayer;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.Bukkit;
