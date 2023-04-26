@@ -713,7 +713,7 @@ public abstract class Game {
         }.runTaskLater(ServerAPI.getCore(), 200);
     }
 
-    public abstract void generateTeam(AuroraMCPlayer player);
+    public abstract void generateTeam(AuroraMCServerPlayer player);
 
     public abstract void onPlayerJoin(Player player);
 
