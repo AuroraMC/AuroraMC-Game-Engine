@@ -4,8 +4,8 @@
 
 package net.auroramc.engine.commands;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.commands.admin.CommandDisguise;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class CommandDisguiseOverride extends CommandDisguise {
 
     @Override
-    public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
-        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Disguise", "Disguise can only be used in Lobby servers!"));
+    public void execute(AuroraMCServerPlayer player, String aliasUsed, List<String> args) {
+        player.sendMessage(TextFormatter.pluginMessage("Disguise", "Disguise can only be used in Lobby servers!"));
     }
 }

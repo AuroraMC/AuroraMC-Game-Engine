@@ -4,8 +4,9 @@
 
 package net.auroramc.engine.api;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -37,9 +38,9 @@ public class GameUtils {
 
     public static void loadGame(GameInfo gameInfo, GameMap map, GameVariation gameVariation) {
         try {
+            EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGameInfo(gameInfo);
             Game game = gameInfo.getGameClass().getConstructor(GameVariation.class).newInstance(gameVariation);
-            EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGame(game);
             game.preLoad();
 
@@ -64,8 +65,7 @@ public class GameUtils {
             EngineAPI.setMapWorld(world);
             game.load(map);
             EngineAPI.setActiveMap(map);
-            EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 if (!player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()) {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
                     new BukkitRunnable(){
@@ -84,13 +84,14 @@ public class GameUtils {
                             new BukkitRunnable(){
                                 @Override
                                 public void run() {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + finalKit.getName() + "**."));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Your kit was set to **" + TextFormatter.convert(finalKit.getName()) + "**."));
                                 }
-                            }.runTask(AuroraMCAPI.getCore());
+                            }.runTask(ServerAPI.getCore());
                         }
-                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                    }.runTaskAsynchronously(ServerAPI.getCore());
                 }
             }
+            EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
             e.printStackTrace();
         }

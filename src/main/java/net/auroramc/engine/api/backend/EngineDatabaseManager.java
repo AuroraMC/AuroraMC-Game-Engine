@@ -4,9 +4,10 @@
 
 package net.auroramc.engine.api.backend;
 
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.backend.info.ServerInfo;
+import net.auroramc.core.api.ServerAPI;
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.players.PlayerKitLevel;
@@ -61,7 +62,7 @@ public class EngineDatabaseManager {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO game_session(game_uuid, game, server, game_data, players) VALUES (?,?,?,?,?)");
             statement.setString(1, uuid.toString());
             statement.setString(2, game);
-            statement.setString(3, AuroraMCAPI.getServerInfo().getName());
+            statement.setString(3, AuroraMCAPI.getInfo().getName());
             statement.setString(4, json.toString());
             List<String> ints = new ArrayList<>();
             for (GameSession.GamePlayer player : players) {
@@ -172,8 +173,8 @@ public class EngineDatabaseManager {
 
     public static void updateServerData() {
         try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
-            connection.set("serverdata." + AuroraMCAPI.getServerInfo().getNetwork().name() + "." + AuroraMCAPI.getServerInfo().getName(), EngineAPI.getServerState().name() + ";" + AuroraMCAPI.getPlayers().stream().filter(player -> !player.isVanished() && (player instanceof AuroraMCGamePlayer && !((AuroraMCGamePlayer) player).isOptedSpec())).count() + "/" + AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") + ";" + ((EngineAPI.getActiveGameInfo()==null)?"None":EngineAPI.getActiveGameInfo().getName()) + ";" + ((EngineAPI.getActiveMap()==null)?"None":EngineAPI.getActiveMap().getName()));
-            connection.expire("serverdata." + AuroraMCAPI.getServerInfo().getNetwork().name() + "." + AuroraMCAPI.getServerInfo().getName(), 15);
+            connection.set("serverdata." + AuroraMCAPI.getInfo().getNetwork().name() + "." + AuroraMCAPI.getInfo().getName(), EngineAPI.getServerState().name() + ";" + ServerAPI.getPlayers().stream().filter(player -> !player.isVanished() && (player instanceof AuroraMCGamePlayer && !((AuroraMCGamePlayer) player).isOptedSpec())).count() + "/" + ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("max_players") + ";" + ((EngineAPI.getActiveGameInfo()==null)?"None":EngineAPI.getActiveGameInfo().getName()) + ";" + ((EngineAPI.getActiveMap()==null)?"None":EngineAPI.getActiveMap().getName()));
+            connection.expire("serverdata." + AuroraMCAPI.getInfo().getNetwork().name() + "." + AuroraMCAPI.getInfo().getName(), 15);
         }
     }
 
@@ -183,7 +184,7 @@ public class EngineDatabaseManager {
             connection.hincrBy(String.format("stat.gamesstarted.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "WEEKLY", 1);
             connection.hincrBy(String.format("stat.gamesstarted.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "ALLTIME", 1);
 
-            int amount = (int) AuroraMCAPI.getPlayers().stream().filter(player -> !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).count();
+            int amount = (int) ServerAPI.getPlayers().stream().filter(player -> !player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()).count();
             connection.hincrBy(String.format("stat.playerspergame.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "DAILY", amount);
             connection.hincrBy(String.format("stat.playerspergame.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "WEEKLY", amount);
             connection.hincrBy(String.format("stat.playerspergame.%s", EngineAPI.getActiveGameInfo().getRegistryKey()), "ALLTIME", amount);

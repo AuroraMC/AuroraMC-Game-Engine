@@ -4,12 +4,15 @@
 
 package net.auroramc.engine.api.util;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.backend.info.ServerInfo;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,12 +23,12 @@ public class TitleBarRunnable extends BukkitRunnable {
     @Override
     public void run() {
         if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                player.sendHotBar("§7" + EngineAPI.getActiveGame().getGameSession().getUuid().toString() + " - " + AuroraMCAPI.getServerInfo().getName() + " - " + new Date(), ChatColor.GRAY, false);
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                player.sendHotBar(new TextComponent("§7" + EngineAPI.getActiveGame().getGameSession().getUuid().toString() + " - " + AuroraMCAPI.getInfo().getName() + " - " + new Date()));
             }
         } else {
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-                player.sendHotBar("Players: §b" + AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && (player1 instanceof AuroraMCGamePlayer && !((AuroraMCGamePlayer) player1).isOptedSpec())).count() + "§r/§b" + AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") + "§r - Lobby: §b" + EngineAPI.getWaitingLobbyMap().getName() + " §rby §b" + EngineAPI.getWaitingLobbyMap().getAuthor(), ChatColor.WHITE, false);
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                player.sendHotBar(new TextComponent("Players: §b" + ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && (player1 instanceof AuroraMCGamePlayer && !((AuroraMCGamePlayer) player1).isOptedSpec())).count() + "§r/§b" + ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("max_players") + "§r - Lobby: §b" + EngineAPI.getWaitingLobbyMap().getName() + " §rby §b" + EngineAPI.getWaitingLobbyMap().getAuthor()));
             }
         }
 

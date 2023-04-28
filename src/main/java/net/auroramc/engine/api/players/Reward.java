@@ -6,10 +6,11 @@ package net.auroramc.engine.api.players;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.stats.PlayerStatistics;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.cosmetics.Cosmetic;
+import net.auroramc.api.stats.PlayerStatistics;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class Reward {
         return rewardString;
     }
 
-    public void apply(AuroraMCPlayer player) {
+    public void apply(AuroraMCServerPlayer player) {
         player.getStats().addXp(this.xp, true);
         player.getBank().addCrowns(this.crowns, true, true);
         player.getBank().addTickets(this.tickets, true, true);
@@ -73,15 +74,15 @@ public class Reward {
                 new BukkitRunnable(){
                     @Override
                     public void run() {
-                        AuroraMCAPI.getDbManager().addCosmetic(player.getPlayer().getUniqueId(), cosmetic);
+                        AuroraMCAPI.getDbManager().addCosmetic(player.getUniqueId(), cosmetic);
                     }
-                }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                }.runTaskAsynchronously(ServerAPI.getCore());
 
                 ByteArrayDataOutput out = ByteStreams.newDataOutput();
                 out.writeUTF("CosmeticAdd");
-                out.writeUTF(player.getPlayer().getName());
+                out.writeUTF(player.getName());
                 out.writeInt(cosmeticId);
-                player.getPlayer().sendPluginMessage(AuroraMCAPI.getCore(),"auroramc:server", out.toByteArray());
+                player.sendPluginMessage(out.toByteArray());
             }
         }
     }
@@ -105,7 +106,7 @@ public class Reward {
                     public void run() {
                         AuroraMCAPI.getDbManager().addCosmetic(uuid, cosmetic);
                     }
-                }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                }.runTaskAsynchronously(ServerAPI.getCore());
             }
         }
     }

@@ -4,17 +4,18 @@
 
 package net.auroramc.engine.commands.admin.game;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.command.Command;
-import net.auroramc.core.api.permissions.Permission;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.permissions.Permission;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerCommand;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandGame extends Command {
+public class CommandGame extends ServerCommand {
 
 
     public CommandGame() {
@@ -26,7 +27,7 @@ public class CommandGame extends Command {
     }
 
     @Override
-    public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
+    public void execute(AuroraMCServerPlayer player, String aliasUsed, List<String> args) {
         if (args.size() > 0) {
             switch (args.get(0).toLowerCase()) {
                 case "set":
@@ -37,7 +38,7 @@ public class CommandGame extends Command {
                     subcommands.get(aliasUsed).execute(player, aliasUsed, args);
                     break;
                 default:
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Available subcommands are:\n" +
+                    player.sendMessage(TextFormatter.pluginMessage("Game", "Available subcommands are:\n" +
                             "**/game set [game] v[variation] m[map]** - Set the current game, or the next game if a game is in progress.\n" +
                             "**/game next  [game] v[variation] m[map]** - Set the next game.\n" +
                             "**/game stop** - Stop the current game.\n" +
@@ -45,7 +46,7 @@ public class CommandGame extends Command {
                     break;
             }
         } else {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "Available subcommands are:\n" +
+            player.sendMessage(TextFormatter.pluginMessage("Game", "Available subcommands are:\n" +
                     "**/game set [game] v[variation] m[map]** - Set the current game, or the next game if a game is in progress.\n" +
                     "**/game next  [game] v[variation] m[map]** - Set the next game.\n" +
                     "**/game stop** - Stop the current game.\n" +
@@ -54,7 +55,7 @@ public class CommandGame extends Command {
     }
 
     @Override
-    public @NotNull List<String> onTabComplete(AuroraMCPlayer player, String aliasUsed, List<String> args, String lastToken, int numberArguments) {
+    public @NotNull List<String> onTabComplete(AuroraMCServerPlayer player, String aliasUsed, List<String> args, String lastToken, int numberArguments) {
         ArrayList<String> completions = new ArrayList<>();
         if (numberArguments == 1) {
             for (String s : subcommands.keySet()){

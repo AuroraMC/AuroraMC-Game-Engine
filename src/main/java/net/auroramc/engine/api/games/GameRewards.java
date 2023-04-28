@@ -4,11 +4,11 @@
 
 package net.auroramc.engine.api.games;
 
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -103,16 +103,25 @@ public class GameRewards {
 
 
         if (message) {
-            StringBuilder xpBreakdown = new StringBuilder();
-            xpBreakdown.append("&r+");
-            xpBreakdown.append(timeXp);
-            xpBreakdown.append(" XP **Time Bonus**");
+
+            TextComponent component = new TextComponent("");
+            component.addExtra("+" + timeXp + " XP ");
+
+            TextComponent cmp = new TextComponent("Time Bonus");
+            cmp.setColor(ChatColor.AQUA);
+            cmp.setBold(false);
+            component.addExtra(cmp);
+
+
             for (Map.Entry<String, Integer> entry : xp.entrySet()) {
-                xpBreakdown.append("\n&r+");
-                xpBreakdown.append(entry.getValue());
-                xpBreakdown.append(" XP **");
-                xpBreakdown.append(entry.getKey());
-                xpBreakdown.append("**");
+                TextComponent component1 = new TextComponent("\n+" + entry.getValue() + " XP ");
+                component1.setColor(ChatColor.WHITE);
+                component1.setBold(false);
+
+                cmp = new TextComponent(entry.getKey());
+                cmp.setColor(ChatColor.AQUA);
+                cmp.setBold(false);
+                component.addExtra(cmp);
             }
 
             TextComponent textComponent = new TextComponent("");
@@ -131,10 +140,10 @@ public class GameRewards {
 
             TextComponent xp = new TextComponent("+" + totalXp + " XP");
             xp.setColor(ChatColor.GREEN);
-            xp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(xpBreakdown.toString()))).create()));
+            xp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{component}));
 
             if (EngineAPI.getXpBoostMessage() != null) {
-                xp.addExtra(" " + AuroraMCAPI.getFormatter().convert(EngineAPI.getXpBoostMessage()) + "\n");
+                xp.addExtra(" " + TextFormatter.convert(EngineAPI.getXpBoostMessage()) + "\n");
             } else {
                 xp.addExtra("\n");
             }
@@ -166,7 +175,7 @@ public class GameRewards {
 
             textComponent.addExtra("\n \n");
             textComponent.addExtra(lines);
-            player.getPlayer().spigot().sendMessage(textComponent);
+            player.sendMessage(textComponent);
             player.getKitLevel().addXp(player.getKit(), (totalXP + timeXp) * 4L);
         }
     }

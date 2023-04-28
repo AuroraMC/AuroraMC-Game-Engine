@@ -4,10 +4,11 @@
 
 package net.auroramc.engine.api.util;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.cosmetics.Cosmetic;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
@@ -19,34 +20,39 @@ import java.util.*;
 public class GameStartingRunnable extends BukkitRunnable {
 
     private int startTime;
+    private boolean forced;
 
-    public GameStartingRunnable(int startTime) {
+    public GameStartingRunnable(int startTime, boolean forced) {
         this.startTime = startTime;
+        this.forced = forced;
     }
 
     @Override
     public void run() {
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+        if (EngineAPI.getGameStartingRunnable() != this) {
+            this.cancel();
+        }
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
             player.getScoreboard().setTitle("&3-= &b&lSTARTING IN " + startTime + "&r &3=-");
             switch(startTime) {
-                case 1:
                 case 5:
+                    player.closeInventory();
+                case 1:
                 case 4:
                 case 3:
                 case 2:
-                    player.getPlayer().closeInventory();
                 case 60:
                 case 30:
                 case 10:
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.NOTE_STICKS, 100, 1);
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", String.format("The game is starting in **%s** second%s!", startTime, ((startTime > 1)?"s":""))));
+                    player.playSound(player.getLocation(), Sound.NOTE_STICKS, 100, 1);
+                    player.sendMessage(TextFormatter.pluginMessage("Game", String.format("The game is starting in **%s** second%s!", startTime, ((startTime > 1)?"s":""))));
 
             }
         }
 
         if (startTime == 0) {
             if (EngineAPI.getActiveGameInfo().hasTeamCommand()) {
-                for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
                     if (!gp.isSpectator()) {
                         if (player.getTeam() != null) {
@@ -54,8 +60,8 @@ public class GameStartingRunnable extends BukkitRunnable {
                                 if (team.getPlayers().size() == 1) {
                                     team.getPlayers().add(player);
                                     player.setTeam(team);
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("You have been assigned to the &%s%s&r team", team.getTeamColor(), team.getName())));
-                                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the %s%s§r team", team.getTeamColor(), team.getName())));
+                                    for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                                         pl.updateNametag(player);
                                     }
                                 }
@@ -77,11 +83,11 @@ public class GameStartingRunnable extends BukkitRunnable {
                 }
             }
 
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
                     if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT  || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
                         entry.getValue().onUnequip(player);
-                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
+                        player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
                     }
                 }
             }
@@ -98,13 +104,17 @@ public class GameStartingRunnable extends BukkitRunnable {
         return startTime;
     }
 
+    public boolean isForced() {
+        return forced;
+    }
+
     public void setStartTime(int startTime) {
         this.startTime = startTime;
     }
 
     public static void teamBalance() {
         Map<UUID, Integer> parties = new HashMap<>();
-        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
             if (player1.getPartyUUID() != null && !((AuroraMCGamePlayer)player1).isSpectator()) {
                 if (parties.containsKey(player1.getPartyUUID())) {
                     parties.put(player1.getPartyUUID(), parties.get(player1.getPartyUUID()) + 1);
@@ -114,7 +124,7 @@ public class GameStartingRunnable extends BukkitRunnable {
             }
         }
         Map<UUID, Team> provisionalTeamAssignments = new HashMap<>();
-        int players = (int) AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isSpectator()).count();
+        int players = (int) ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isSpectator()).count();
         int numTeams = EngineAPI.getActiveGame().getTeams().size();
         int ppt = players / numTeams;
         int extras = players % numTeams;
@@ -213,7 +223,7 @@ public class GameStartingRunnable extends BukkitRunnable {
     }
 
     public static void assignRandomly() {
-        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
             if (player1.getTeam() == null && !gp.isSpectator()) {
                 Team leastPlayers = null;
@@ -229,8 +239,8 @@ public class GameStartingRunnable extends BukkitRunnable {
                 if (leastPlayers != null) {
                     leastPlayers.getPlayers().add(player1);
                     player1.setTeam(leastPlayers);
-                    player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("You have been assigned to the &%s%s&r team", leastPlayers.getTeamColor(), leastPlayers.getName())));
-                    for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                    player1.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the %s%s§r team", leastPlayers.getTeamColor(), leastPlayers.getName())));
+                    for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                         pl.updateNametag(player1);
                     }
                 }
@@ -242,7 +252,7 @@ public class GameStartingRunnable extends BukkitRunnable {
     }
 
     public static void assignTeams(Map<UUID, Team> provisionalTeamAssignments) {
-        for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
+        for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
             AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player1;
             if (gp.getPartyUUID() != null) {
                 if (!gp.isSpectator()) {
@@ -250,8 +260,8 @@ public class GameStartingRunnable extends BukkitRunnable {
                         Team team = provisionalTeamAssignments.get(gp.getPartyUUID());
                         team.getPlayers().add(player1);
                         player1.setTeam(team);
-                        player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("You have been assigned to the &%s%s&r team", team.getTeamColor(), team.getName())));
-                        for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
+                        player1.sendMessage(TextFormatter.pluginMessage("Game Manager", String.format("You have been assigned to the %s%s§r team", team.getTeamColor(), team.getName())));
+                        for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
                             pl.updateNametag(player1);
                         }
                     }

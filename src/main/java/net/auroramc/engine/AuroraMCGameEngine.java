@@ -4,7 +4,7 @@
 
 package net.auroramc.engine;
 
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.core.api.utils.ZipUtil;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;

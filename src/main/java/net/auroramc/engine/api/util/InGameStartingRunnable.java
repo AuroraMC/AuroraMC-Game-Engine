@@ -4,8 +4,9 @@
 
 package net.auroramc.engine.api.util;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.games.Game;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ public class InGameStartingRunnable extends BukkitRunnable {
     public void run() {
         if (i > 0) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", String.format("The game is starting in **%s** second%s!", i, ((i > 1)?"s":""))));
+                player.spigot().sendMessage(TextFormatter.pluginMessage("Game", String.format("The game is starting in **%s** second%s!", i, ((i > 1)?"s":""))));
                 if (i < 6) {
                     player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 2f-(1.5f*(i/5f)));
                 }
@@ -36,9 +37,9 @@ public class InGameStartingRunnable extends BukkitRunnable {
         } else {
             game.inProgress();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                player.sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game", "The game has begun!"));
+                player.spigot().sendMessage(TextFormatter.pluginMessage("Game", "The game has begun!"));
                 player.playSound(player.getLocation(), Sound.NOTE_PLING, 100, 2);
-                AuroraMCPlayer pl = AuroraMCAPI.getPlayer(player);
+                AuroraMCServerPlayer pl = ServerAPI.getPlayer(player);
                 if (pl instanceof AuroraMCGamePlayer && !((AuroraMCGamePlayer) pl).isSpectator() && !pl.isVanished()) {
                     ((AuroraMCGamePlayer) pl).gameStarted();
                 }
