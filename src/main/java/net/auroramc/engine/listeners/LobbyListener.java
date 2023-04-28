@@ -11,7 +11,6 @@ import net.auroramc.api.cosmetics.Cosmetic;
 import net.auroramc.api.cosmetics.Gadget;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
-import net.auroramc.core.api.events.VanishEvent;
 import net.auroramc.core.api.events.block.BlockBreakEvent;
 import net.auroramc.core.api.events.block.BlockPlaceEvent;
 import net.auroramc.core.api.events.cosmetics.CosmeticEnableEvent;
@@ -20,10 +19,7 @@ import net.auroramc.core.api.events.entity.FoodLevelChangeEvent;
 import net.auroramc.core.api.events.entity.PlayerDamageEvent;
 import net.auroramc.core.api.events.inventory.InventoryClickEvent;
 import net.auroramc.core.api.events.inventory.InventoryOpenEvent;
-import net.auroramc.core.api.events.player.PlayerArmorStandManipulateEvent;
-import net.auroramc.core.api.events.player.PlayerDropItemEvent;
-import net.auroramc.core.api.events.player.PlayerInteractEvent;
-import net.auroramc.core.api.events.player.PlayerUseCosmeticEvent;
+import net.auroramc.core.api.events.player.*;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.gui.cosmetics.Cosmetics;
 import net.auroramc.core.gui.preferences.Preferences;
@@ -330,7 +326,7 @@ public class LobbyListener implements Listener {
     }
 
     @EventHandler
-    public void onVanish(VanishEvent e) {
+    public void onVanish(PlayerVanishEvent e) {
         if (EngineAPI.getServerState() == ServerState.ENDING || EngineAPI.getServerState() == ServerState.IN_GAME) {
             e.setCancelled(true);
         }
