@@ -39,8 +39,27 @@ public class CommandGameNext extends ServerCommand {
                 String gameString = args.remove(0);
                 GameInfo info = EngineAPI.getGames().get(gameString.toUpperCase());
                 if (info == null) {
-                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
-                    return;
+                    List<GameInfo> infos = new ArrayList<>();
+                    for (GameInfo gameInfo : EngineAPI.getGames().values()) {
+                        if (gameInfo.getRegistryKey().toUpperCase().contains(gameString.toUpperCase())) {
+                            infos.add(gameInfo);
+                        }
+                    }
+                    if (infos.size() > 0) {
+                        if (infos.size() > 1) {
+                            StringBuilder builder = new StringBuilder();
+                            for (GameInfo info1 : infos) {
+                                builder.append("\n - **").append(info1.getRegistryKey().toUpperCase()).append("**");
+                            }
+                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Multiple matches for game: **" + gameString + "**. Possible games:" + builder));
+                            return;
+                        } else {
+                            info = infos.get(0);
+                        }
+                    } else {
+                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
+                        return;
+                    }
                 }
                 GameVariation gameVariation = null;
                 GameMap map = null;
@@ -60,6 +79,12 @@ public class CommandGameNext extends ServerCommand {
                             if (args2.length != 2) {
                                 player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
                                 return;
+                            }
+                            if (!EngineAPI.getMaps().containsKey(args2[0])) {
+                                if (args2.length != 2) {
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Game Key **" + args2[0] + "** does not exist. Are you sure its correct?"));
+                                    return;
+                                }
                             }
                             map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
                         } else {

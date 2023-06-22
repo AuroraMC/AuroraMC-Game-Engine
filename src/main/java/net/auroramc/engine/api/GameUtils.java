@@ -24,7 +24,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameUtils {
 
@@ -33,9 +35,19 @@ public class GameUtils {
     }
 
     public static void loadGame(GameInfo gameInfo, GameVariation gameVariation) {
-            List<GameMap> maps = EngineAPI.getMaps().get(gameInfo.getRegistryKey()).getMaps();
-            GameMap map = maps.get(EngineAPI.randomNumber(maps.size()));
-            GameUtils.loadGame(gameInfo, map, gameVariation);
+        List<GameMap> maps;
+        if (gameInfo.getRegistryKey() != null) {
+            if (gameVariation != null && gameVariation.getRegistryKey() != null) {
+                maps = EngineAPI.getMaps().get(gameVariation.getRegistryKey()).getMaps();
+            } else {
+                maps = EngineAPI.getMaps().get(gameInfo.getRegistryKey()).getMaps();
+            }
+        } else {
+            int key = EngineAPI.randomNumber(EngineAPI.getMaps().keySet().size());
+            maps = EngineAPI.getMaps().get(new ArrayList<>(EngineAPI.getMaps().keySet()).get(key)).getMaps();
+        }
+        GameMap map = maps.get(EngineAPI.randomNumber(maps.size()));;
+        GameUtils.loadGame(gameInfo, map, gameVariation);
     }
 
     public static void loadGame(GameInfo gameInfo, GameMap map, GameVariation gameVariation) {
