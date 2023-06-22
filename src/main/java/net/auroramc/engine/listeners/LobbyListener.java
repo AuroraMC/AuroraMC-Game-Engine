@@ -8,7 +8,6 @@ package net.auroramc.engine.listeners;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.api.cosmetics.Cosmetic;
 import net.auroramc.api.cosmetics.Gadget;
