@@ -85,11 +85,13 @@ public class GameStartingRunnable extends BukkitRunnable {
                 }
             }
 
-            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
-                    if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT  || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
-                        entry.getValue().onUnequip(player);
-                        player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
+            if (EngineAPI.getActiveGame().shouldUnequipCosmetics()) {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
+                        if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT  || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
+                            entry.getValue().onUnequip(player);
+                            player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
+                        }
                     }
                 }
             }

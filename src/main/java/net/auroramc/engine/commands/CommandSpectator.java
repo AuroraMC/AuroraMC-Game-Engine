@@ -39,8 +39,15 @@ public class CommandSpectator extends ServerCommand {
                 ((AuroraMCGamePlayer) player).setOptedSpec(false);
                 if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
                     ((AuroraMCGamePlayer) player).setSpectator(false, false);
+                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You will no longer be a spectator in the next game."));
+                } else if (EngineAPI.getServerState() == ServerState.IN_GAME && EngineAPI.getActiveGame().shouldSpawnWhenUnspectate() && EngineAPI.getActiveGame().getTeams().size() == 1) {
+                    ((AuroraMCGamePlayer) player).setSpectator(false, false);
+                    EngineAPI.getActiveGame().onPlayerJoin((AuroraMCGamePlayer) player);
+                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You are no longer be a spectator. You have been spawned into the game."));
+                } else {
+                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You will no longer be a spectator in the next game."));
                 }
-                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You will no longer be a spectator in the next game."));
+
                 if (EngineAPI.getServerState() == ServerState.WAITING_FOR_PLAYERS) {
                     if (ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && ((AuroraMCGamePlayer)player1).isOptedSpec()).count() >= ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("min_players")) {
                         EngineAPI.setServerState(ServerState.STARTING);

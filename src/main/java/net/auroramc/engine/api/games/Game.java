@@ -56,6 +56,8 @@ public abstract class Game {
 
     protected boolean voided;
 
+    protected boolean unequipCosmetics;
+    protected boolean spawnWhenUnspectate;
 
     public Game(GameVariation gameVariation) {
         this.gameVariation = gameVariation;
@@ -63,7 +65,9 @@ public abstract class Game {
         this.kits = new ArrayList<>();
         gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),gameVariation);
         starting = false;
-        voided = AuroraMCAPI.isTestServer();
+        voided = AuroraMCAPI.isTestServer() || ServerAPI.isEventMode();
+        unequipCosmetics = true;
+        spawnWhenUnspectate = false;
     }
 
     public abstract void preLoad();
@@ -526,10 +530,12 @@ public abstract class Game {
                             }
                         }
                     }
-                    for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
-                        if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
-                            entry.getValue().onEquip(player);
-                            player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("**%s** has been re-equipped.", entry.getValue().getName())));
+                    if (unequipCosmetics) {
+                        for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
+                            if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
+                                entry.getValue().onEquip(player);
+                                player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("**%s** has been re-equipped.", entry.getValue().getName())));
+                            }
                         }
                     }
                     if (player.getRewards() != null) {
@@ -754,5 +760,13 @@ public abstract class Game {
                 player.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game has now been voided" + ((reason != null)?" because " + reason:"") + ". Any statistics or rewards earned after this point will not apply to your account. Achievements earned up until this point in the game will still apply."));
             }
         }
+    }
+
+    public boolean shouldUnequipCosmetics() {
+        return unequipCosmetics;
+    }
+
+    public boolean shouldSpawnWhenUnspectate() {
+        return spawnWhenUnspectate;
     }
 }

@@ -8,6 +8,7 @@ package net.auroramc.engine.listeners;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.api.cosmetics.Cosmetic;
 import net.auroramc.api.cosmetics.Gadget;
@@ -337,14 +338,14 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void onCosmeticEnable(CosmeticEnableEvent e) {
-        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().isUnequipCosmetics()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onCosmeticSwitch(CosmeticSwitchEvent e) {
-        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().isUnequipCosmetics()) {
             e.setCancelled(true);
         }
     }
