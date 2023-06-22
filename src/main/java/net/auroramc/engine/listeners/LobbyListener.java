@@ -338,14 +338,14 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void onCosmeticEnable(CosmeticEnableEvent e) {
-        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().isUnequipCosmetics()) {
+        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().shouldUnequipCosmetics()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onCosmeticSwitch(CosmeticSwitchEvent e) {
-        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().isUnequipCosmetics()) {
+        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().shouldUnequipCosmetics()) {
             e.setCancelled(true);
         }
     }
