@@ -59,6 +59,24 @@ public abstract class Game {
     protected boolean unequipCosmetics;
     protected boolean spawnWhenUnspectate;
 
+    //Settings
+    protected boolean damagePvP;
+    protected boolean damageEvP;
+    protected boolean damagePvE;
+    protected boolean damageAll;
+    protected boolean damageFall;
+    protected int health;
+    protected int hunger;
+    protected boolean itemDrop;
+    protected boolean itemPickup;
+    protected boolean blockPlace;
+    protected boolean blockBreak;
+    protected boolean blockPlaceCreative;
+    protected boolean blockBreakCreative;
+    protected int time;
+    protected boolean mobGriefing;
+    protected boolean keepInventory;
+
     public Game(GameVariation gameVariation) {
         this.gameVariation = gameVariation;
         this.teams = new HashMap<>();
@@ -68,6 +86,23 @@ public abstract class Game {
         voided = AuroraMCAPI.isTestServer() || ServerAPI.isEventMode();
         unequipCosmetics = true;
         spawnWhenUnspectate = false;
+
+        damagePvP = true;
+        damageEvP = true;
+        damagePvE = true;
+        damageAll = true;
+        damageFall = true;
+        health = -1;
+        hunger = -1;
+        itemDrop = true;
+        itemPickup = true;
+        blockPlace = true;
+        blockBreak = true;
+        blockPlaceCreative = true;
+        blockBreakCreative = true;
+        time = -1;
+        mobGriefing = true;
+        keepInventory = true;
     }
 
     public abstract void preLoad();
@@ -768,5 +803,133 @@ public abstract class Game {
 
     public boolean shouldSpawnWhenUnspectate() {
         return spawnWhenUnspectate;
+    }
+
+    public boolean isDamagePvP() {
+        return damagePvP;
+    }
+
+    public void setDamagePvP(boolean damagePvP) {
+        this.damagePvP = damagePvP;
+    }
+
+    public boolean isDamageEvP() {
+        return damageEvP;
+    }
+
+    public void setDamageEvP(boolean damageEvP) {
+        this.damageEvP = damageEvP;
+    }
+
+    public boolean isDamagePvE() {
+        return damagePvE;
+    }
+
+    public void setDamagePvE(boolean damagePvE) {
+        this.damagePvE = damagePvE;
+    }
+
+    public boolean isDamageAll() {
+        return damageAll;
+    }
+
+    public void setDamageAll(boolean damageAll) {
+        this.damageAll = damageAll;
+    }
+
+    public boolean isDamageFall() {
+        return damageFall;
+    }
+
+    public void setDamageFall(boolean damageFall) {
+        this.damageFall = damageFall;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getHunger() {
+        return hunger;
+    }
+
+    public void setHunger(int hunger) {
+        this.hunger = hunger;
+    }
+
+    public boolean isItemDrop() {
+        return itemDrop;
+    }
+
+    public void setItemDrop(boolean itemDrop) {
+        this.itemDrop = itemDrop;
+    }
+
+    public boolean isItemPickup() {
+        return itemPickup;
+    }
+
+    public void setItemPickup(boolean itemPickup) {
+        this.itemPickup = itemPickup;
+    }
+
+    public boolean isBlockPlace() {
+        return blockPlace;
+    }
+
+    public void setBlockPlace(boolean blockPlace) {
+        this.blockPlace = blockPlace;
+    }
+
+    public boolean isBlockBreak() {
+        return blockBreak;
+    }
+
+    public void setBlockBreak(boolean blockBreak) {
+        this.blockBreak = blockBreak;
+    }
+
+    public boolean isBlockPlaceCreative() {
+        return blockPlaceCreative;
+    }
+
+    public void setBlockPlaceCreative(boolean blockPlaceCreative) {
+        this.blockPlaceCreative = blockPlaceCreative;
+    }
+
+    public boolean isBlockBreakCreative() {
+        return blockBreakCreative;
+    }
+
+    public void setBlockBreakCreative(boolean blockBreakCreative) {
+        this.blockBreakCreative = blockBreakCreative;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public boolean isMobGriefing() {
+        return mobGriefing;
+    }
+
+    public void setMobGriefing(boolean mobGriefing) {
+        this.mobGriefing = mobGriefing;
+    }
+
+    public boolean isKeepInventory() {
+        return keepInventory;
+    }
+
+    public void setKeepInventory(boolean keepInventory) {
+        this.keepInventory = keepInventory;
     }
 }
