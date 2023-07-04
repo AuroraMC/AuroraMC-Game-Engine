@@ -52,7 +52,7 @@ public class GameSession {
         endTimestamp = System.currentTimeMillis();
         JSONObject obj = new JSONObject();
         obj.put("uuid", uuid.toString());
-        obj.put("game", gameRegistryKey);
+        obj.put("game", ((gameRegistryKey == null)?"EVENT":gameRegistryKey));
         obj.put("variation", gameVariation);
         obj.put("start", startTimestamp);
         obj.put("end", endTimestamp);
