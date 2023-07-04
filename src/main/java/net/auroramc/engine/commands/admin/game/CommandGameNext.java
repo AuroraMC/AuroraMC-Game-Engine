@@ -61,7 +61,7 @@ public class CommandGameNext extends ServerCommand {
                         return;
                     }
                 }
-                GameVariation gameVariation = null;
+                Class<? extends GameVariation> gameVariation = null;
                 GameMap map = null;
                 if (args.size() >= 1) {
                     String arg = args.remove(0);

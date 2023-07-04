@@ -34,7 +34,7 @@ public class GameUtils {
         GameUtils.loadGame(info, null);
     }
 
-    public static void loadGame(GameInfo gameInfo, GameVariation gameVariation) {
+    public static void loadGame(GameInfo gameInfo, GameVariationInfo gameVariation) {
         List<GameMap> maps;
         if (gameInfo.getRegistryKey() != null) {
             if (gameVariation != null && gameVariation.getRegistryKey() != null) {
@@ -50,7 +50,7 @@ public class GameUtils {
         GameUtils.loadGame(gameInfo, map, gameVariation);
     }
 
-    public static void loadGame(GameInfo gameInfo, GameMap map, GameVariation gameVariation) {
+    public static void loadGame(GameInfo gameInfo, GameMap map, GameVariationInfo gameVariation) {
         try {
             EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGameInfo(gameInfo);

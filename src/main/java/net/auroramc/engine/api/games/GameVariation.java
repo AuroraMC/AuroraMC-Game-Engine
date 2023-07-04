@@ -10,17 +10,13 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 
 import java.util.List;
 
-public abstract class GameVariation {
+public abstract class GameVariation<T extends Game> {
 
-    private final Game game;
+    private final T game;
 
-    public GameVariation(Game game) {
+    public GameVariation(T game) {
         this.game = game;
     }
-
-    public abstract String getName();
-
-    public abstract String getRegistryKey();
 
     public abstract boolean preLoad();
 
@@ -42,7 +38,7 @@ public abstract class GameVariation {
 
     public abstract void onFinalKill(AuroraMCGamePlayer player);
 
-    public Game getGame() {
+    public T getGame() {
         return game;
     }
 }

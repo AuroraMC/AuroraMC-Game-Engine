@@ -48,6 +48,7 @@ import java.util.*;
 public abstract class Game {
 
     protected GameVariation gameVariation;
+    protected GameVariationInfo gameVariationInfo;
     protected GameMap map;
     protected Map<String, Team> teams;
     protected List<Kit> kits;
@@ -78,10 +79,11 @@ public abstract class Game {
     protected boolean mobGriefing;
     protected boolean keepInventory;
 
-    public Game(Class<? extends GameVariation> gameVariation) {
+    public Game(GameVariationInfo gameVariation) {
+        this.gameVariationInfo = gameVariation;
         if (gameVariation != null) {
             try {
-                this.gameVariation = gameVariation.getConstructor(Game.class).newInstance(this);
+                this.gameVariation = gameVariation.getVariationClass().getConstructor(Game.class).newInstance(this);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 e.printStackTrace();
@@ -93,7 +95,7 @@ public abstract class Game {
 
         this.teams = new HashMap<>();
         this.kits = new ArrayList<>();
-        gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),this.gameVariation);
+        gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),this.gameVariationInfo);
         starting = false;
         voided = AuroraMCAPI.isTestServer() || ServerAPI.isEventMode();
         unequipCosmetics = true;
@@ -139,7 +141,7 @@ public abstract class Game {
         startString.append(EngineAPI.getActiveGameInfo().getName());
         if (gameVariation != null) {
             startString.append(" ");
-            startString.append(gameVariation.getName());
+            startString.append(gameVariationInfo.getName());
         }
         startString.append("\n \n§r");
         startString.append(EngineAPI.getActiveGameInfo().getDescription());

@@ -64,7 +64,7 @@ public class EngineAPI {
 
     private static GameInfo nextGame;
     private static GameMap nextMap;
-    private static GameVariation nextVariation;
+    private static GameVariationInfo nextVariation;
 
     private static boolean awaitingRestart;
     private static String restartType;
@@ -255,7 +255,7 @@ public class EngineAPI {
         return nextMap;
     }
 
-    public static GameVariation getNextVariation() {
+    public static GameVariationInfo getNextVariation() {
         return nextVariation;
     }
 
@@ -263,7 +263,7 @@ public class EngineAPI {
         EngineAPI.nextMap = nextMap;
     }
 
-    public static void setNextVariation(GameVariation nextVariation) {
+    public static void setNextVariation(GameVariationInfo nextVariation) {
         EngineAPI.nextVariation = nextVariation;
     }
 

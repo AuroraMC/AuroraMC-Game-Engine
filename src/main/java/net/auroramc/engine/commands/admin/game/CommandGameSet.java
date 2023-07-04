@@ -17,6 +17,7 @@ import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.GameVariationInfo;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.listeners.LobbyListener;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -68,7 +69,7 @@ public class CommandGameSet extends ServerCommand {
                             return;
                         }
                     }
-                    GameVariation gameVariation = null;
+                    GameVariationInfo gameVariation = null;
                     GameMap map = null;
                     if (args.size() >= 1) {
                         String arg = args.remove(0);
@@ -184,7 +185,7 @@ public class CommandGameSet extends ServerCommand {
                         player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
                         return;
                     }
-                    GameVariation gameVariation = null;
+                    GameVariationInfo gameVariation = null;
                     GameMap map = null;
                     if (args.size() >= 1) {
                         String arg = args.remove(0);

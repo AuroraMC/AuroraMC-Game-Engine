@@ -33,7 +33,7 @@ public class GameSession {
     private final JSONArray gameLog;
     private long endTimestamp;
 
-    public GameSession(String gameRegistryKey, GameVariation gameVariation) {
+    public GameSession(String gameRegistryKey, GameVariationInfo gameVariation) {
         this.uuid = UUID.randomUUID();
         this.players = new ArrayList<>();
         this.gameLog = new JSONArray();
