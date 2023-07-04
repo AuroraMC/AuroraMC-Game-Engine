@@ -112,7 +112,11 @@ public class EngineAPI {
     }
 
     public static void registerGame(GameInfo game) {
-        EngineAPI.games.put(game.getRegistryKey(), game);
+        if (game.getId() == 6) {
+            EngineAPI.games.put("EVENT", game);
+        } else {
+            EngineAPI.games.put(game.getRegistryKey(), game);
+        }
     }
 
     public static GameMap getWaitingLobbyMap() {
