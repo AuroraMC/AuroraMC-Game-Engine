@@ -6,8 +6,6 @@
 
 package net.auroramc.engine.api.games;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class GameVariationInfo {
 
@@ -16,15 +14,13 @@ public class GameVariationInfo {
     private final Class<? extends GameVariation> variationClass;
     private final String description;
     private final String registryKey;
-    private final String version;
 
-    public GameVariationInfo(int id, String name, Class<? extends GameVariation> variationClass, String description, String registryKey, boolean teamCommand, String version) {
+    public GameVariationInfo(int id, String name, Class<? extends GameVariation> variationClass, String description, String registryKey) {
         this.id = id;
         this.name = name;
         this.variationClass = variationClass;
         this.description = description;
         this.registryKey = registryKey;
-        this.version = version;
     }
 
 
@@ -46,10 +42,6 @@ public class GameVariationInfo {
 
     public int getId() {
         return id;
-    }
-
-    public String getVersion() {
-        return version;
     }
 
 }

@@ -143,6 +143,8 @@ public abstract class Game {
             startString.append(" ");
             startString.append(gameVariationInfo.getName());
         }
+        startString.append(" §r§7v");
+        startString.append(EngineAPI.getVersionNumbers().get(EngineAPI.getActiveGameInfo().getRegistryKey()));
         startString.append("\n \n§r");
         startString.append(EngineAPI.getActiveGameInfo().getDescription());
         startString.append("\n \n");

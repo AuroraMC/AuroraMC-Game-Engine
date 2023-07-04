@@ -42,6 +42,7 @@ public class EngineAPI {
 
     private static AuroraMCGameEngine gameEngine;
     private static final Map<String, GameInfo> games;
+    private static final Map<String, String> versionNumbers;
     private static GameMap waitingLobbyMap;
     private static ServerState serverState;
     private static Game activeGame;
@@ -81,6 +82,8 @@ public class EngineAPI {
         kitLevelRewards = new HashMap<>();
         gameRotation = new ArrayList<>();
         serverState = ServerState.STARTING_UP;
+
+        versionNumbers = EngineDatabaseManager.getVersionNumbers();
 
         teamBalancingEnabled = true;
 
@@ -426,5 +429,9 @@ public class EngineAPI {
 
     public static void setXpBoostMultiplier(float xpBoostMultiplier) {
         EngineAPI.xpBoostMultiplier = xpBoostMultiplier;
+    }
+
+    public static Map<String, String> getVersionNumbers() {
+        return versionNumbers;
     }
 }

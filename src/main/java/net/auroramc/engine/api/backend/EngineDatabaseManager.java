@@ -193,4 +193,10 @@ public class EngineDatabaseManager {
         }
     }
 
+    public static Map<String, String> getVersionNumbers() {
+        try (Jedis connection = AuroraMCAPI.getDbManager().getRedisConnection()) {
+            return connection.hgetAll("versionnumbers");
+        }
+    }
+
 }

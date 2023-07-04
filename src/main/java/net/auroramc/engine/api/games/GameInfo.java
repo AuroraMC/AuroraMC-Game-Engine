@@ -18,10 +18,9 @@ public class GameInfo {
     private final String registryKey;
     private final Map<String, GameVariationInfo> variations;
     private final boolean teamCommand;
-    private final String version;
 
 
-    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey, boolean teamCommand, String version, Map<String, GameVariationInfo> variations) {
+    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey, boolean teamCommand, Map<String, GameVariationInfo> variations) {
         this.id = id;
         this.name = name;
         this.gameClass = gameClass;
@@ -29,7 +28,6 @@ public class GameInfo {
         this.registryKey = registryKey;
         this.teamCommand = teamCommand;
         this.variations = variations;
-        this.version = version;
     }
 
 
@@ -59,9 +57,5 @@ public class GameInfo {
 
     public boolean hasTeamCommand() {
         return teamCommand;
-    }
-
-    public String getVersion() {
-        return version;
     }
 }
