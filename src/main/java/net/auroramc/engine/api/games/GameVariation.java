@@ -10,31 +10,15 @@ import java.util.List;
 
 public abstract class GameVariation {
 
-    private final String name;
-    private int id;
-    private final String registryKey;
+    private final Game game;
 
-    public GameVariation(String name, int id, String registryKey) {
-        this.id = id;
-        this.name = name;
-        this.registryKey = registryKey;
+    public GameVariation(Game game) {
+        this.game = game;
     }
 
-    public int getId() {
-        return id;
-    }
+    public abstract String getName();
 
-    public String getName() {
-        return name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getRegistryKey() {
-        return registryKey;
-    }
+    public abstract String getRegistryKey();
 
     public abstract boolean preLoad();
 
@@ -42,9 +26,21 @@ public abstract class GameVariation {
 
     public abstract boolean start();
 
+    public abstract void inProgress();
+
     public abstract boolean end();
 
     public abstract boolean onPlayerJoin(AuroraMCGamePlayer player);
 
-    public abstract List<Kit> getKits();
+    public abstract void onPlayerLeave(AuroraMCGamePlayer player);
+
+    public abstract void onRespawn(AuroraMCGamePlayer player);
+
+    public abstract boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer killer);
+
+    public abstract void onFinalKill(AuroraMCGamePlayer player);
+
+    public Game getGame() {
+        return game;
+    }
 }

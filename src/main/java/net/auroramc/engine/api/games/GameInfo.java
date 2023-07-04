@@ -14,7 +14,7 @@ public class GameInfo {
     private final Class<? extends Game> gameClass;
     private final String description;
     private final String registryKey;
-    private final Map<String, GameVariation> variations;
+    private final Map<String, Class<? extends GameVariation>> variations;
     private final boolean teamCommand;
     private final String version;
 
@@ -51,7 +51,7 @@ public class GameInfo {
         return id;
     }
 
-    public Map<String, GameVariation> getVariations() {
+    public Map<String, Class<? extends GameVariation>> getVariations() {
         return variations;
     }
 

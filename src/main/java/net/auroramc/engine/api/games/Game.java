@@ -36,6 +36,7 @@ import org.bukkit.util.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class Game {
@@ -49,17 +50,36 @@ public abstract class Game {
     protected InGameStartingRunnable runnable;
 
 
-    public Game(GameVariation gameVariation) {
-        this.gameVariation = gameVariation;
+    public Game(Class<? extends GameVariation> gameVariation) {
+        if (gameVariation != null) {
+            try {
+                this.gameVariation = gameVariation.getConstructor(Game.class).newInstance(this);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                e.printStackTrace();
+
+            }
+        } else {
+            this.gameVariation = null;
+        }
+
         this.teams = new HashMap<>();
         this.kits = new ArrayList<>();
-        gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),gameVariation);
+        gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),this.gameVariation);
         starting = false;
     }
 
-    public abstract void preLoad();
+    public void preLoad() {
+      if (gameVariation != null) {
+          gameVariation.preLoad();
+      }
+    }
 
-    public abstract void load(GameMap map);
+    public void load(GameMap map) {
+        if (gameVariation != null) {
+            gameVariation.load(map);
+        }
+    }
 
     /**
      * When executed by the Game Engine, this indicates that the Engine is handing over control to the game and that the game is now started. Should be overridden and should execute super.
@@ -137,6 +157,9 @@ public abstract class Game {
         runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
         gameSession.start();
         gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.START, new JSONObject()));
+        if (gameVariation != null) {
+            gameVariation.start();
+        }
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -149,6 +172,9 @@ public abstract class Game {
         starting = false;
         runnable = null;
         gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.RELEASED, new JSONObject()));
+        if (gameVariation != null) {
+            gameVariation.inProgress();
+        }
     }
 
     /**
@@ -226,6 +252,9 @@ public abstract class Game {
             player.getRewards().addXp("Winner Bonus", 150);
             player.getRewards().addTickets(150);
             player.getRewards().addCrowns(150);
+        }
+        if (gameVariation != null) {
+            gameVariation.end();
         }
         startEndRunnable();
     }
@@ -613,15 +642,36 @@ public abstract class Game {
 
     public abstract void onPlayerJoin(Player player);
 
-    public abstract void onPlayerJoin(AuroraMCGamePlayer player);
+    public void onPlayerJoin(AuroraMCGamePlayer player) {
+        if (gameVariation != null) {
+            gameVariation.onPlayerJoin(player);
+        }
+    }
 
-    public abstract void onPlayerLeave(AuroraMCGamePlayer player);
+    public void onPlayerLeave(AuroraMCGamePlayer player) {
+        if (gameVariation != null) {
+            gameVariation.onPlayerJoin(player);
+        }
+    }
 
-    public abstract void onRespawn(AuroraMCGamePlayer player);
+    public void onRespawn(AuroraMCGamePlayer player) {
+        if (gameVariation != null) {
+            gameVariation.onRespawn(player);
+        }
+    }
 
-    public abstract boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer killer);
+    public boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer killer) {
+        if (gameVariation != null) {
+            return gameVariation.onDeath(player, killer);
+        }
+        return false;
+    }
 
-    public abstract void onFinalKill(AuroraMCGamePlayer player);
+    public void onFinalKill(AuroraMCGamePlayer player) {
+        if (gameVariation != null) {
+            gameVariation.onFinalKill(player);
+        }
+    }
 
     public List<Kit> getKits() {
         return kits;
