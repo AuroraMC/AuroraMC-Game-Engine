@@ -63,7 +63,7 @@ public class EngineDatabaseManager {
         try (Connection connection = AuroraMCAPI.getDbManager().getMySQLConnection()) {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO game_session(game_uuid, game, server, game_data, players) VALUES (?,?,?,?,?)");
             statement.setString(1, uuid.toString());
-            statement.setString(2, game);
+            statement.setString(2, ((game == null)?"EVENT":game));
             statement.setString(3, AuroraMCAPI.getInfo().getName());
             statement.setString(4, json.toString());
             List<String> ints = new ArrayList<>();
