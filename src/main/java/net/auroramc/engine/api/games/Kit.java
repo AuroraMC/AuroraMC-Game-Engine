@@ -1,10 +1,12 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.games;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import org.bukkit.Material;
 
 import java.util.Objects;
@@ -30,7 +32,7 @@ public abstract class Kit {
         this.cost = cost;
     }
 
-    public abstract void onGameStart(AuroraMCPlayer player);
+    public abstract void onGameStart(AuroraMCServerPlayer player);
 
     public String getName() {
         return name;

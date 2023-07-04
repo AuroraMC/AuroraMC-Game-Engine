@@ -1,10 +1,14 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.gui;
 
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
@@ -62,7 +66,7 @@ public class Kits extends GUI {
     @Override
     public void onClick(int row, int column, ItemStack item, ClickType clickType) {
         if (item.getType() == Material.STAINED_GLASS_PANE) {
-            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+            player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
             return;
         }
         Kit kit = EngineAPI.getActiveGame().getKits().get(((row - 1) * 7) + (column - 1));
@@ -77,20 +81,19 @@ public class Kits extends GUI {
                             public void run() {
                                 KitLevelMenu menu = new KitLevelMenu(player, level, kit);
                                 menu.open(player);
-                                AuroraMCAPI.openGUI(player, menu);
                             }
-                        }.runTask(AuroraMCAPI.getCore());
+                        }.runTask(ServerAPI.getCore());
                     }
-                }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                }.runTaskAsynchronously(ServerAPI.getCore());
             } else {
-                player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
             }
         } else {
             if (kit.getCost() == -1 || (player.getUnlockedKits().containsKey(kit.getGameId()) && player.getUnlockedKits().get(kit.getGameId()).contains(kit.getId()))) {
                 if (clickType == ClickType.SHIFT_LEFT || clickType == ClickType.LEFT) {
                     player.setKit(kit);
-                    player.getPlayer().closeInventory();
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You set your kit to **" + kit.getName() + "**."));
+                    player.closeInventory();
+                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You set your kit to **" + kit.getName() + "**."));
                     player.getScoreboard().setLine(6, ChatColor.stripColor(player.getKit().getName()) + " ");
                     if (!AuroraMCAPI.isTestServer()) {
                         new BukkitRunnable(){
@@ -98,7 +101,7 @@ public class Kits extends GUI {
                             public void run() {
                                 EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
                             }
-                        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                        }.runTaskAsynchronously(ServerAPI.getCore());
                     }
                 } else if (clickType == ClickType.RIGHT || clickType == ClickType.SHIFT_RIGHT) {
                     new BukkitRunnable(){
@@ -110,11 +113,10 @@ public class Kits extends GUI {
                                 public void run() {
                                     KitLevelMenu menu = new KitLevelMenu(player, level, kit);
                                     menu.open(player);
-                                    AuroraMCAPI.openGUI(player, menu);
                                 }
-                            }.runTask(AuroraMCAPI.getCore());
+                            }.runTask(ServerAPI.getCore());
                         }
-                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                    }.runTaskAsynchronously(ServerAPI.getCore());
                 }
             } else {
                 if (clickType == ClickType.SHIFT_LEFT) {
@@ -124,8 +126,8 @@ public class Kits extends GUI {
                             player.getUnlockedKits().put(kit.getGameId(), new ArrayList<>());
                         }
                         player.getUnlockedKits().get(kit.getGameId()).add(kit.getId());
-                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You unlocked and set your kit to **" + kit.getName() + "**."));
-                        player.getPlayer().closeInventory();
+                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You unlocked and set your kit to **" + kit.getName() + "**."));
+                        player.closeInventory();
                         player.setKit(kit);
                         player.getScoreboard().setLine(6, ChatColor.stripColor(player.getKit().getName()) + " ");
                         if (!AuroraMCAPI.isTestServer()) {
@@ -135,14 +137,14 @@ public class Kits extends GUI {
                                     EngineDatabaseManager.setUnlockedKits(player.getId(), kit.getGameId(), player.getUnlockedKits().get(kit.getGameId()));
                                     EngineDatabaseManager.setDefaultKit(player.getId(), kit.getGameId(), kit.getId());
                                 }
-                            }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                            }.runTaskAsynchronously(ServerAPI.getCore());
                         }
                     } else {
-                        player.getPlayer().closeInventory();
-                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You have insufficient funds to buy kit **" + kit.getName() + "**."));
+                        player.closeInventory();
+                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You have insufficient funds to buy kit **" + kit.getName() + "**."));
                     }
                 } else {
-                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+                    player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
                 }
             }
         }

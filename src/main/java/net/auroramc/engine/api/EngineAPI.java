@@ -1,11 +1,16 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.backend.info.ServerInfo;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.ZipUtil;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.AuroraMCGameEngine;
@@ -192,7 +197,7 @@ public class EngineAPI {
 
         gameEngine.getLogger().info("Map world loaded. Loading rotation...");
 
-        for (Object object : AuroraMCAPI.getServerInfo().getServerType().getJSONArray("rotation")) {
+        for (Object object : ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getJSONArray("rotation")) {
             String string = (String) object;
             gameRotation.add(games.get(string));
         }
@@ -279,8 +284,8 @@ public class EngineAPI {
     }
 
     public static void reloadMaps() {
-        for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
-            pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "The server is currently updating its map register. Please wait..."));
+        for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
+            pl.sendMessage(TextFormatter.pluginMessage("Game Manager", "The server is currently updating its map register. Please wait..."));
         }
         setServerState(ServerState.RELOADING_MAPS);
         EngineAPI.maps.clear();
@@ -366,25 +371,25 @@ public class EngineAPI {
                     EngineAPI.setActiveMap(null);
                     EngineAPI.setServerState(ServerState.IDLE);
                 }
-                if (EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null) {
-                    if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isOptedSpec()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
-                        EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
-                        EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+                if (EngineAPI.getServerState() != ServerState.STARTING && EngineAPI.getActiveGame() != null && EngineAPI.getGameStartingRunnable() == null) {
+                    if (ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && !((AuroraMCGamePlayer)player1).isOptedSpec()).count() >= ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("min_players")) {
+                        EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30, false));
+                        EngineAPI.getGameStartingRunnable().runTaskTimer(ServerAPI.getCore(), 0, 20);
                     }
                 }
 
-                for (AuroraMCPlayer pl : AuroraMCAPI.getPlayers()) {
-                    pl.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Maps have finished loading! Play will now continue!"));
+                for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
+                    pl.sendMessage(TextFormatter.pluginMessage("Game Manager", "Maps have finished loading! Play will now continue!"));
                     AuroraMCGamePlayer player = (AuroraMCGamePlayer) pl;
                     if (EngineAPI.getActiveGame() != null) {
-                        player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                        player.getInventory().setItem(0, EngineAPI.getKitItem().getItemStack());
                         if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
-                            player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
+                            player.getInventory().setItem(1, EngineAPI.getTeamItem().getItemStack());
                         }
                     }
                 }
             }
-        }.runTask(AuroraMCAPI.getCore());
+        }.runTask(ServerAPI.getCore());
     }
 
     public static void setRestartType(String restartType) {

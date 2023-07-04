@@ -1,11 +1,13 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.gui;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.utils.LevelUtils;
+import net.auroramc.api.utils.LevelUtils;
+import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
@@ -91,7 +93,7 @@ public class KitLevelMenu extends GUI {
             } else {
                 percentage = 100.0;
             }
-            levelHover = AuroraMCAPI.getFormatter().convert(AuroraMCAPI.getFormatter().highlight(String.format("&r&f &3&l«%s» &r&f&b&l%s&r&f &3&l«%s»;&r&fProgress to Next Level: **%s%%**", level.getLevel() - ((level.getLevel() == 100)?1:0), progress, level.getLevel() + ((level.getLevel() != 100)?1:0), new DecimalFormat("##.#").format(percentage))));
+            levelHover = TextFormatter.convert(TextFormatter.highlightRaw(String.format("&r&f &3&l«%s» &r&f&b&l%s&r&f &3&l«%s»;&r&fProgress to Next Level: **%s%%**", level.getLevel() - ((level.getLevel() == 100)?1:0), progress, level.getLevel() + ((level.getLevel() != 100)?1:0), new DecimalFormat("##.#").format(percentage))));
         }
 
         while (lvl <= 100 && col <= 7) {
@@ -134,16 +136,15 @@ public class KitLevelMenu extends GUI {
             if (player.getBank().getCrowns() >= cost) {
                 player.getBank().withdrawCrowns(cost, false, true);
                 kitLevel.upgrade();
-                player.getPlayer().closeInventory();
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You purchased **" + kit.getName() + " Kit Level " + kitLevel.getLatestUpgrade() + "**!"));
+                player.closeInventory();
+                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You purchased **" + kit.getName() + " Kit Level " + kitLevel.getLatestUpgrade() + "**!"));
             } else {
-                player.getPlayer().closeInventory();
-                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You have insufficient funds to buy this kit upgrade!"));
+                player.closeInventory();
+                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You have insufficient funds to buy this kit upgrade!"));
             }
         } else if (itemClicked.getType() == Material.ARROW) {
             Kits kits = new Kits(player);
             kits.open(player);
-            AuroraMCAPI.openGUI(player, kits);
         }
     }
 }

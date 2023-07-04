@@ -1,17 +1,22 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.listeners;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import net.auroramc.core.api.AuroraMCAPI;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.backend.communication.CommunicationUtils;
 import net.auroramc.core.api.backend.communication.Protocol;
 import net.auroramc.core.api.backend.communication.ProtocolMessage;
-import net.auroramc.core.api.events.ProtocolMessageEvent;
-import net.auroramc.core.api.events.ServerCloseRequestEvent;
+import net.auroramc.core.api.events.server.ProtocolMessageEvent;
+import net.auroramc.core.api.events.server.ServerCloseRequestEvent;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.server.ServerState;
@@ -29,26 +34,26 @@ public class ServerCloseRequestListener implements Listener {
             if (Bukkit.getOnlinePlayers().size() == 0) {
                 //No-one is online, kill the server now.
                 AuroraMCAPI.setShuttingDown(true);
-                CommunicationUtils.sendMessage(new ProtocolMessage(Protocol.CONFIRM_SHUTDOWN, "Mission Control", e.getType(), AuroraMCAPI.getServerInfo().getName(), AuroraMCAPI.getServerInfo().getNetwork().name()));
+                CommunicationUtils.sendMessage(new ProtocolMessage(Protocol.CONFIRM_SHUTDOWN, "Mission Control", e.getType(), AuroraMCAPI.getInfo().getName(), AuroraMCAPI.getInfo().getNetwork().name()));
             } else {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Server Manager", "This server is restarting" + ((!e.isEmergency())?" for an update":"") + ". You are being sent to a lobby."));
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.sendMessage(TextFormatter.pluginMessage("Server Manager", "This server is restarting" + ((!e.isEmergency())?" for an update":"") + ". You are being sent to a lobby."));
                     ByteArrayDataOutput out = ByteStreams.newDataOutput();
                     out.writeUTF("Lobby");
                     out.writeUTF(player.getUniqueId().toString());
-                    player.sendPluginMessage(AuroraMCAPI.getCore(), "BungeeCord", out.toByteArray());
+                    player.sendPluginMessage(out.toByteArray());
                 }
                 //Wait 10 seconds, then close the server
                 new BukkitRunnable(){
                     @Override
                     public void run() {
                         for (Player player : Bukkit.getOnlinePlayers()) {
-                            player.kickPlayer(AuroraMCAPI.getFormatter().pluginMessage("Server Manager", "This server is restarting.\n\nYou can reconnect to the network to continue playing!"));
+                            player.kickPlayer(TextFormatter.pluginMessageRaw("Server Manager", "This server is restarting.\n\nYou can reconnect to the network to continue playing!"));
                         }
                         AuroraMCAPI.setShuttingDown(true);
-                        CommunicationUtils.sendMessage(new ProtocolMessage(Protocol.CONFIRM_SHUTDOWN, "Mission Control", e.getType(), AuroraMCAPI.getServerInfo().getName(), AuroraMCAPI.getServerInfo().getNetwork().name()));
+                        CommunicationUtils.sendMessage(new ProtocolMessage(Protocol.CONFIRM_SHUTDOWN, "Mission Control", e.getType(), AuroraMCAPI.getInfo().getName(), AuroraMCAPI.getInfo().getNetwork().name()));
                     }
-                }.runTaskLater(AuroraMCAPI.getCore(), 200);
+                }.runTaskLater(ServerAPI.getCore(), 200);
             }
         } else {
             //Set that it is awaiting a restart, then restart when the game is over.
@@ -73,7 +78,7 @@ public class ServerCloseRequestListener implements Listener {
                     public void run() {
                         EngineAPI.reloadMaps();
                     }
-                }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                }.runTaskAsynchronously(ServerAPI.getCore());
             } else {
                 EngineAPI.setAwaitingMapReload(true);
             }

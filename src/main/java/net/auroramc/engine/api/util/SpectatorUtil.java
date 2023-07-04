@@ -1,10 +1,12 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.util;
 
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
 import org.bukkit.Material;
@@ -17,11 +19,11 @@ public class SpectatorUtil {
         compassItem = new GUIItem(Material.COMPASS, "&a&lPlayer Compass");
     }
 
-    public static void giveItems(AuroraMCPlayer player) {
-        player.getPlayer().getInventory().setItem(8, EngineAPI.getLobbyItem().getItem());
-        player.getPlayer().getInventory().setItem(7, EngineAPI.getPrefsItem().getItem());
-        player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
-        player.getPlayer().getInventory().setItem(0, compassItem.getItem());
+    public static void giveItems(AuroraMCServerPlayer player) {
+        player.getInventory().setItem(8, EngineAPI.getLobbyItem().getItemStack());
+        player.getInventory().setItem(7, EngineAPI.getPrefsItem().getItemStack());
+        player.getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItemStack());
+        player.getInventory().setItem(0, compassItem.getItemStack());
     }
 
 }

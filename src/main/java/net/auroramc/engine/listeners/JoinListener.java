@@ -1,16 +1,21 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.listeners;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.cosmetics.ServerMessage;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.backend.info.ServerInfo;
+import net.auroramc.api.cosmetics.Cosmetic;
+import net.auroramc.api.cosmetics.ServerMessage;
+import net.auroramc.api.permissions.Rank;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.events.player.PlayerObjectCreationEvent;
-import net.auroramc.core.api.permissions.Rank;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.scoreboard.PlayerScoreboard;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
+import net.auroramc.core.api.player.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.Kit;
@@ -41,7 +46,7 @@ public class JoinListener implements Listener {
         Rank rank = AuroraMCAPI.getDbManager().getRank(e.getUniqueId());
         boolean isVanished = AuroraMCAPI.getDbManager().isVanished(e.getUniqueId());
         if (!(rank.hasPermission("moderation") && isVanished) && !rank.hasPermission("master")) {
-            if (AuroraMCAPI.getPlayers().stream().filter(player -> !player.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("max_players") && AuroraMCAPI.getServerInfo().getServerType().has("enforce_limit")) {
+            if (ServerAPI.getPlayers().stream().filter(player -> !player.isVanished()).count() >= ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("max_players") && ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().has("enforce_limit")) {
                 e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_FULL, "This server is currently full. In order to bypass this, you need to purchase a rank!");
             }
         }
@@ -49,7 +54,6 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        LobbyListener.updateHeaderFooter((CraftPlayer) e.getPlayer());
         e.getPlayer().setFlying(false);
         e.getPlayer().setAllowFlight(false);
         e.getPlayer().setGameMode(GameMode.SURVIVAL);
@@ -82,10 +86,10 @@ public class JoinListener implements Listener {
 
         } else if (EngineAPI.getActiveGame() != null) {
             //Hide spectators from the user joining.
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 if (player instanceof AuroraMCGamePlayer) {
-                    if (((AuroraMCGamePlayer)player).isSpectator() && !e.getPlayer().equals(player.getPlayer())) {
-                        e.getPlayer().hidePlayer(player.getPlayer());
+                    if (((AuroraMCGamePlayer)player).isSpectator() && !e.getPlayer().equals(player.getCraft())) {
+                        e.getPlayer().hidePlayer(player.getCraft());
                     }
                 }
             }
@@ -101,11 +105,12 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onObjectCreate(PlayerObjectCreationEvent e) {
         AuroraMCGamePlayer player = new AuroraMCGamePlayer(e.getPlayer());
+        LobbyListener.updateHeaderFooter(player);
         e.setPlayer(player);
         if (!player.isVanished()) {
             ServerMessage message = ((ServerMessage)player.getActiveCosmetics().getOrDefault(Cosmetic.CosmeticType.SERVER_MESSAGE, AuroraMCAPI.getCosmetics().get(400)));
-            for (AuroraMCPlayer player1 : AuroraMCAPI.getPlayers()) {
-                player1.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Join", message.onJoin(player1, player)));
+            for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
+                player1.sendMessage(TextFormatter.pluginMessage("Join", TextFormatter.convert(message.onJoin(player1, player))));
             }
         }
         if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame() != null) {
@@ -116,8 +121,8 @@ public class JoinListener implements Listener {
                         public void run() {
                             entry.getValue().onUnequip(player);
                         }
-                    }.runTaskLater(AuroraMCAPI.getCore(), 1);
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
+                    }.runTaskLater(ServerAPI.getCore(), 1);
+                    player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
                 }
             }
             EngineAPI.getActiveGame().onPlayerJoin(player);
@@ -137,16 +142,16 @@ public class JoinListener implements Listener {
             if (player.getPreferences().isHideDisguiseNameEnabled() && player.isDisguised()) {
                 scoreboard.setLine(3, "&oHidden");
             } else {
-                scoreboard.setLine(3, AuroraMCAPI.getServerInfo().getName());
+                scoreboard.setLine(3, AuroraMCAPI.getInfo().getName());
             }
             scoreboard.setLine(2, "    ");
             scoreboard.setLine(1, "&7auroramc.net");
 
-            if (!player.isVanished() && EngineAPI.getServerState() == ServerState.WAITING_FOR_PLAYERS && EngineAPI.getActiveGame() != null) {
-                if (AuroraMCAPI.getPlayers().stream().filter(player1 -> !player1.isVanished()).count() >= AuroraMCAPI.getServerInfo().getServerType().getInt("min_players")) {
+            if (!player.isVanished() && EngineAPI.getServerState() == ServerState.WAITING_FOR_PLAYERS && EngineAPI.getActiveGame() != null && EngineAPI.getGameStartingRunnable() == null) {
+                if (ServerAPI.getPlayers().stream().filter(player1 -> !player1.isVanished() && ((AuroraMCGamePlayer)player1).isOptedSpec()).count() >= ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getInt("min_players")) {
                     EngineAPI.setServerState(ServerState.STARTING);
-                    EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30));
-                    EngineAPI.getGameStartingRunnable().runTaskTimer(AuroraMCAPI.getCore(), 0, 20);
+                    EngineAPI.setGameStartingRunnable(new GameStartingRunnable(30, false));
+                    EngineAPI.getGameStartingRunnable().runTaskTimer(ServerAPI.getCore(), 0, 20);
                     int kitId = EngineDatabaseManager.getDefaultKit(player.getId(), EngineAPI.getActiveGameInfo().getId());
                     for (Kit kit : EngineAPI.getActiveGame().getKits()) {
                         if (kitId == kit.getId()) {
@@ -166,7 +171,7 @@ public class JoinListener implements Listener {
                     for (Kit kit : EngineAPI.getActiveGame().getKits()) {
                         if (kitId == kit.getId()) {
                             player.setKit(kit);
-                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + kit.getName() + "**."));
+                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Your kit was set to **" + TextFormatter.convert(kit.getName()) + "**."));
                             scoreboard.setLine(6, kit.getName());
                             break;
                         }
@@ -178,14 +183,14 @@ public class JoinListener implements Listener {
                 }
             }
 
-            player.getPlayer().getInventory().setItem(8, EngineAPI.getLobbyItem().getItem());
-            player.getPlayer().getInventory().setItem(7, EngineAPI.getPrefsItem().getItem());
-            player.getPlayer().getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItem());
+            player.getInventory().setItem(8, EngineAPI.getLobbyItem().getItemStack());
+            player.getInventory().setItem(7, EngineAPI.getPrefsItem().getItemStack());
+            player.getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItemStack());
 
             if (EngineAPI.getActiveGame() != null) {
-                player.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                player.getInventory().setItem(0, EngineAPI.getKitItem().getItemStack());
                 if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
-                    player.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
+                    player.getInventory().setItem(1, EngineAPI.getTeamItem().getItemStack());
                 }
             }
         }

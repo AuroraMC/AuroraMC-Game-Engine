@@ -1,11 +1,15 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.players;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.utils.LevelUtils;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.utils.LevelUtils;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.Kit;
@@ -78,7 +82,7 @@ public class PlayerKitLevel {
                     }
                 } else {
                     if (EngineAPI.getKitLevelRewards().containsKey(this.level)) {
-                        EngineAPI.getKitLevelRewards().get(this.level).apply(id, AuroraMCAPI.getDbManager().getStatistics(AuroraMCAPI.getDbManager().getUUIDFromID(id)));
+                        EngineAPI.getKitLevelRewards().get(this.level).apply(id, AuroraMCAPI.getDbManager().getStatistics(AuroraMCAPI.getDbManager().getUUIDFromID(id), id));
                     }
                 }
             } while(this.xpIntoLevel >= LevelUtils.xpForLevel(this.level + 1) && this.level < 100);
@@ -91,11 +95,11 @@ public class PlayerKitLevel {
                 public void run() {
                     EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
                 }
-            }.runTaskAsynchronously(AuroraMCAPI.getCore());
+            }.runTaskAsynchronously(ServerAPI.getCore());
         }
 
         if (levelUp && player != null) {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You just levelled up kit **" + kit.getName() + "** to level **" + level + "**!"));
+            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You just levelled up kit **" + kit.getName() + "** to level **" + level + "**!"));
         }
     }
 
@@ -121,7 +125,7 @@ public class PlayerKitLevel {
                 public void run() {
                     EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
                 }
-            }.runTaskAsynchronously(AuroraMCAPI.getCore());
+            }.runTaskAsynchronously(ServerAPI.getCore());
         }
     }
 
@@ -133,7 +137,7 @@ public class PlayerKitLevel {
                 public void run() {
                     EngineDatabaseManager.setKitLevel(id, gameId, kitId, level, xpIntoLevel, totalXpEarned, latestUpgrade);
                 }
-            }.runTaskAsynchronously(AuroraMCAPI.getCore());
+            }.runTaskAsynchronously(ServerAPI.getCore());
         }
     }
 

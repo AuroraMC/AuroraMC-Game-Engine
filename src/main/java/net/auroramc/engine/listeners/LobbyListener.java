@@ -1,18 +1,28 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.listeners;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Cosmetic;
-import net.auroramc.core.api.cosmetics.Gadget;
-import net.auroramc.core.api.events.VanishEvent;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.cosmetics.Cosmetic;
+import net.auroramc.api.cosmetics.Gadget;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.events.block.BlockBreakEvent;
+import net.auroramc.core.api.events.block.BlockPlaceEvent;
 import net.auroramc.core.api.events.cosmetics.CosmeticEnableEvent;
 import net.auroramc.core.api.events.cosmetics.CosmeticSwitchEvent;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.core.api.events.entity.FoodLevelChangeEvent;
+import net.auroramc.core.api.events.entity.PlayerDamageEvent;
+import net.auroramc.core.api.events.inventory.InventoryClickEvent;
+import net.auroramc.core.api.events.inventory.InventoryOpenEvent;
+import net.auroramc.core.api.events.player.*;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.gui.cosmetics.Cosmetics;
 import net.auroramc.core.gui.preferences.Preferences;
 import net.auroramc.engine.api.EngineAPI;
@@ -32,18 +42,11 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
@@ -60,8 +63,8 @@ public class LobbyListener implements Listener {
     public void onBreak(BlockBreakEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
             if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
-                if (!AuroraMCAPI.getPlayer(e.getPlayer()).getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(5))) {
-                    AuroraMCAPI.getPlayer(e.getPlayer()).getStats().achievementGained(AuroraMCAPI.getAchievement(5), 1, true);
+                if (!e.getPlayer().getStats().getAchievementsGained().containsKey(AuroraMCAPI.getAchievement(5))) {
+                    e.getPlayer().getStats().achievementGained(AuroraMCAPI.getAchievement(5), 1, true);
                 }
                 e.setCancelled(true);
             }
@@ -78,25 +81,32 @@ public class LobbyListener implements Listener {
     }
 
     @EventHandler
-    public void onDamage(EntityDamageEvent e) {
+    public void onDamage(PlayerDamageEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
-            if (e.getEntity() instanceof Player) {
-                if (e.getCause() == EntityDamageEvent.DamageCause.VOID && EngineAPI.getServerState() != ServerState.ENDING) {
-                    JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
-                    int x, y, z;
-                    x = spawnLocations.getJSONObject(0).getInt("x");
-                    y = spawnLocations.getJSONObject(0).getInt("y");
-                    z = spawnLocations.getJSONObject(0).getInt("z");
-                    float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
-                    e.getEntity().teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
-                    e.getEntity().setFallDistance(0);
-                    e.getEntity().setVelocity(new Vector());
-                } else if (e.getCause() == EntityDamageEvent.DamageCause.FIRE || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK || e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
-                    e.getEntity().setFireTicks(0);
-                }
-                e.setCancelled(true);
+            if (e.getCause() == PlayerDamageEvent.DamageCause.VOID && EngineAPI.getServerState() != ServerState.ENDING) {
+                JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
+                int x, y, z;
+                x = spawnLocations.getJSONObject(0).getInt("x");
+                y = spawnLocations.getJSONObject(0).getInt("y");
+                z = spawnLocations.getJSONObject(0).getInt("z");
+                float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
+                e.getPlayer().teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
+                e.getPlayer().setFallDistance(0);
+                e.getPlayer().setVelocity(new Vector());
+            } else if (e.getCause() == PlayerDamageEvent.DamageCause.FIRE || e.getCause() == PlayerDamageEvent.DamageCause.FIRE_TICK || e.getCause() == PlayerDamageEvent.DamageCause.LAVA) {
+                e.getPlayer().setFireTicks(0);
+            }
+            e.setCancelled(true);
 
-            } else if (e.getEntity() instanceof ArmorStand || e.getEntity() instanceof Painting || e.getEntity() instanceof ItemFrame) {
+        }
+
+
+    }
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent e) {
+        if (EngineAPI.getServerState() != ServerState.IN_GAME) {
+            if (e.getEntity() instanceof ArmorStand || e.getEntity() instanceof Painting || e.getEntity() instanceof ItemFrame) {
                 e.setCancelled(true);
             }
         }
@@ -131,9 +141,9 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onHunger(FoodLevelChangeEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME) {
-            if (e.getEntity() instanceof Player && e.getFoodLevel() < 25) {
+            if (e.getLevel() < 25) {
                 e.setCancelled(true);
-                e.setFoodLevel(30);
+                e.setLevel(30);
             }
         }
     }
@@ -156,11 +166,11 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void onStateChange(ServerStateChangeEvent e) {
-        for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
-            updateHeaderFooter((CraftPlayer) player.getPlayer());
+        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+            updateHeaderFooter(player);
         }
         if (e.getState() != ServerState.ENDING && e.getState() != ServerState.IN_GAME) {
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 player.getScoreboard().setTitle("&3-= &b&l" + e.getState().getName().toUpperCase() + "&r &3=-");
                 player.getScoreboard().setLine(12, ((EngineAPI.getActiveGameInfo() != null) ? EngineAPI.getActiveGameInfo().getName() : "None   "));
                 player.getScoreboard().setLine(9, ((EngineAPI.getActiveMap() != null) ? EngineAPI.getActiveMap().getName() : "None  "));
@@ -180,10 +190,11 @@ public class LobbyListener implements Listener {
         }
     }
 
-    public static void updateHeaderFooter(CraftPlayer player2) {
+    public static void updateHeaderFooter(AuroraMCServerPlayer player) {
         try {
+            CraftPlayer player2 = player.getCraft();
             IChatBaseComponent header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"§3§lAURORAMC NETWORK         §b§lAURORAMC.NET\",\"color\":\"dark_aqua\",\"bold\":\"false\"}");
-            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"\n§fYou are currently connected to §b" + ((AuroraMCAPI.getPlayer(player2).isDisguised() && AuroraMCAPI.getPlayer(player2).getPreferences().isHideDisguiseNameEnabled())?"§oHidden":AuroraMCAPI.getServerInfo().getName()) + "\n\n" +
+            IChatBaseComponent footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"\n§fYou are currently connected to §b" + ((player.isDisguised() && player.getPreferences().isHideDisguiseNameEnabled())?"§oHidden":AuroraMCAPI.getInfo().getName()) + "\n\n" +
                     "§rStatus §3§l» §b" + EngineAPI.getServerState().getName() + "\n" +
                     "§rGame §3§l» §b" + ((EngineAPI.getActiveGameInfo() != null) ? EngineAPI.getActiveGameInfo().getName() : "None") + "\n" +
                     "§rMap §3§l» §b" + ((EngineAPI.getActiveMap() != null) ? EngineAPI.getActiveMap().getName() : "None") + "\n" +
@@ -205,6 +216,13 @@ public class LobbyListener implements Listener {
     }
 
     @EventHandler
+    public void onGadget(PlayerUseCosmeticEvent e) {
+        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onItemClick(PlayerInteractEvent e) {
         if (EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
             if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
@@ -212,7 +230,7 @@ public class LobbyListener implements Listener {
             }
             if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
                 if (e.getPlayer().getInventory().getHeldItemSlot() == 3) {
-                    AuroraMCGamePlayer player = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(e.getPlayer());
+                    AuroraMCGamePlayer player = (AuroraMCGamePlayer) e.getPlayer();
                     if (player.getActiveCosmetics().containsKey(Cosmetic.CosmeticType.GADGET) && EngineAPI.getServerState() != ServerState.IN_GAME && EngineAPI.getServerState() != ServerState.ENDING) {
                         Gadget gadget = (Gadget) player.getActiveCosmetics().get(Cosmetic.CosmeticType.GADGET);
                         if (e.getItem().getType() == Material.FISHING_ROD && e.getClickedBlock() != null) {
@@ -224,7 +242,7 @@ public class LobbyListener implements Listener {
                             if (amount1 < 0) {
                                 amount1 = 0;
                             }
-                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Gadgets", "You cannot use this gadget for **" + (amount1 / 10f) + " seconds**."));
+                            player.sendMessage(TextFormatter.pluginMessage("Gadgets", "You cannot use this gadget for **" + (amount1 / 10f) + " seconds**."));
                             e.setUseItemInHand(Event.Result.DENY);
                             e.setUseInteractedBlock(Event.Result.DENY);
                             return;
@@ -233,9 +251,9 @@ public class LobbyListener implements Listener {
                             e.setCancelled(false);
                         }
                         if (e.getClickedBlock() != null) {
-                            gadget.onUse(player, e.getClickedBlock().getLocation());
+                            gadget.onUse(player, e.getClickedBlock().getLocation().getX(), e.getClickedBlock().getY(), e.getClickedBlock().getZ());
                         } else {
-                            gadget.onUse(player, player.getPlayer().getLocation());
+                            gadget.onUse(player, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ());
                         }
                         player.getLastUsed().put(gadget, System.currentTimeMillis());
                     }
@@ -244,10 +262,8 @@ public class LobbyListener implements Listener {
                 switch (e.getItem().getType()) {
                     case EMERALD: {
                         e.setCancelled(true);
-                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        Cosmetics cosmetics = new Cosmetics(player);
-                        cosmetics.open(player);
-                        AuroraMCAPI.openGUI(player, cosmetics);
+                        Cosmetics cosmetics = new Cosmetics(e.getPlayer());
+                        cosmetics.open(e.getPlayer());
                         break;
                     }
                     case WOOD_DOOR: {
@@ -255,35 +271,43 @@ public class LobbyListener implements Listener {
                         ByteArrayDataOutput out = ByteStreams.newDataOutput();
                         out.writeUTF("Lobby");
                         out.writeUTF(e.getPlayer().getUniqueId().toString());
-                        e.getPlayer().sendPluginMessage(AuroraMCAPI.getCore(), "BungeeCord", out.toByteArray());
+                        e.getPlayer().sendPluginMessage(out.toByteArray());
                         break;
                     }
                     case REDSTONE_COMPARATOR: {
                         e.setCancelled(true);
-                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        Preferences prefs = new Preferences(player);
-                        prefs.open(player);
-                        AuroraMCAPI.openGUI(player, prefs);
+                        Preferences prefs = new Preferences(e.getPlayer());
+                        prefs.open(e.getPlayer());
                         break;
                     }
                     case CHEST: {
                         e.setCancelled(true);
-                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        Kits kits = new Kits((AuroraMCGamePlayer) player);
-                        kits.open(player);
-                        AuroraMCAPI.openGUI(player, kits);
+                        if (EngineAPI.getServerState() != ServerState.WAITING_FOR_PLAYERS && EngineAPI.getServerState() != ServerState.STARTING) {
+                            return;
+                        }
+                        Kits kits = new Kits((AuroraMCGamePlayer) e.getPlayer());
+                        kits.open(e.getPlayer());
                         break;
                     }
                     case LEATHER_CHESTPLATE: {
                         e.setCancelled(true);
-                        AuroraMCPlayer player = AuroraMCAPI.getPlayer(e.getPlayer());
-                        Teams teams = new Teams((AuroraMCGamePlayer) player);
-                        teams.open(player);
-                        AuroraMCAPI.openGUI(player, teams);
+                        if (EngineAPI.getServerState() != ServerState.WAITING_FOR_PLAYERS && EngineAPI.getServerState() != ServerState.STARTING) {
+                            return;
+                        }
+                        Teams teams = new Teams((AuroraMCGamePlayer) e.getPlayer());
+                        teams.open(e.getPlayer());
                         break;
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent e) {
+        if (EngineAPI.getServerState() == ServerState.STARTING && EngineAPI.getGameStartingRunnable() != null && EngineAPI.getGameStartingRunnable().getStartTime() <= 5) {
+            e.setCancelled(true);
+            ServerAPI.closeGUI(e.getPlayer());
         }
     }
 
@@ -297,14 +321,14 @@ public class LobbyListener implements Listener {
     @EventHandler
     public void onInvMove(InventoryClickEvent e) {
         if (EngineAPI.getServerState() != ServerState.ENDING && EngineAPI.getServerState() != ServerState.IN_GAME) {
-            if (e.getClickedInventory() instanceof PlayerInventory && e.getWhoClicked().getGameMode() != GameMode.CREATIVE) {
+            if (e.getClickedInventory() instanceof PlayerInventory && e.getPlayer().getGameMode() != GameMode.CREATIVE) {
                 e.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void onVanish(VanishEvent e) {
+    public void onVanish(PlayerVanishEvent e) {
         if (EngineAPI.getServerState() == ServerState.ENDING || EngineAPI.getServerState() == ServerState.IN_GAME) {
             e.setCancelled(true);
         }
@@ -313,14 +337,14 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void onCosmeticEnable(CosmeticEnableEvent e) {
-        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().shouldUnequipCosmetics()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onCosmeticSwitch(CosmeticSwitchEvent e) {
-        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().shouldUnequipCosmetics()) {
             e.setCancelled(true);
         }
     }

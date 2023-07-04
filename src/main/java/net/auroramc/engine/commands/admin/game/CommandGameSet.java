@@ -1,13 +1,17 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.commands.admin.game;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.command.Command;
-import net.auroramc.core.api.permissions.Permission;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.AuroraMCAPI;
+import net.auroramc.api.permissions.Permission;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.ServerCommand;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.games.GameInfo;
@@ -15,6 +19,7 @@ import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.listeners.LobbyListener;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -24,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CommandGameSet extends Command {
+public class CommandGameSet extends ServerCommand {
 
 
     public CommandGameSet() {
@@ -32,7 +37,7 @@ public class CommandGameSet extends Command {
     }
 
     @Override
-    public void execute(AuroraMCPlayer player, String aliasUsed, List<String> args) {
+    public void execute(AuroraMCServerPlayer player, String aliasUsed, List<String> args) {
         if (args.size() >= 1) {
             switch (EngineAPI.getServerState()) {
                 case STARTING:
@@ -41,13 +46,25 @@ public class CommandGameSet extends Command {
                     String gameString = args.remove(0);
                     GameInfo info = EngineAPI.getGames().get(gameString.toUpperCase());
                     if (info == null) {
+                        List<GameInfo> infos = new ArrayList<>();
                         for (GameInfo gameInfo : EngineAPI.getGames().values()) {
-                            if (gameInfo.getRegistryKey().toUpperCase().startsWith(gameString.toUpperCase())) {
-                                info = gameInfo;
+                            if (gameInfo.getRegistryKey().toUpperCase().contains(gameString.toUpperCase())) {
+                                infos.add(gameInfo);
                             }
                         }
-                        if (info == null) {
-                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
+                        if (infos.size() > 0) {
+                            if (infos.size() > 1) {
+                                StringBuilder builder = new StringBuilder();
+                                for (GameInfo info1 : infos) {
+                                    builder.append("\n - **").append(info1.getRegistryKey().toUpperCase()).append("**");
+                                }
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Multiple matches for game: **" + gameString + "**. Possible games:" + builder));
+                                return;
+                            } else {
+                                info = infos.get(0);
+                            }
+                        } else {
+                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
                             return;
                         }
                     }
@@ -59,7 +76,7 @@ public class CommandGameSet extends Command {
                             arg = arg.substring(1);
                             gameVariation = info.getVariations().get(arg);
                             if (gameVariation == null) {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
                                 return;
                             }
                         } else if (arg.startsWith("m")) {
@@ -67,19 +84,25 @@ public class CommandGameSet extends Command {
                             if (arg.contains(":")) {
                                 String[] args2 = arg.split(":");
                                 if (args2.length != 2) {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
                                     return;
+                                }
+                                if (!EngineAPI.getMaps().containsKey(args2[0])) {
+                                    if (args2.length != 2) {
+                                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Game Key **" + args2[0] + "** does not exist. Are you sure its correct?"));
+                                        return;
+                                    }
                                 }
                                 map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
                             } else {
                                 map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
                             }
                             if (map == null) {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
                                 return;
                             }
                         } else {
-                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
+                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
                         }
                         if (args.size() == 1) {
                             arg = args.remove(0);
@@ -87,7 +110,7 @@ public class CommandGameSet extends Command {
                                 arg = arg.substring(1);
                                 gameVariation = info.getVariations().get(arg);
                                 if (gameVariation == null) {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
                                     return;
                                 }
                             } else if (arg.startsWith("m") && map == null) {
@@ -95,7 +118,7 @@ public class CommandGameSet extends Command {
                                 if (arg.contains(":")) {
                                     String[] args2 = arg.split(":");
                                     if (args2.length != 2) {
-                                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
+                                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
                                         return;
                                     }
                                     map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
@@ -103,16 +126,16 @@ public class CommandGameSet extends Command {
                                     map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
                                 }
                                 if (map == null) {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
                                     return;
                                 }
                             } else {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
                             }
                         }
                     }
-                    for (Player player1 : Bukkit.getOnlinePlayers()) {
-                        LobbyListener.updateHeaderFooter((CraftPlayer) player1);
+                    for (AuroraMCServerPlayer player1 : ServerAPI.getPlayers()) {
+                        LobbyListener.updateHeaderFooter(player1);
 
                     }
                     if (map == null) {
@@ -125,30 +148,30 @@ public class CommandGameSet extends Command {
                         GameUtils.loadGame(info, map, gameVariation);
                     }
 
-                    String message;
+                    BaseComponent message;
                     if (map != null) {
                         if (gameVariation != null) {
-                            message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("The game has been set to **%s %s** with map **%s**.", gameVariation.getName(), info.getName(), map.getName()));
+                            message = TextFormatter.pluginMessage("Game Manager", String.format("The game has been set to **%s %s** with map **%s**.", gameVariation.getName(), info.getName(), map.getName()));
                         } else {
-                            message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("The game has been set to **%s** with map **%s**.", info.getName(), map.getName()));
+                            message = TextFormatter.pluginMessage("Game Manager", String.format("The game has been set to **%s** with map **%s**.", info.getName(), map.getName()));
                         }
                     } else {
                         if (gameVariation != null) {
-                            message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("The game has been set to **%s %s**.", gameVariation.getName(), info.getName()));
+                            message = TextFormatter.pluginMessage("Game Manager", String.format("The game has been set to **%s %s**.", gameVariation.getName(), info.getName()));
                         } else {
-                            message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("The game has been set to **%s**.", info.getName()));
+                            message = TextFormatter.pluginMessage("Game Manager", String.format("The game has been set to **%s**.", info.getName()));
                         }
                     }
                     for (Player player1 : Bukkit.getOnlinePlayers()) {
-                        player1.sendMessage(message);
-                        AuroraMCGamePlayer pl = (AuroraMCGamePlayer) AuroraMCAPI.getPlayer(player1);
+                        player1.spigot().sendMessage(message);
+                        AuroraMCGamePlayer pl = (AuroraMCGamePlayer) ServerAPI.getPlayer(player1);
                         if (pl != null) {
                             pl.setKit(null);
                             pl.setTeam(null);
                         }
-                        player1.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItem());
+                        player1.getPlayer().getInventory().setItem(0, EngineAPI.getKitItem().getItemStack());
                         if (EngineAPI.getActiveGame().getTeams().size() > 1 && !EngineAPI.getActiveGameInfo().hasTeamCommand() && !EngineAPI.isTeamBalancingEnabled()) {
-                            player1.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItem());
+                            player1.getPlayer().getInventory().setItem(1, EngineAPI.getTeamItem().getItemStack());
                         }
                     }
                     break;
@@ -158,7 +181,7 @@ public class CommandGameSet extends Command {
                     String gameString = args.remove(0);
                     GameInfo info = EngineAPI.getGames().get(gameString.toUpperCase());
                     if (info == null) {
-                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
+                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
                         return;
                     }
                     GameVariation gameVariation = null;
@@ -169,7 +192,7 @@ public class CommandGameSet extends Command {
                             arg = arg.substring(1);
                             gameVariation = info.getVariations().get(arg);
                             if (gameVariation == null) {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
                                 return;
                             }
                         } else if (arg.startsWith("m")) {
@@ -177,7 +200,7 @@ public class CommandGameSet extends Command {
                             if (arg.contains(":")) {
                                 String[] args2 = arg.split(":");
                                 if (args2.length != 2) {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
                                     return;
                                 }
                                 map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
@@ -185,11 +208,11 @@ public class CommandGameSet extends Command {
                                 map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
                             }
                             if (map == null) {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
                                 return;
                             }
                         } else {
-                            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
+                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
                         }
                         if (args.size() == 1) {
                             arg = args.remove(0);
@@ -197,7 +220,7 @@ public class CommandGameSet extends Command {
                                 arg = arg.substring(1);
                                 gameVariation = info.getVariations().get(arg);
                                 if (gameVariation == null) {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
                                     return;
                                 }
                             } else if (arg.startsWith("m") && map == null) {
@@ -205,7 +228,7 @@ public class CommandGameSet extends Command {
                                 if (arg.contains(":")) {
                                     String[] args2 = arg.split(":");
                                     if (args2.length != 2) {
-                                        player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
+                                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
                                         return;
                                     }
                                     map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
@@ -213,48 +236,48 @@ public class CommandGameSet extends Command {
                                     map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
                                 }
                                 if (map == null) {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
                                     return;
                                 }
                             } else {
-                                player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
                             }
                         }
                     }
                     EngineAPI.setNextMap(map);
                     EngineAPI.setNextGame(info);
                     EngineAPI.setNextVariation(gameVariation);
-                    String message;
+                    BaseComponent message;
                     if (map != null) {
                         if (gameVariation != null) {
-                            message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("The next game has been set to **%s %s** with map **%s**.", gameVariation.getName(), info.getName(), map.getName()));
+                            message = TextFormatter.pluginMessage("Game Manager", String.format("The next game has been set to **%s %s** with map **%s**.", gameVariation.getName(), info.getName(), map.getName()));
                         } else {
-                            message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("The next game has been set to **%s** with map **%s**.", info.getName(), map.getName()));
+                            message = TextFormatter.pluginMessage("Game Manager", String.format("The next game has been set to **%s** with map **%s**.", info.getName(), map.getName()));
                         }
                     } else {
                         if (gameVariation != null) {
-                            message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("The next game has been set to **%s %s**.", gameVariation.getName(), info.getName()));
+                            message = TextFormatter.pluginMessage("Game Manager", String.format("The next game has been set to **%s %s**.", gameVariation.getName(), info.getName()));
                         } else {
-                            message = AuroraMCAPI.getFormatter().pluginMessage("Game Manager", String.format("The next game has been set to **%s**.", info.getName()));
+                            message = TextFormatter.pluginMessage("Game Manager", String.format("The next game has been set to **%s**.", info.getName()));
                         }
                     }
                     for (Player player1 : Bukkit.getOnlinePlayers()) {
-                        player1.sendMessage(message);
+                        player1.spigot().sendMessage(message);
                     }
                     break;
                 }
                 default: {
-                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You cannot set the game at this time."));
+                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You cannot set the game at this time."));
                 }
 
             }
         } else {
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
+            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. Correct syntax: **/game set [game] v[variation] m[map]**"));
         }
     }
 
     @Override
-    public @NotNull List<String> onTabComplete(AuroraMCPlayer player, String aliasUsed, List<String> args, String lastToken, int numberArguments) {
+    public @NotNull List<String> onTabComplete(AuroraMCServerPlayer player, String aliasUsed, List<String> args, String lastToken, int numberArguments) {
         return new ArrayList<>();
     }
 }

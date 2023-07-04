@@ -1,12 +1,15 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.gui;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
-import net.auroramc.core.api.players.Team;
+import net.auroramc.api.player.Team;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.core.api.utils.gui.GUI;
 import net.auroramc.core.api.utils.gui.GUIItem;
 import net.auroramc.engine.api.EngineAPI;
@@ -49,18 +52,18 @@ public class Teams extends GUI {
     @Override
     public void onClick(int column, int row, ItemStack item, ClickType clickType) {
         if (item.getType() == Material.STAINED_GLASS_PANE) {
-            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+            player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
             return;
         }
         String teamString = ChatColor.stripColor(item.getItemMeta().getDisplayName()).split(" ")[0];
         if (player.getTeam().getName().equalsIgnoreCase(teamString)) {
-            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ITEM_BREAK, 100, 0);
+            player.playSound(player.getLocation(), Sound.ITEM_BREAK, 100, 0);
         } else {
             Team team = EngineAPI.getActiveGame().getTeams().get(teamString);
             player.setTeam(team);
-            player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "You joined team &" + team.getTeamColor() + team.getName() + "&r&f."));
-            player.getPlayer().closeInventory();
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "You joined team &" + team.getTeamColor() + team.getName() + "&r&f."));
+            player.closeInventory();
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 player.updateNametag(this.player);
             }
         }

@@ -1,11 +1,14 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.utils.TextFormatter;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.*;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -21,7 +24,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameUtils {
 
@@ -30,16 +35,26 @@ public class GameUtils {
     }
 
     public static void loadGame(GameInfo gameInfo, GameVariation gameVariation) {
-            List<GameMap> maps = EngineAPI.getMaps().get(gameInfo.getRegistryKey()).getMaps();
-            GameMap map = maps.get(EngineAPI.randomNumber(maps.size()));
-            GameUtils.loadGame(gameInfo, map, gameVariation);
+        List<GameMap> maps;
+        if (gameInfo.getRegistryKey() != null) {
+            if (gameVariation != null && gameVariation.getRegistryKey() != null) {
+                maps = EngineAPI.getMaps().get(gameVariation.getRegistryKey()).getMaps();
+            } else {
+                maps = EngineAPI.getMaps().get(gameInfo.getRegistryKey()).getMaps();
+            }
+        } else {
+            int key = EngineAPI.randomNumber(EngineAPI.getMaps().keySet().size());
+            maps = EngineAPI.getMaps().get(new ArrayList<>(EngineAPI.getMaps().keySet()).get(key)).getMaps();
+        }
+        GameMap map = maps.get(EngineAPI.randomNumber(maps.size()));;
+        GameUtils.loadGame(gameInfo, map, gameVariation);
     }
 
     public static void loadGame(GameInfo gameInfo, GameMap map, GameVariation gameVariation) {
         try {
+            EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGameInfo(gameInfo);
             Game game = gameInfo.getGameClass().getConstructor(GameVariation.class).newInstance(gameVariation);
-            EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGame(game);
             game.preLoad();
 
@@ -64,8 +79,7 @@ public class GameUtils {
             EngineAPI.setMapWorld(world);
             game.load(map);
             EngineAPI.setActiveMap(map);
-            EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
-            for (AuroraMCPlayer player : AuroraMCAPI.getPlayers()) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                 if (!player.isVanished() && !((AuroraMCGamePlayer)player).isSpectator()) {
                     AuroraMCGamePlayer gp = (AuroraMCGamePlayer) player;
                     new BukkitRunnable(){
@@ -84,13 +98,14 @@ public class GameUtils {
                             new BukkitRunnable(){
                                 @Override
                                 public void run() {
-                                    player.getPlayer().sendMessage(AuroraMCAPI.getFormatter().pluginMessage("Game Manager", "Your kit was set to **" + finalKit.getName() + "**."));
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Your kit was set to **" + TextFormatter.convert(finalKit.getName()) + "**."));
                                 }
-                            }.runTask(AuroraMCAPI.getCore());
+                            }.runTask(ServerAPI.getCore());
                         }
-                    }.runTaskAsynchronously(AuroraMCAPI.getCore());
+                    }.runTaskAsynchronously(ServerAPI.getCore());
                 }
             }
+            EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
             e.printStackTrace();
         }

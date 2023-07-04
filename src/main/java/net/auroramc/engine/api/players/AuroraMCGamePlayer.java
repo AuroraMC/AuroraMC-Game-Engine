@@ -1,12 +1,14 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.players;
 
-import net.auroramc.core.api.AuroraMCAPI;
-import net.auroramc.core.api.cosmetics.Gadget;
-import net.auroramc.core.api.players.AuroraMCPlayer;
+import net.auroramc.api.cosmetics.Gadget;
+import net.auroramc.core.api.ServerAPI;
+import net.auroramc.core.api.player.AuroraMCServerPlayer;
 import net.auroramc.engine.api.backend.EngineDatabaseManager;
 import net.auroramc.engine.api.games.GameRewards;
 import net.auroramc.engine.api.games.Kit;
@@ -19,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AuroraMCGamePlayer extends AuroraMCPlayer {
+public class AuroraMCGamePlayer extends AuroraMCServerPlayer {
 
     private boolean spectator;
     private Kit kit;
@@ -38,7 +40,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
     private final Map<String, Object> gameData;
     private final Map<Gadget, Long> lastUsed;
 
-    public AuroraMCGamePlayer(AuroraMCPlayer oldPlayer) {
+    public AuroraMCGamePlayer(AuroraMCServerPlayer oldPlayer) {
         super(oldPlayer);
         spectator = isVanished();
         kit = null;
@@ -54,7 +56,7 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
             public void run() {
                 unlockedKits = EngineDatabaseManager.getUnlockedKits(oldPlayer.getId());
             }
-        }.runTaskAsynchronously(AuroraMCAPI.getCore());
+        }.runTaskAsynchronously(ServerAPI.getCore());
     }
 
     public boolean isSpectator() {
@@ -65,23 +67,23 @@ public class AuroraMCGamePlayer extends AuroraMCPlayer {
         this.spectator = spectator;
         if (spectator) {
             this.hidden = true;
-            getPlayer().spigot().setCollidesWithEntities(false);
-            getPlayer().setAllowFlight(true);
-            getPlayer().setFlying(true);
-            getPlayer().setGameMode(GameMode.SURVIVAL);
-            getPlayer().setHealth(20);
-            getPlayer().setFoodLevel(30);
+            setCollidesWithEntities(false);
+            setAllowFlight(true);
+            setFlying(true);
+            setGameMode(GameMode.SURVIVAL);
+            setHealth(20);
+            setFoodLevel(30);
             if (isDead) {
-                getPlayer().getInventory().clear();
-                getPlayer().getInventory().setArmorContents(new ItemStack[4]);
+                getInventory().clear();
+                getInventory().setArmorContents(new ItemStack[4]);
                 SpectatorUtil.giveItems(this);
-                getPlayer().setExp(0);
-                getPlayer().setLevel(0);
-                getPlayer().getEnderChest().clear();
+                setExp(0);
+                setLevel(0);
+                getEnderChest().clear();
             }
         } else {
             this.hidden = false;
-            getPlayer().spigot().setCollidesWithEntities(true);
+            setCollidesWithEntities(true);
         }
         this.dead = isDead;
 
