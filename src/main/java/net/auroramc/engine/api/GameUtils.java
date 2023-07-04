@@ -54,7 +54,7 @@ public class GameUtils {
         try {
             EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGameInfo(gameInfo);
-            Game game = gameInfo.getGameClass().getConstructor(GameVariation.class).newInstance(gameVariation);
+            Game game = gameInfo.getGameClass().getConstructor(GameVariationInfo.class).newInstance(gameVariation);
             EngineAPI.setActiveGame(game);
             game.preLoad();
 
