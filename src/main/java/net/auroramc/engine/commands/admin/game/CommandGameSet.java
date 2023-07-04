@@ -49,6 +49,12 @@ public class CommandGameSet extends ServerCommand {
                     if (info == null) {
                         List<GameInfo> infos = new ArrayList<>();
                         for (GameInfo gameInfo : EngineAPI.getGames().values()) {
+                            if (gameInfo.getRegistryKey() == null) {
+                                if ("EVENT".contains(gameString.toUpperCase())) {
+                                    infos.add(info);
+                                }
+                                continue;
+                            }
                             if (gameInfo.getRegistryKey().toUpperCase().contains(gameString.toUpperCase())) {
                                 infos.add(gameInfo);
                             }
