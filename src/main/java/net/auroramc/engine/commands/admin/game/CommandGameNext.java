@@ -15,6 +15,7 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.GameVariationInfo;
 import net.auroramc.engine.api.server.ServerState;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -61,7 +62,7 @@ public class CommandGameNext extends ServerCommand {
                         return;
                     }
                 }
-                Class<? extends GameVariation> gameVariation = null;
+                GameVariationInfo gameVariation = null;
                 GameMap map = null;
                 if (args.size() >= 1) {
                     String arg = args.remove(0);
