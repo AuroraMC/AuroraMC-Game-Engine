@@ -546,14 +546,15 @@ public abstract class Game {
                     return;
                 }
 
+                JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
+                int x, y, z;
+                x = spawnLocations.getJSONObject(0).getInt("x");
+                y = spawnLocations.getJSONObject(0).getInt("y");
+                z = spawnLocations.getJSONObject(0).getInt("z");
+                float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
+                Location location = new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0);
                 for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
-                    JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
-                    int x, y, z;
-                    x = spawnLocations.getJSONObject(0).getInt("x");
-                    y = spawnLocations.getJSONObject(0).getInt("y");
-                    z = spawnLocations.getJSONObject(0).getInt("z");
-                    float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
-                    pl.teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
+                    pl.teleport(location);
                     pl.setFallDistance(0);
                     pl.setVelocity(new Vector());
                     pl.setFlying(false);
@@ -985,5 +986,9 @@ public abstract class Game {
 
     public void setKeepInventory(boolean keepInventory) {
         this.keepInventory = keepInventory;
+    }
+
+    public boolean isUnequipCosmetics() {
+        return unequipCosmetics;
     }
 }
