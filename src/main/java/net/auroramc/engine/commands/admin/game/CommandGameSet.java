@@ -95,10 +95,8 @@ public class CommandGameSet extends ServerCommand {
                                     return;
                                 }
                                 if (!EngineAPI.getMaps().containsKey(args2[0])) {
-                                    if (args2.length != 2) {
-                                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Game Key **" + args2[0] + "** does not exist. Are you sure its correct?"));
-                                        return;
-                                    }
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Game Key **" + args2[0] + "** does not exist. Are you sure its correct?"));
+                                    return;
                                 }
                                 map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
                             } else {
