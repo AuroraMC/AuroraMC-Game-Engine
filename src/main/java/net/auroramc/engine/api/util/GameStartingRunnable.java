@@ -6,29 +6,16 @@
 
 package net.auroramc.engine.api.util;
 
-import com.sun.xml.internal.ws.api.pipe.Engine;
-import net.auroramc.api.AuroraMCAPI;
-import net.auroramc.api.backend.info.ServerInfo;
 import net.auroramc.api.cosmetics.Cosmetic;
 import net.auroramc.api.player.Team;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
-import net.auroramc.core.api.player.scoreboard.PlayerScoreboard;
 import net.auroramc.engine.api.EngineAPI;
-import net.auroramc.engine.api.GameUtils;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 import net.auroramc.engine.api.server.ServerState;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
-import org.json.JSONArray;
 
 import java.util.*;
 
