@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class GameUtils {
 
@@ -112,8 +111,9 @@ public class GameUtils {
     }
 
     public static void loadNextGame() {
-        GameInfo gameInfo = EngineAPI.getGameRotation().get(EngineAPI.randomNumber(EngineAPI.getGameRotation().size()));
-        GameUtils.loadGame(gameInfo);
+        GameInfo gameInfo = new ArrayList<>(EngineAPI.getGameRotation().keySet()).get(EngineAPI.randomNumber(EngineAPI.getGameRotation().size()));
+        GameVariationInfo variationInfo = EngineAPI.getGameRotation().get(gameInfo);
+        GameUtils.loadGame(gameInfo, variationInfo);
     }
 
 }

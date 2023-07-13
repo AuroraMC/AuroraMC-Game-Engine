@@ -49,7 +49,7 @@ public class EngineAPI {
     private static GameInfo activeGameInfo;
     private static GameMap activeMap;
     private static final Map<String, MapRegistry> maps;
-    private static final List<GameInfo> gameRotation;
+    private static final Map<GameInfo, GameVariationInfo> gameRotation;
     private static World mapWorld;
     private static GameStartingRunnable gameStartingRunnable;
 
@@ -80,7 +80,7 @@ public class EngineAPI {
         games = new HashMap<>();
         maps = new HashMap<>();
         kitLevelRewards = new HashMap<>();
-        gameRotation = new ArrayList<>();
+        gameRotation = new HashMap<>();
         serverState = ServerState.STARTING_UP;
 
         versionNumbers = EngineDatabaseManager.getVersionNumbers();
@@ -168,7 +168,7 @@ public class EngineAPI {
         EngineAPI.waitingLobbyMap = waitingLobbyMap;
     }
 
-    public static List<GameInfo> getGameRotation() {
+    public static Map<GameInfo, GameVariationInfo> getGameRotation() {
         return gameRotation;
     }
 
@@ -206,7 +206,14 @@ public class EngineAPI {
 
         for (Object object : ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getJSONArray("rotation")) {
             String string = (String) object;
-            gameRotation.add(games.get(string));
+            if (string.contains(":")) {
+                //this is a variation rotation.
+                String[] args = string.split(":");
+                GameInfo game = games.get(args[0]);
+                gameRotation.put(game, game.getVariations().get(args[1]));
+            } else {
+                gameRotation.put(games.get(string), null);
+            }
         }
         gameEngine.getLogger().info(EngineAPI.getGameRotation().size() + " games loaded into rotation.");
         if (EngineAPI.getGameRotation().size() > 0) {

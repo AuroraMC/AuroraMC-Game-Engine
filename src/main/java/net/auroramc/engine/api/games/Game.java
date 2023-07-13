@@ -496,6 +496,9 @@ public abstract class Game {
                 }
             }
 
+        if (gameVariation != null) {
+            gameVariation.end();
+        }
         startEndRunnable();
     }
 
