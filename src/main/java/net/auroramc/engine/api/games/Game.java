@@ -994,4 +994,8 @@ public abstract class Game {
     public boolean isUnequipCosmetics() {
         return unequipCosmetics;
     }
+
+    public GameVariation getGameVariation() {
+        return gameVariation;
+    }
 }
