@@ -76,8 +76,27 @@ public class CommandGameNext extends ServerCommand {
                         arg = arg.substring(1);
                         gameVariation = info.getVariations().get(arg);
                         if (gameVariation == null) {
-                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
-                            return;
+                            List<String> infos = new ArrayList<>();
+                            for (String gameInfo : info.getVariations().keySet()) {
+                                if (gameInfo.toUpperCase().contains(arg.toUpperCase())) {
+                                    infos.add(gameInfo);
+                                }
+                            }
+                            if (infos.size() > 0) {
+                                if (infos.size() > 1) {
+                                    StringBuilder builder = new StringBuilder();
+                                    for (String info1 : infos) {
+                                        builder.append("\n - **").append(info1).append("**");
+                                    }
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Multiple matches for variation: **" + arg + "**. Possible variations:" + builder));
+                                    return;
+                                } else {
+                                    gameVariation = info.getVariations().get(infos.get(0));
+                                }
+                            } else {
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
+                                return;
+                            }
                         }
                     } else if (arg.startsWith("m")) {
                         arg = arg.substring(1);
@@ -110,8 +129,27 @@ public class CommandGameNext extends ServerCommand {
                             arg = arg.substring(1);
                             gameVariation = info.getVariations().get(arg);
                             if (gameVariation == null) {
-                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
-                                return;
+                                List<String> infos = new ArrayList<>();
+                                for (String gameInfo : info.getVariations().keySet()) {
+                                    if (gameInfo.toUpperCase().contains(arg.toUpperCase())) {
+                                        infos.add(gameInfo);
+                                    }
+                                }
+                                if (infos.size() > 0) {
+                                    if (infos.size() > 1) {
+                                        StringBuilder builder = new StringBuilder();
+                                        for (String info1 : infos) {
+                                            builder.append("\n - **").append(info1).append("**");
+                                        }
+                                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Multiple matches for variation: **" + arg + "**. Possible variations:" + builder));
+                                        return;
+                                    } else {
+                                        gameVariation = info.getVariations().get(infos.get(0));
+                                    }
+                                } else {
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
+                                    return;
+                                }
                             }
                         } else if (arg.startsWith("m") && map == null) {
                             arg = arg.substring(1);
