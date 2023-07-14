@@ -1012,4 +1012,8 @@ public abstract class Game {
     public boolean isCustomTeamBalancing() {
         return customTeamBalancing;
     }
+
+    public void setCustomTeamBalancing(boolean customTeamBalancing) {
+        this.customTeamBalancing = customTeamBalancing;
+    }
 }
