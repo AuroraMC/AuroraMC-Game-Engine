@@ -78,10 +78,14 @@ public class GameStartingRunnable extends BukkitRunnable {
                     }
                 }
             } else {
-                if (EngineAPI.isTeamBalancingEnabled()) {
-                    teamBalance();
+                if (EngineAPI.getActiveGame().isCustomTeamBalancing()) {
+                    EngineAPI.getActiveGame().balanceTeams();
                 } else {
-                    assignRandomly();
+                    if (EngineAPI.isTeamBalancingEnabled()) {
+                        teamBalance();
+                    } else {
+                        assignRandomly();
+                    }
                 }
             }
 

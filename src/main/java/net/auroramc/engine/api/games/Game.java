@@ -78,6 +78,7 @@ public abstract class Game {
     protected int time;
     protected boolean mobGriefing;
     protected boolean keepInventory;
+    protected boolean customTeamBalancing;
 
     public Game(GameVariationInfo gameVariation) {
         this.gameVariationInfo = gameVariation;
@@ -117,6 +118,7 @@ public abstract class Game {
         time = -1;
         mobGriefing = true;
         keepInventory = true;
+        customTeamBalancing = false;
     }
 
     public void preLoad() {
@@ -829,6 +831,10 @@ public abstract class Game {
         }
     }
 
+    public void balanceTeams() {
+        GameStartingRunnable.teamBalance();
+    }
+
     public List<Kit> getKits() {
         return kits;
     }
@@ -997,5 +1003,9 @@ public abstract class Game {
 
     public GameVariation getGameVariation() {
         return gameVariation;
+    }
+
+    public boolean isCustomTeamBalancing() {
+        return customTeamBalancing;
     }
 }
