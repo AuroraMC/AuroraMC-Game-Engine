@@ -832,7 +832,11 @@ public abstract class Game {
     }
 
     public void balanceTeams() {
-        GameStartingRunnable.teamBalance();
+        if (gameVariation != null) {
+            gameVariation.balanceTeams();
+        } else {
+            GameStartingRunnable.teamBalance();
+        }
     }
 
     public List<Kit> getKits() {

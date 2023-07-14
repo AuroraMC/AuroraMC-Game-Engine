@@ -41,4 +41,6 @@ public abstract class GameVariation<T extends Game> {
     public T getGame() {
         return game;
     }
+
+    public abstract void balanceTeams();
 }
