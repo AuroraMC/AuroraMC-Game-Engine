@@ -84,7 +84,7 @@ public abstract class Game {
         this.gameVariationInfo = gameVariation;
         if (gameVariation != null) {
             try {
-                this.gameVariation = gameVariation.getVariationClass().getConstructor(Game.class).newInstance(this);
+                this.gameVariation = gameVariation.getVariationClass().getConstructor(this.getClass()).newInstance(this);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 e.printStackTrace();
