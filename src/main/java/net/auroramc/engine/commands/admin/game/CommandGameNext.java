@@ -114,7 +114,11 @@ public class CommandGameNext extends ServerCommand {
                             }
                             map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
                         } else {
-                            map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
+                            if (info.getRegistryKey() == null) {
+                                map = EngineAPI.getMaps().get("EVENT").getMap(arg);
+                            } else {
+                                map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
+                            }
                         }
                         if (map == null) {
                             player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
@@ -161,7 +165,11 @@ public class CommandGameNext extends ServerCommand {
                                 }
                                 map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
                             } else {
-                                map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
+                                if (info.getRegistryKey() == null) {
+                                    map = EngineAPI.getMaps().get("EVENT").getMap(arg);
+                                } else {
+                                    map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
+                                }
                             }
                             if (map == null) {
                                 player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
