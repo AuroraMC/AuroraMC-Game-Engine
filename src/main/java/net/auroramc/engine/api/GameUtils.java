@@ -105,8 +105,11 @@ public class GameUtils {
                 }
             }
             EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game had an issue while trying to load. Aborting and loading next game..."));
+            }
+            loadNextGame();
         }
     }
 
