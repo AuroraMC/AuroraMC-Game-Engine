@@ -110,6 +110,7 @@ public class GameUtils {
                 player.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game had an issue while trying to load. Aborting and loading next game..."));
             }
             loadNextGame();
+            e.printStackTrace();
         }
     }
 
