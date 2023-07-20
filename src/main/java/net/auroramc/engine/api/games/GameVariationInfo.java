@@ -7,7 +7,7 @@
 package net.auroramc.engine.api.games;
 
 
-import javafx.scene.paint.Material;
+import org.bukkit.Material;
 
 public class GameVariationInfo {
 
