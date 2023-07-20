@@ -8,7 +8,6 @@ package net.auroramc.engine.api.games;
 
 
 import javafx.scene.paint.Material;
-import net.auroramc.core.api.utils.gui.GUIItem;
 
 public class GameVariationInfo {
 
@@ -18,14 +17,16 @@ public class GameVariationInfo {
     private final String description;
     private final String registryKey;
     private final Material item;
+    private final short data;
 
-    public GameVariationInfo(int id, String name, Class<? extends GameVariation> variationClass, String description, String registryKey, Material item) {
+    public GameVariationInfo(int id, String name, Class<? extends GameVariation> variationClass, String description, String registryKey, Material item, short data) {
         this.id = id;
         this.name = name;
         this.variationClass = variationClass;
         this.description = description;
         this.registryKey = registryKey;
         this.item = item;
+        this.data = data;
     }
 
 
@@ -51,5 +52,9 @@ public class GameVariationInfo {
 
     public Material getItem() {
         return item;
+    }
+
+    public short getData() {
+        return data;
     }
 }

@@ -22,9 +22,10 @@ public class GameInfo {
     private final Map<String, GameVariationInfo> variations;
     private final boolean teamCommand;
     private final Material item;
+    private final short data;
 
 
-    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey, boolean teamCommand, Map<String, GameVariationInfo> variations, Material item) {
+    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey, boolean teamCommand, Map<String, GameVariationInfo> variations, Material item, short data) {
         this.id = id;
         this.name = name;
         this.gameClass = gameClass;
@@ -33,6 +34,7 @@ public class GameInfo {
         this.teamCommand = teamCommand;
         this.variations = variations;
         this.item = item;
+        this.data = data;
     }
 
 
@@ -66,5 +68,9 @@ public class GameInfo {
 
     public Material getItem() {
         return item;
+    }
+
+    public short getData() {
+        return data;
     }
 }
