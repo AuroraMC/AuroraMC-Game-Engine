@@ -529,7 +529,7 @@ public abstract class Game {
                                     }
                                     player1.gameOver();
                                 }
-                            } else {
+                            } else if (!ServerAPI.isEventMode()) {
                                 player1.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game was void, so any rewards or statistics earned during this game did not apply to your account."));
                             }
 
@@ -656,85 +656,87 @@ public abstract class Game {
                     player.getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItemStack());
                 }
 
-                if (new Random().nextBoolean()) {
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            TextComponent textComponent = new TextComponent("");
+                if (!ServerAPI.isEventMode()) {
+                    if (new Random().nextBoolean()) {
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                TextComponent textComponent = new TextComponent("");
 
-                            TextComponent lines = new TextComponent("-----------------------------------------------------");
-                            lines.setStrikethrough(true);
-                            lines.setColor(net.md_5.bungee.api.ChatColor.DARK_AQUA);
-                            textComponent.addExtra(lines);
+                                TextComponent lines = new TextComponent("-----------------------------------------------------");
+                                lines.setStrikethrough(true);
+                                lines.setColor(net.md_5.bungee.api.ChatColor.DARK_AQUA);
+                                textComponent.addExtra(lines);
 
-                            textComponent.addExtra("\n");
+                                textComponent.addExtra("\n");
 
-                            String title;
+                                String title;
 
-                            String msg;
+                                String msg;
 
-                            switch (new Random().nextInt(5)) {
-                                case 1:
-                                    title = "Support the network by subscribing to AuroraMC Plus!";
-                                    msg = "A Plus subscription gives you some awesome new features, and supports us in the process! View all of our packages at ";
-                                    break;
-                                case 2:
-                                    title = "Take your AuroraMC experience to the next level!";
-                                    msg = "Purchase the AuroraMC Starter Pack to get a head start, it comes with Elite and 11 exclusive cosmetics! Purchase the bundle at ";
-                                    break;
-                                case 3:
-                                    title = "Want some cool limited-time cosmetics and other extras?!";
-                                    msg = "Our Grand Celebration bundle is on sale for a limited-time only! This bundle is only live for 30 days, so grab it while you can! Purchase the bundle at ";
-                                    break;
-                                case 4:
-                                    title = "You seem cool... and cool people deserve ranks!";
-                                    msg = "Ranks are a great way to support the network, and you get loads of benefits too! See all rank benefits at ";
-                                    break;
-                                default:
-                                    title = "Did you enjoy this game?";
-                                    msg = "Consider supporting AuroraMC by purchasing a premium rank! Check out our latest offerings at ";
-                                    break;
-                            }
-
-                            TextComponent enjoy = new TextComponent(title);
-                            enjoy.setBold(true);
-                            enjoy.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                            textComponent.addExtra(enjoy);
-
-                            textComponent.addExtra("\n \n");
-
-                            TextComponent purchase = new TextComponent(msg);
-                            textComponent.addExtra(purchase);
-
-                            TextComponent store = new TextComponent("store.auroramc.net");
-                            store.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to visit the store!").color(net.md_5.bungee.api.ChatColor.GREEN).create()));
-                            store.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://store.auroramc.net"));
-                            store.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                            textComponent.addExtra(store);
-                            textComponent.addExtra("\n");
-                            textComponent.addExtra(lines);
-
-                            TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
-                            log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
-                            log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
-                            log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-
-                            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                                if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
-                                    player.sendMessage(textComponent);
+                                switch (new Random().nextInt(5)) {
+                                    case 1:
+                                        title = "Support the network by subscribing to AuroraMC Plus!";
+                                        msg = "A Plus subscription gives you some awesome new features, and supports us in the process! View all of our packages at ";
+                                        break;
+                                    case 2:
+                                        title = "Take your AuroraMC experience to the next level!";
+                                        msg = "Purchase the AuroraMC Starter Pack to get a head start, it comes with Elite and 11 exclusive cosmetics! Purchase the bundle at ";
+                                        break;
+                                    case 3:
+                                        title = "Want some cool limited-time cosmetics and other extras?!";
+                                        msg = "Our Grand Celebration bundle is on sale for a limited-time only! This bundle is only live for 30 days, so grab it while you can! Purchase the bundle at ";
+                                        break;
+                                    case 4:
+                                        title = "You seem cool... and cool people deserve ranks!";
+                                        msg = "Ranks are a great way to support the network, and you get loads of benefits too! See all rank benefits at ";
+                                        break;
+                                    default:
+                                        title = "Did you enjoy this game?";
+                                        msg = "Consider supporting AuroraMC by purchasing a premium rank! Check out our latest offerings at ";
+                                        break;
                                 }
-                                player.sendMessage(log);
-                            }
-                        }
-                    }.runTaskLater(ServerAPI.getCore(), 100);
-                } else {
-                    TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
-                    log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
-                    log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
-                    log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 
-                    for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                        player.sendMessage(log);
+                                TextComponent enjoy = new TextComponent(title);
+                                enjoy.setBold(true);
+                                enjoy.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                                textComponent.addExtra(enjoy);
+
+                                textComponent.addExtra("\n \n");
+
+                                TextComponent purchase = new TextComponent(msg);
+                                textComponent.addExtra(purchase);
+
+                                TextComponent store = new TextComponent("store.auroramc.net");
+                                store.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to visit the store!").color(net.md_5.bungee.api.ChatColor.GREEN).create()));
+                                store.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://store.auroramc.net"));
+                                store.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                                textComponent.addExtra(store);
+                                textComponent.addExtra("\n");
+                                textComponent.addExtra(lines);
+
+                                TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
+                                log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
+                                log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
+                                log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+
+                                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                                    if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
+                                        player.sendMessage(textComponent);
+                                    }
+                                    player.sendMessage(log);
+                                }
+                            }
+                        }.runTaskLater(ServerAPI.getCore(), 100);
+                    } else {
+                        TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
+                        log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
+                        log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
+                        log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+
+                        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                            player.sendMessage(log);
+                        }
                     }
                 }
 
