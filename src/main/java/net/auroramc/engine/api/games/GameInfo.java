@@ -6,6 +6,9 @@
 
 package net.auroramc.engine.api.games;
 
+import net.auroramc.core.api.utils.gui.GUIItem;
+import org.bukkit.Material;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,9 +21,10 @@ public class GameInfo {
     private final String registryKey;
     private final Map<String, GameVariationInfo> variations;
     private final boolean teamCommand;
+    private final Material item;
 
 
-    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey, boolean teamCommand, Map<String, GameVariationInfo> variations) {
+    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey, boolean teamCommand, Map<String, GameVariationInfo> variations, Material item) {
         this.id = id;
         this.name = name;
         this.gameClass = gameClass;
@@ -28,6 +32,7 @@ public class GameInfo {
         this.registryKey = registryKey;
         this.teamCommand = teamCommand;
         this.variations = variations;
+        this.item = item;
     }
 
 
@@ -57,5 +62,9 @@ public class GameInfo {
 
     public boolean hasTeamCommand() {
         return teamCommand;
+    }
+
+    public Material getItem() {
+        return item;
     }
 }
