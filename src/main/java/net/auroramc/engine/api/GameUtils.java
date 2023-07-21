@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api;
@@ -22,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameUtils {
@@ -30,17 +33,27 @@ public class GameUtils {
         GameUtils.loadGame(info, null);
     }
 
-    public static void loadGame(GameInfo gameInfo, GameVariation gameVariation) {
-            List<GameMap> maps = EngineAPI.getMaps().get(gameInfo.getRegistryKey()).getMaps();
-            GameMap map = maps.get(EngineAPI.randomNumber(maps.size()));
-            GameUtils.loadGame(gameInfo, map, gameVariation);
+    public static void loadGame(GameInfo gameInfo, GameVariationInfo gameVariation) {
+        List<GameMap> maps;
+        if (gameInfo.getRegistryKey() != null) {
+            if (gameVariation != null && gameVariation.getRegistryKey() != null) {
+                maps = EngineAPI.getMaps().get(gameVariation.getRegistryKey()).getMaps();
+            } else {
+                maps = EngineAPI.getMaps().get(gameInfo.getRegistryKey()).getMaps();
+            }
+        } else {
+            int key = EngineAPI.randomNumber(EngineAPI.getMaps().keySet().size());
+            maps = EngineAPI.getMaps().get(new ArrayList<>(EngineAPI.getMaps().keySet()).get(key)).getMaps();
+        }
+        GameMap map = maps.get(EngineAPI.randomNumber(maps.size()));;
+        GameUtils.loadGame(gameInfo, map, gameVariation);
     }
 
-    public static void loadGame(GameInfo gameInfo, GameMap map, GameVariation gameVariation) {
+    public static void loadGame(GameInfo gameInfo, GameMap map, GameVariationInfo gameVariation) {
         try {
             EngineAPI.setServerState(ServerState.PREPARING_GAME);
             EngineAPI.setActiveGameInfo(gameInfo);
-            Game game = gameInfo.getGameClass().getConstructor(GameVariation.class).newInstance(gameVariation);
+            Game game = gameInfo.getGameClass().getConstructor(GameVariationInfo.class).newInstance(gameVariation);
             EngineAPI.setActiveGame(game);
             game.preLoad();
 
@@ -92,14 +105,19 @@ public class GameUtils {
                 }
             }
             EngineAPI.setServerState(ServerState.WAITING_FOR_PLAYERS);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
+        } catch (Exception e) {
+            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game had an issue while trying to load. Aborting and loading next game..."));
+            }
+            loadNextGame();
             e.printStackTrace();
         }
     }
 
     public static void loadNextGame() {
-        GameInfo gameInfo = EngineAPI.getGameRotation().get(EngineAPI.randomNumber(EngineAPI.getGameRotation().size()));
-        GameUtils.loadGame(gameInfo);
+        GameInfo gameInfo = new ArrayList<>(EngineAPI.getGameRotation().keySet()).get(EngineAPI.randomNumber(EngineAPI.getGameRotation().size()));
+        GameVariationInfo variationInfo = EngineAPI.getGameRotation().get(gameInfo);
+        GameUtils.loadGame(gameInfo, variationInfo);
     }
 
 }

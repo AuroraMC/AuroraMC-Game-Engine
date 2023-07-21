@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.commands.admin.game;
@@ -13,6 +15,7 @@ import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameInfo;
 import net.auroramc.engine.api.games.GameMap;
 import net.auroramc.engine.api.games.GameVariation;
+import net.auroramc.engine.api.games.GameVariationInfo;
 import net.auroramc.engine.api.server.ServerState;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
@@ -37,10 +40,35 @@ public class CommandGameNext extends ServerCommand {
                 String gameString = args.remove(0);
                 GameInfo info = EngineAPI.getGames().get(gameString.toUpperCase());
                 if (info == null) {
-                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
-                    return;
+                    List<GameInfo> infos = new ArrayList<>();
+                    for (GameInfo gameInfo : EngineAPI.getGames().values()) {
+                        if (gameInfo.getRegistryKey() == null) {
+                            if ("EVENT".contains(gameString.toUpperCase())) {
+                                infos.add(info);
+                            }
+                            continue;
+                        }
+                        if (gameInfo.getRegistryKey().toUpperCase().contains(gameString.toUpperCase())) {
+                            infos.add(gameInfo);
+                        }
+                    }
+                    if (infos.size() > 0) {
+                        if (infos.size() > 1) {
+                            StringBuilder builder = new StringBuilder();
+                            for (GameInfo info1 : infos) {
+                                builder.append("\n - **").append(info1.getRegistryKey().toUpperCase()).append("**");
+                            }
+                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Multiple matches for game: **" + gameString + "**. Possible games:" + builder));
+                            return;
+                        } else {
+                            info = infos.get(0);
+                        }
+                    } else {
+                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for game: **" + gameString + "**"));
+                        return;
+                    }
                 }
-                GameVariation gameVariation = null;
+                GameVariationInfo gameVariation = null;
                 GameMap map = null;
                 if (args.size() >= 1) {
                     String arg = args.remove(0);
@@ -48,8 +76,27 @@ public class CommandGameNext extends ServerCommand {
                         arg = arg.substring(1);
                         gameVariation = info.getVariations().get(arg);
                         if (gameVariation == null) {
-                            player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
-                            return;
+                            List<String> infos = new ArrayList<>();
+                            for (String gameInfo : info.getVariations().keySet()) {
+                                if (gameInfo.toUpperCase().contains(arg.toUpperCase())) {
+                                    infos.add(gameInfo);
+                                }
+                            }
+                            if (infos.size() > 0) {
+                                if (infos.size() > 1) {
+                                    StringBuilder builder = new StringBuilder();
+                                    for (String info1 : infos) {
+                                        builder.append("\n - **").append(info1).append("**");
+                                    }
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Multiple matches for variation: **" + arg + "**. Possible variations:" + builder));
+                                    return;
+                                } else {
+                                    gameVariation = info.getVariations().get(infos.get(0));
+                                }
+                            } else {
+                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
+                                return;
+                            }
                         }
                     } else if (arg.startsWith("m")) {
                         arg = arg.substring(1);
@@ -59,9 +106,19 @@ public class CommandGameNext extends ServerCommand {
                                 player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Invalid syntax. When specifying maps from other games, please use format: **GAME:MAP**"));
                                 return;
                             }
+                            if (!EngineAPI.getMaps().containsKey(args2[0])) {
+                                if (args2.length != 2) {
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Game Key **" + args2[0] + "** does not exist. Are you sure its correct?"));
+                                    return;
+                                }
+                            }
                             map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
                         } else {
-                            map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
+                            if (info.getRegistryKey() == null) {
+                                map = EngineAPI.getMaps().get("EVENT").getMap(arg);
+                            } else {
+                                map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
+                            }
                         }
                         if (map == null) {
                             player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));
@@ -76,8 +133,27 @@ public class CommandGameNext extends ServerCommand {
                             arg = arg.substring(1);
                             gameVariation = info.getVariations().get(arg);
                             if (gameVariation == null) {
-                                player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
-                                return;
+                                List<String> infos = new ArrayList<>();
+                                for (String gameInfo : info.getVariations().keySet()) {
+                                    if (gameInfo.toUpperCase().contains(arg.toUpperCase())) {
+                                        infos.add(gameInfo);
+                                    }
+                                }
+                                if (infos.size() > 0) {
+                                    if (infos.size() > 1) {
+                                        StringBuilder builder = new StringBuilder();
+                                        for (String info1 : infos) {
+                                            builder.append("\n - **").append(info1).append("**");
+                                        }
+                                        player.sendMessage(TextFormatter.pluginMessage("Game Manager", "Multiple matches for variation: **" + arg + "**. Possible variations:" + builder));
+                                        return;
+                                    } else {
+                                        gameVariation = info.getVariations().get(infos.get(0));
+                                    }
+                                } else {
+                                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for variation: **" + arg + "**"));
+                                    return;
+                                }
                             }
                         } else if (arg.startsWith("m") && map == null) {
                             arg = arg.substring(1);
@@ -89,7 +165,11 @@ public class CommandGameNext extends ServerCommand {
                                 }
                                 map = EngineAPI.getMaps().get(args2[0]).getMap(args2[1]);
                             } else {
-                                map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
+                                if (info.getRegistryKey() == null) {
+                                    map = EngineAPI.getMaps().get("EVENT").getMap(arg);
+                                } else {
+                                    map = EngineAPI.getMaps().get(info.getRegistryKey()).getMap(arg);
+                                }
                             }
                             if (map == null) {
                                 player.sendMessage(TextFormatter.pluginMessage("Game Manager", "No results found for map: **" + arg + "**"));

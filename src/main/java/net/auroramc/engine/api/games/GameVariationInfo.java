@@ -1,38 +1,30 @@
 /*
- * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2023 AuroraMC Ltd. All Rights Reserved.
  *
  * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.games;
 
-import net.auroramc.core.api.utils.gui.GUIItem;
+
 import org.bukkit.Material;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class GameInfo {
+public class GameVariationInfo {
 
     private final int id;
     private final String name;
-    private final Class<? extends Game> gameClass;
+    private final Class<? extends GameVariation> variationClass;
     private final String description;
     private final String registryKey;
-    private final Map<String, GameVariationInfo> variations;
-    private final boolean teamCommand;
     private final Material item;
     private final short data;
 
-
-    public GameInfo(int id, String name, Class<? extends Game> gameClass, String description, String registryKey, boolean teamCommand, Map<String, GameVariationInfo> variations, Material item, short data) {
+    public GameVariationInfo(int id, String name, Class<? extends GameVariation> variationClass, String description, String registryKey, Material item, short data) {
         this.id = id;
         this.name = name;
-        this.gameClass = gameClass;
+        this.variationClass = variationClass;
         this.description = description;
         this.registryKey = registryKey;
-        this.teamCommand = teamCommand;
-        this.variations = variations;
         this.item = item;
         this.data = data;
     }
@@ -46,8 +38,8 @@ public class GameInfo {
         return description;
     }
 
-    public Class<? extends Game> getGameClass() {
-        return gameClass;
+    public Class<? extends GameVariation> getVariationClass() {
+        return variationClass;
     }
 
     public String getName() {
@@ -56,14 +48,6 @@ public class GameInfo {
 
     public int getId() {
         return id;
-    }
-
-    public Map<String, GameVariationInfo> getVariations() {
-        return variations;
-    }
-
-    public boolean hasTeamCommand() {
-        return teamCommand;
     }
 
     public Material getItem() {

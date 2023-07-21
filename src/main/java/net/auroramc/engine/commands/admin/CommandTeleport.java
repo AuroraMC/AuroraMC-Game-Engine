@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.commands.admin;
@@ -31,7 +33,7 @@ public class CommandTeleport extends ServerCommand {
             if (args.get(0).equalsIgnoreCase("here")) {
                 if (args.size() == 2) {
                     if (args.get(1).equalsIgnoreCase("all")) {
-                        player.sendMessage(TextFormatter.pluginMessage("Teleport", "You have teleported everyone to yourself."));
+                        player.sendMessage(TextFormatter.pluginMessage("Event", "You have teleported everyone to yourself."));
                         for (Player from : Bukkit.getOnlinePlayers()) {
                             if (from.equals(player)) {
                                 continue;
@@ -43,33 +45,41 @@ public class CommandTeleport extends ServerCommand {
                         Player target = Bukkit.getPlayer(args.get(1));
                         AuroraMCServerPlayer aTarget = ServerAPI.getPlayer(target);
                         if (target != null) {
+                            if (aTarget.equals(player)) {
+                                player.sendMessage(TextFormatter.pluginMessage("Event", "You cannot teleport to yourself."));
+                                return;
+                            }
                             aTarget.teleport(player.getLocation());
                             player.sendMessage(TextFormatter.pluginMessage("Map Manager", String.format("You have teleported **%s** to your location.", target.getName())));
-                            aTarget.sendMessage(TextFormatter.pluginMessage("Teleport", String.format("**%s** has teleported you to their location.", player.getName())));
+                            aTarget.sendMessage(TextFormatter.pluginMessage("Event", String.format("**%s** has teleported you to their location.", player.getName())));
                         } else {
-                            player.sendMessage(TextFormatter.pluginMessage("Teleport", String.format("No matches found for user [**%s**]", args.get(0))));
+                            player.sendMessage(TextFormatter.pluginMessage("Event", String.format("No matches found for user [**%s**]", args.get(0))));
                         }
                     }
                 } else {
-                    player.sendMessage(TextFormatter.pluginMessage("Teleport", "Invalid syntax. Correct syntax: **/tp here <user | all**"));
+                    player.sendMessage(TextFormatter.pluginMessage("Event", "Invalid syntax. Correct syntax: **/e tp here [user | all]**"));
                 }
             } else {
                 if (args.size() == 1) {
                     if (args.get(0).equalsIgnoreCase(player.getName())) {
-                        player.sendMessage(TextFormatter.pluginMessage("Teleport", "You cannot teleport to yourself."));
+                        player.sendMessage(TextFormatter.pluginMessage("Event", "You cannot teleport to yourself."));
                         return;
                     }
                     Player target = Bukkit.getPlayer(args.get(0));
                     AuroraMCServerPlayer aTarget = ServerAPI.getPlayer(target);
                     if (target != null) {
+                        if (aTarget.equals(player)) {
+                            player.sendMessage(TextFormatter.pluginMessage("Event", "You cannot teleport to yourself."));
+                            return;
+                        }
                         player.teleport(aTarget.getLocation());
-                        player.sendMessage(TextFormatter.pluginMessage("Teleport", String.format("You have been teleported to player **%s**.", target.getName())));
+                        player.sendMessage(TextFormatter.pluginMessage("Event", String.format("You have been teleported to player **%s**.", target.getName())));
                     } else {
-                        player.sendMessage(TextFormatter.pluginMessage("Teleport", String.format("No matches found for user [**%s**]", args.get(0))));
+                        player.sendMessage(TextFormatter.pluginMessage("Event", String.format("No matches found for user [**%s**]", args.get(0))));
                     }
                 } else if (args.size() == 2) {
                     if (args.get(0).equalsIgnoreCase(args.get(1))) {
-                        player.sendMessage(TextFormatter.pluginMessage("Teleport", "You cannot teleport a player to themselves."));
+                        player.sendMessage(TextFormatter.pluginMessage("Event", "You cannot teleport a player to themselves."));
                         return;
                     }
                     Player from = Bukkit.getPlayer(args.get(0));
@@ -81,14 +91,18 @@ public class CommandTeleport extends ServerCommand {
                         AuroraMCServerPlayer ato = ServerAPI.getPlayer(to);
 
                         if (to != null) {
+                            if (ato.equals(afrom)) {
+                                player.sendMessage(TextFormatter.pluginMessage("Event", "You cannot teleport to yourself."));
+                                return;
+                            }
                             afrom.sendMessage(TextFormatter.pluginMessage("Map Manager", String.format("You have been teleported to player **%s**.", to.getName())));
-                            player.sendMessage(TextFormatter.pluginMessage("Teleport", String.format("You have teleported **%s** to **%s**.", args.get(0), args.get(1))));
+                            player.sendMessage(TextFormatter.pluginMessage("Event", String.format("You have teleported **%s** to **%s**.", args.get(0), args.get(1))));
                             afrom.teleport(ato.getLocation());
                         } else {
-                            player.sendMessage(TextFormatter.pluginMessage("Teleport", String.format("No matches found for user [**%s**]", args.get(1))));
+                            player.sendMessage(TextFormatter.pluginMessage("Event", String.format("No matches found for user [**%s**]", args.get(1))));
                         }
                     } else {
-                        player.sendMessage(TextFormatter.pluginMessage("Teleport", String.format("No matches found for user [**%s**]", args.get(0))));
+                        player.sendMessage(TextFormatter.pluginMessage("Event", String.format("No matches found for user [**%s**]", args.get(0))));
                     }
                 } else {
                     player.sendMessage(TextFormatter.pluginMessage("Teleport", "Invalid syntax. Correct syntax: **/tp <user> <user>**"));

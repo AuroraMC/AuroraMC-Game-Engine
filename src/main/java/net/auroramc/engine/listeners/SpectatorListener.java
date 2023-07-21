@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.listeners;
@@ -29,40 +31,40 @@ public class SpectatorListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-            AuroraMCGamePlayer pl = (AuroraMCGamePlayer) e.getPlayer();
-            if (pl != null && (pl.isSpectator() || pl.isVanished())) {
-                e.setCancelled(true);
-                if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
-                    switch (e.getItem().getType()) {
-                        case EMERALD: {
-                            e.setCancelled(true);
-                            Cosmetics cosmetics = new Cosmetics(pl);
-                            cosmetics.open(pl);
-                            break;
-                        }
-                        case WOOD_DOOR: {
-                            e.setCancelled(true);
-                            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                            out.writeUTF("Lobby");
-                            out.writeUTF(e.getPlayer().getUniqueId().toString());
-                            e.getPlayer().sendPluginMessage(out.toByteArray());
-                            break;
-                        }
-                        case REDSTONE_COMPARATOR: {
-                            e.setCancelled(true);
-                            Preferences prefs = new Preferences(pl);
-                            prefs.open(pl);
-                            break;
-                        }
-                        case COMPASS: {
-                            e.setCancelled(true);
-                            PlayerTracker tracker = new PlayerTracker(pl);
-                            tracker.open(pl);
-                            break;
-                        }
+        AuroraMCGamePlayer pl = (AuroraMCGamePlayer) e.getPlayer();
+        if (pl != null && (pl.isSpectator() || pl.isVanished())) {
+            e.setCancelled(true);
+            if (e.getItem() != null && e.getItem().getType() != Material.AIR) {
+                switch (e.getItem().getType()) {
+                    case EMERALD: {
+                        e.setCancelled(true);
+                        Cosmetics cosmetics = new Cosmetics(pl);
+                        cosmetics.open(pl);
+                        break;
+                    }
+                    case WOOD_DOOR: {
+                        e.setCancelled(true);
+                        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                        out.writeUTF("Lobby");
+                        out.writeUTF(e.getPlayer().getUniqueId().toString());
+                        e.getPlayer().sendPluginMessage(out.toByteArray());
+                        break;
+                    }
+                    case REDSTONE_COMPARATOR: {
+                        e.setCancelled(true);
+                        Preferences prefs = new Preferences(pl);
+                        prefs.open(pl);
+                        break;
+                    }
+                    case COMPASS: {
+                        e.setCancelled(true);
+                        PlayerTracker tracker = new PlayerTracker(pl);
+                        tracker.open(pl);
+                        break;
                     }
                 }
             }
+        }
     }
 
     @EventHandler

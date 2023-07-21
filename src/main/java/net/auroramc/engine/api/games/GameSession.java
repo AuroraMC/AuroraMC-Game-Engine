@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.games;
@@ -31,7 +33,7 @@ public class GameSession {
     private final JSONArray gameLog;
     private long endTimestamp;
 
-    public GameSession(String gameRegistryKey, GameVariation gameVariation) {
+    public GameSession(String gameRegistryKey, GameVariationInfo gameVariation) {
         this.uuid = UUID.randomUUID();
         this.players = new ArrayList<>();
         this.gameLog = new JSONArray();
@@ -50,7 +52,7 @@ public class GameSession {
         endTimestamp = System.currentTimeMillis();
         JSONObject obj = new JSONObject();
         obj.put("uuid", uuid.toString());
-        obj.put("game", gameRegistryKey);
+        obj.put("game", ((gameRegistryKey == null)?"EVENT":gameRegistryKey));
         obj.put("variation", gameVariation);
         obj.put("start", startTimestamp);
         obj.put("end", endTimestamp);

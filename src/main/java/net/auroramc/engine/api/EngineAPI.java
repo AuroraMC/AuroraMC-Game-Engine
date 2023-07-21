@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api;
@@ -40,13 +42,14 @@ public class EngineAPI {
 
     private static AuroraMCGameEngine gameEngine;
     private static final Map<String, GameInfo> games;
+    private static final Map<String, String> versionNumbers;
     private static GameMap waitingLobbyMap;
     private static ServerState serverState;
     private static Game activeGame;
     private static GameInfo activeGameInfo;
     private static GameMap activeMap;
     private static final Map<String, MapRegistry> maps;
-    private static final List<GameInfo> gameRotation;
+    private static final Map<GameInfo, GameVariationInfo> gameRotation;
     private static World mapWorld;
     private static GameStartingRunnable gameStartingRunnable;
 
@@ -62,7 +65,7 @@ public class EngineAPI {
 
     private static GameInfo nextGame;
     private static GameMap nextMap;
-    private static GameVariation nextVariation;
+    private static GameVariationInfo nextVariation;
 
     private static boolean awaitingRestart;
     private static String restartType;
@@ -77,8 +80,10 @@ public class EngineAPI {
         games = new HashMap<>();
         maps = new HashMap<>();
         kitLevelRewards = new HashMap<>();
-        gameRotation = new ArrayList<>();
+        gameRotation = new HashMap<>();
         serverState = ServerState.STARTING_UP;
+
+        versionNumbers = EngineDatabaseManager.getVersionNumbers();
 
         teamBalancingEnabled = true;
 
@@ -107,7 +112,11 @@ public class EngineAPI {
     }
 
     public static void registerGame(GameInfo game) {
-        EngineAPI.games.put(game.getRegistryKey(), game);
+        if (game.getId() == 6) {
+            EngineAPI.games.put("EVENT", game);
+        } else {
+            EngineAPI.games.put(game.getRegistryKey(), game);
+        }
     }
 
     public static GameMap getWaitingLobbyMap() {
@@ -159,7 +168,7 @@ public class EngineAPI {
         EngineAPI.waitingLobbyMap = waitingLobbyMap;
     }
 
-    public static List<GameInfo> getGameRotation() {
+    public static Map<GameInfo, GameVariationInfo> getGameRotation() {
         return gameRotation;
     }
 
@@ -197,7 +206,14 @@ public class EngineAPI {
 
         for (Object object : ((ServerInfo)AuroraMCAPI.getInfo()).getServerType().getJSONArray("rotation")) {
             String string = (String) object;
-            gameRotation.add(games.get(string));
+            if (string.contains(":")) {
+                //this is a variation rotation.
+                String[] args = string.split(":");
+                GameInfo game = games.get(args[0]);
+                gameRotation.put(game, game.getVariations().get(args[1]));
+            } else {
+                gameRotation.put(games.get(string), null);
+            }
         }
         gameEngine.getLogger().info(EngineAPI.getGameRotation().size() + " games loaded into rotation.");
         if (EngineAPI.getGameRotation().size() > 0) {
@@ -253,7 +269,7 @@ public class EngineAPI {
         return nextMap;
     }
 
-    public static GameVariation getNextVariation() {
+    public static GameVariationInfo getNextVariation() {
         return nextVariation;
     }
 
@@ -261,7 +277,7 @@ public class EngineAPI {
         EngineAPI.nextMap = nextMap;
     }
 
-    public static void setNextVariation(GameVariation nextVariation) {
+    public static void setNextVariation(GameVariationInfo nextVariation) {
         EngineAPI.nextVariation = nextVariation;
     }
 
@@ -424,5 +440,9 @@ public class EngineAPI {
 
     public static void setXpBoostMultiplier(float xpBoostMultiplier) {
         EngineAPI.xpBoostMultiplier = xpBoostMultiplier;
+    }
+
+    public static Map<String, String> getVersionNumbers() {
+        return versionNumbers;
     }
 }

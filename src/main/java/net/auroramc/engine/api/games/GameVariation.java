@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.games;
@@ -8,32 +10,12 @@ import net.auroramc.engine.api.players.AuroraMCGamePlayer;
 
 import java.util.List;
 
-public abstract class GameVariation {
+public abstract class GameVariation<T extends Game> {
 
-    private final String name;
-    private int id;
-    private final String registryKey;
+    private final T game;
 
-    public GameVariation(String name, int id, String registryKey) {
-        this.id = id;
-        this.name = name;
-        this.registryKey = registryKey;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getRegistryKey() {
-        return registryKey;
+    public GameVariation(T game) {
+        this.game = game;
     }
 
     public abstract boolean preLoad();
@@ -42,9 +24,23 @@ public abstract class GameVariation {
 
     public abstract boolean start();
 
+    public abstract void inProgress();
+
     public abstract boolean end();
 
     public abstract boolean onPlayerJoin(AuroraMCGamePlayer player);
 
-    public abstract List<Kit> getKits();
+    public abstract void onPlayerLeave(AuroraMCGamePlayer player);
+
+    public abstract void onRespawn(AuroraMCGamePlayer player);
+
+    public abstract boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer killer);
+
+    public abstract void onFinalKill(AuroraMCGamePlayer player);
+
+    public T getGame() {
+        return game;
+    }
+
+    public abstract void balanceTeams();
 }

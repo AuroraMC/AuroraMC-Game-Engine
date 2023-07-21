@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.util;
@@ -76,22 +78,39 @@ public class GameStartingRunnable extends BukkitRunnable {
                     }
                 }
             } else {
-                if (EngineAPI.isTeamBalancingEnabled()) {
-                    teamBalance();
+                if (EngineAPI.getActiveGame().isCustomTeamBalancing()) {
+                    EngineAPI.getActiveGame().balanceTeams();
                 } else {
-                    assignRandomly();
-                }
-            }
-
-            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
-                    if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT  || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
-                        entry.getValue().onUnequip(player);
-                        player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
+                    if (EngineAPI.isTeamBalancingEnabled()) {
+                        teamBalance();
+                    } else {
+                        assignRandomly();
                     }
                 }
             }
-            EngineAPI.getActiveGame().start();
+
+            if (EngineAPI.getActiveGame().shouldUnequipCosmetics()) {
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
+                        if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT  || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
+                            entry.getValue().onUnequip(player);
+                            player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("%s **%s** has been unequipped during the game.", entry.getKey().getName(), entry.getValue().getName())));
+                        }
+                    }
+                }
+            }
+            try {
+                EngineAPI.getActiveGame().start();
+            } catch (Exception e) {
+                e.printStackTrace();
+                EngineAPI.getActiveGame().end(null);
+                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                    player.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game had an issue while trying to start. Aborting and returning to waiting lobby..."));
+                }
+                this.cancel();
+                return;
+            }
+
             EngineAPI.setServerState(ServerState.IN_GAME);
             EngineAPI.setGameStartingRunnable(null);
             this.cancel();

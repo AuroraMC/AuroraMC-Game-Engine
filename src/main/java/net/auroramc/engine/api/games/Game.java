@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.api.games;
@@ -40,11 +42,13 @@ import org.bukkit.util.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class Game {
 
     protected GameVariation gameVariation;
+    protected GameVariationInfo gameVariationInfo;
     protected GameMap map;
     protected Map<String, Team> teams;
     protected List<Kit> kits;
@@ -54,19 +58,80 @@ public abstract class Game {
 
     protected boolean voided;
 
+    protected boolean unequipCosmetics;
+    protected boolean spawnWhenUnspectate;
 
-    public Game(GameVariation gameVariation) {
-        this.gameVariation = gameVariation;
+    //Settings
+    protected boolean damagePvP;
+    protected boolean damageEvP;
+    protected boolean damagePvE;
+    protected boolean damageAll;
+    protected boolean damageFall;
+    protected int health;
+    protected int hunger;
+    protected boolean itemDrop;
+    protected boolean itemPickup;
+    protected boolean blockPlace;
+    protected boolean blockBreak;
+    protected boolean blockPlaceCreative;
+    protected boolean blockBreakCreative;
+    protected int time;
+    protected boolean mobGriefing;
+    protected boolean keepInventory;
+    protected boolean customTeamBalancing;
+
+    public Game(GameVariationInfo gameVariation) {
+        this.gameVariationInfo = gameVariation;
+        if (gameVariation != null) {
+            try {
+                this.gameVariation = gameVariation.getVariationClass().getConstructor(this.getClass()).newInstance(this);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                e.printStackTrace();
+
+            }
+        } else {
+            this.gameVariation = null;
+        }
+
         this.teams = new HashMap<>();
         this.kits = new ArrayList<>();
-        gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),gameVariation);
+        gameSession = new GameSession(EngineAPI.getActiveGameInfo().getRegistryKey(),this.gameVariationInfo);
         starting = false;
-        voided = AuroraMCAPI.isTestServer();
+        voided = AuroraMCAPI.isTestServer() || ServerAPI.isEventMode();
+        unequipCosmetics = true;
+        spawnWhenUnspectate = false;
+
+        damagePvP = true;
+        damageEvP = true;
+        damagePvE = true;
+        damageAll = true;
+        damageFall = true;
+        health = -1;
+        hunger = -1;
+        itemDrop = true;
+        itemPickup = true;
+        blockPlace = true;
+        blockBreak = true;
+        blockPlaceCreative = true;
+        blockBreakCreative = true;
+        time = -1;
+        mobGriefing = true;
+        keepInventory = true;
+        customTeamBalancing = false;
     }
 
-    public abstract void preLoad();
+    public void preLoad() {
+      if (gameVariation != null) {
+          gameVariation.preLoad();
+      }
+    }
 
-    public abstract void load(GameMap map);
+    public void load(GameMap map) {
+        if (gameVariation != null) {
+            gameVariation.load(map);
+        }
+    }
 
     /**
      * When executed by the Game Engine, this indicates that the Engine is handing over control to the game and that the game is now started. Should be overridden and should execute super.
@@ -78,10 +143,16 @@ public abstract class Game {
         startString.append(EngineAPI.getActiveGameInfo().getName());
         if (gameVariation != null) {
             startString.append(" ");
-            startString.append(gameVariation.getName());
+            startString.append(gameVariationInfo.getName());
         }
+        startString.append(" §r§7v");
+        startString.append(EngineAPI.getVersionNumbers().get(EngineAPI.getActiveGameInfo().getRegistryKey()));
         startString.append("\n \n§r");
-        startString.append(EngineAPI.getActiveGameInfo().getDescription());
+        if (gameVariation != null) {
+            startString.append(gameVariationInfo.getDescription());
+        } else {
+            startString.append(EngineAPI.getActiveGameInfo().getDescription());
+        }
         startString.append("\n \n");
         startString.append("§b§lMap: §r");;
         startString.append(map.getName());
@@ -144,6 +215,9 @@ public abstract class Game {
         runnable.runTaskTimerAsynchronously(EngineAPI.getGameEngine(), 0, 20);
         gameSession.start();
         gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.START, new JSONObject()));
+        if (gameVariation != null) {
+            gameVariation.start();
+        }
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -156,6 +230,9 @@ public abstract class Game {
         starting = false;
         runnable = null;
         gameSession.log(new GameSession.GameLogEntry(GameSession.GameEvent.RELEASED, new JSONObject()));
+        if (gameVariation != null) {
+            gameVariation.inProgress();
+        }
     }
 
     /**
@@ -266,6 +343,9 @@ public abstract class Game {
                 player.getRewards().addTickets(350);
                 player.getRewards().addCrowns(350);
             }
+        }
+        if (gameVariation != null) {
+            gameVariation.end();
         }
         startEndRunnable();
     }
@@ -422,6 +502,9 @@ public abstract class Game {
                 }
             }
 
+        if (gameVariation != null) {
+            gameVariation.end();
+        }
         startEndRunnable();
     }
 
@@ -446,7 +529,7 @@ public abstract class Game {
                                     }
                                     player1.gameOver();
                                 }
-                            } else {
+                            } else if (!ServerAPI.isEventMode()) {
                                 player1.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game was void, so any rewards or statistics earned during this game did not apply to your account."));
                             }
 
@@ -472,14 +555,15 @@ public abstract class Game {
                     return;
                 }
 
+                JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
+                int x, y, z;
+                x = spawnLocations.getJSONObject(0).getInt("x");
+                y = spawnLocations.getJSONObject(0).getInt("y");
+                z = spawnLocations.getJSONObject(0).getInt("z");
+                float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
+                Location location = new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0);
                 for (AuroraMCServerPlayer pl : ServerAPI.getPlayers()) {
-                    JSONArray spawnLocations = EngineAPI.getWaitingLobbyMap().getMapData().getJSONObject("spawn").getJSONArray("PLAYERS");
-                    int x, y, z;
-                    x = spawnLocations.getJSONObject(0).getInt("x");
-                    y = spawnLocations.getJSONObject(0).getInt("y");
-                    z = spawnLocations.getJSONObject(0).getInt("z");
-                    float yaw = spawnLocations.getJSONObject(0).getFloat("yaw");
-                    pl.teleport(new Location(Bukkit.getWorld("world"), x, y, z, yaw, 0));
+                    pl.teleport(location);
                     pl.setFallDistance(0);
                     pl.setVelocity(new Vector());
                     pl.setFlying(false);
@@ -524,10 +608,12 @@ public abstract class Game {
                             }
                         }
                     }
-                    for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
-                        if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
-                            entry.getValue().onEquip(player);
-                            player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("**%s** has been re-equipped.", entry.getValue().getName())));
+                    if (unequipCosmetics) {
+                        for (Map.Entry<Cosmetic.CosmeticType, Cosmetic> entry : player.getActiveCosmetics().entrySet()) {
+                            if (entry.getKey() == Cosmetic.CosmeticType.GADGET || entry.getKey() == Cosmetic.CosmeticType.BANNER || entry.getKey() == Cosmetic.CosmeticType.HAT || entry.getKey() == Cosmetic.CosmeticType.PARTICLE) {
+                                entry.getValue().onEquip(player);
+                                player.sendMessage(TextFormatter.pluginMessage("Cosmetics", String.format("**%s** has been re-equipped.", entry.getValue().getName())));
+                            }
                         }
                     }
                     if (player.getRewards() != null) {
@@ -570,85 +656,87 @@ public abstract class Game {
                     player.getInventory().setItem(4, EngineAPI.getCosmeticsItem().getItemStack());
                 }
 
-                if (new Random().nextBoolean()) {
-                    new BukkitRunnable(){
-                        @Override
-                        public void run() {
-                            TextComponent textComponent = new TextComponent("");
+                if (!ServerAPI.isEventMode()) {
+                    if (new Random().nextBoolean()) {
+                        new BukkitRunnable(){
+                            @Override
+                            public void run() {
+                                TextComponent textComponent = new TextComponent("");
 
-                            TextComponent lines = new TextComponent("-----------------------------------------------------");
-                            lines.setStrikethrough(true);
-                            lines.setColor(net.md_5.bungee.api.ChatColor.DARK_AQUA);
-                            textComponent.addExtra(lines);
+                                TextComponent lines = new TextComponent("-----------------------------------------------------");
+                                lines.setStrikethrough(true);
+                                lines.setColor(net.md_5.bungee.api.ChatColor.DARK_AQUA);
+                                textComponent.addExtra(lines);
 
-                            textComponent.addExtra("\n");
+                                textComponent.addExtra("\n");
 
-                            String title;
+                                String title;
 
-                            String msg;
+                                String msg;
 
-                            switch (new Random().nextInt(5)) {
-                                case 1:
-                                    title = "Support the network by subscribing to AuroraMC Plus!";
-                                    msg = "A Plus subscription gives you some awesome new features, and supports us in the process! View all of our packages at ";
-                                    break;
-                                case 2:
-                                    title = "Take your AuroraMC experience to the next level!";
-                                    msg = "Purchase the AuroraMC Starter Pack to get a head start, it comes with Elite and 11 exclusive cosmetics! Purchase the bundle at ";
-                                    break;
-                                case 3:
-                                    title = "Want some cool limited-time cosmetics and other extras?!";
-                                    msg = "Our Grand Celebration bundle is on sale for a limited-time only! This bundle is only live for 30 days, so grab it while you can! Purchase the bundle at ";
-                                    break;
-                                case 4:
-                                    title = "You seem cool... and cool people deserve ranks!";
-                                    msg = "Ranks are a great way to support the network, and you get loads of benefits too! See all rank benefits at ";
-                                    break;
-                                default:
-                                    title = "Did you enjoy this game?";
-                                    msg = "Consider supporting AuroraMC by purchasing a premium rank! Check out our latest offerings at ";
-                                    break;
-                            }
-
-                            TextComponent enjoy = new TextComponent(title);
-                            enjoy.setBold(true);
-                            enjoy.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                            textComponent.addExtra(enjoy);
-
-                            textComponent.addExtra("\n \n");
-
-                            TextComponent purchase = new TextComponent(msg);
-                            textComponent.addExtra(purchase);
-
-                            TextComponent store = new TextComponent("store.auroramc.net");
-                            store.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to visit the store!").color(net.md_5.bungee.api.ChatColor.GREEN).create()));
-                            store.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://store.auroramc.net"));
-                            store.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-                            textComponent.addExtra(store);
-                            textComponent.addExtra("\n");
-                            textComponent.addExtra(lines);
-
-                            TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
-                            log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
-                            log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
-                            log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-
-                            for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                                if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
-                                    player.sendMessage(textComponent);
+                                switch (new Random().nextInt(5)) {
+                                    case 1:
+                                        title = "Support the network by subscribing to AuroraMC Plus!";
+                                        msg = "A Plus subscription gives you some awesome new features, and supports us in the process! View all of our packages at ";
+                                        break;
+                                    case 2:
+                                        title = "Take your AuroraMC experience to the next level!";
+                                        msg = "Purchase the AuroraMC Starter Pack to get a head start, it comes with Elite and 11 exclusive cosmetics! Purchase the bundle at ";
+                                        break;
+                                    case 3:
+                                        title = "Want some cool limited-time cosmetics and other extras?!";
+                                        msg = "Our Grand Celebration bundle is on sale for a limited-time only! This bundle is only live for 30 days, so grab it while you can! Purchase the bundle at ";
+                                        break;
+                                    case 4:
+                                        title = "You seem cool... and cool people deserve ranks!";
+                                        msg = "Ranks are a great way to support the network, and you get loads of benefits too! See all rank benefits at ";
+                                        break;
+                                    default:
+                                        title = "Did you enjoy this game?";
+                                        msg = "Consider supporting AuroraMC by purchasing a premium rank! Check out our latest offerings at ";
+                                        break;
                                 }
-                                player.sendMessage(log);
-                            }
-                        }
-                    }.runTaskLater(ServerAPI.getCore(), 100);
-                } else {
-                    TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
-                    log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
-                    log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
-                    log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 
-                    for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
-                        player.sendMessage(log);
+                                TextComponent enjoy = new TextComponent(title);
+                                enjoy.setBold(true);
+                                enjoy.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                                textComponent.addExtra(enjoy);
+
+                                textComponent.addExtra("\n \n");
+
+                                TextComponent purchase = new TextComponent(msg);
+                                textComponent.addExtra(purchase);
+
+                                TextComponent store = new TextComponent("store.auroramc.net");
+                                store.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to visit the store!").color(net.md_5.bungee.api.ChatColor.GREEN).create()));
+                                store.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://store.auroramc.net"));
+                                store.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+                                textComponent.addExtra(store);
+                                textComponent.addExtra("\n");
+                                textComponent.addExtra(lines);
+
+                                TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
+                                log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
+                                log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
+                                log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+
+                                for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                                    if (!player.hasPermission("elite") && !player.hasPermission("plus")) {
+                                        player.sendMessage(textComponent);
+                                    }
+                                    player.sendMessage(log);
+                                }
+                            }
+                        }.runTaskLater(ServerAPI.getCore(), 100);
+                    } else {
+                        TextComponent log = new TextComponent(TextFormatter.pluginMessage("Game Manager", "**The game you just played has generated a game log. Click here to view the game log online!**"));
+                        log.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to open game log!").color(ChatColor.GREEN.asBungee()).create()));
+                        log.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gamelogs.auroramc.net/log?uuid=" + gameSession.getUuid()));
+                        log.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+
+                        for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
+                            player.sendMessage(log);
+                        }
                     }
                 }
 
@@ -718,15 +806,44 @@ public abstract class Game {
 
     public abstract void onPlayerJoin(Player player);
 
-    public abstract void onPlayerJoin(AuroraMCGamePlayer player);
+    public void onPlayerJoin(AuroraMCGamePlayer player) {
+        if (gameVariation != null) {
+            gameVariation.onPlayerJoin(player);
+        }
+    }
 
-    public abstract void onPlayerLeave(AuroraMCGamePlayer player);
+    public void onPlayerLeave(AuroraMCGamePlayer player) {
+        if (gameVariation != null) {
+            gameVariation.onPlayerJoin(player);
+        }
+    }
 
-    public abstract void onRespawn(AuroraMCGamePlayer player);
+    public void onRespawn(AuroraMCGamePlayer player) {
+        if (gameVariation != null) {
+            gameVariation.onRespawn(player);
+        }
+    }
 
-    public abstract boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer killer);
+    public boolean onDeath(AuroraMCGamePlayer player, AuroraMCGamePlayer killer) {
+        if (gameVariation != null) {
+            return gameVariation.onDeath(player, killer);
+        }
+        return false;
+    }
 
-    public abstract void onFinalKill(AuroraMCGamePlayer player);
+    public void onFinalKill(AuroraMCGamePlayer player) {
+        if (gameVariation != null) {
+            gameVariation.onFinalKill(player);
+        }
+    }
+
+    public void balanceTeams() {
+        if (gameVariation != null) {
+            gameVariation.balanceTeams();
+        } else {
+            GameStartingRunnable.teamBalance();
+        }
+    }
 
     public List<Kit> getKits() {
         return kits;
@@ -752,5 +869,157 @@ public abstract class Game {
                 player.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game has now been voided" + ((reason != null)?" because " + reason:"") + ". Any statistics or rewards earned after this point will not apply to your account. Achievements earned up until this point in the game will still apply."));
             }
         }
+    }
+
+    public boolean shouldUnequipCosmetics() {
+        return unequipCosmetics;
+    }
+
+    public boolean shouldSpawnWhenUnspectate() {
+        return spawnWhenUnspectate;
+    }
+
+    public boolean isDamagePvP() {
+        return damagePvP;
+    }
+
+    public void setDamagePvP(boolean damagePvP) {
+        this.damagePvP = damagePvP;
+    }
+
+    public boolean isDamageEvP() {
+        return damageEvP;
+    }
+
+    public void setDamageEvP(boolean damageEvP) {
+        this.damageEvP = damageEvP;
+    }
+
+    public boolean isDamagePvE() {
+        return damagePvE;
+    }
+
+    public void setDamagePvE(boolean damagePvE) {
+        this.damagePvE = damagePvE;
+    }
+
+    public boolean isDamageAll() {
+        return damageAll;
+    }
+
+    public void setDamageAll(boolean damageAll) {
+        this.damageAll = damageAll;
+    }
+
+    public boolean isDamageFall() {
+        return damageFall;
+    }
+
+    public void setDamageFall(boolean damageFall) {
+        this.damageFall = damageFall;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getHunger() {
+        return hunger;
+    }
+
+    public void setHunger(int hunger) {
+        this.hunger = hunger;
+    }
+
+    public boolean isItemDrop() {
+        return itemDrop;
+    }
+
+    public void setItemDrop(boolean itemDrop) {
+        this.itemDrop = itemDrop;
+    }
+
+    public boolean isItemPickup() {
+        return itemPickup;
+    }
+
+    public void setItemPickup(boolean itemPickup) {
+        this.itemPickup = itemPickup;
+    }
+
+    public boolean isBlockPlace() {
+        return blockPlace;
+    }
+
+    public void setBlockPlace(boolean blockPlace) {
+        this.blockPlace = blockPlace;
+    }
+
+    public boolean isBlockBreak() {
+        return blockBreak;
+    }
+
+    public void setBlockBreak(boolean blockBreak) {
+        this.blockBreak = blockBreak;
+    }
+
+    public boolean isBlockPlaceCreative() {
+        return blockPlaceCreative;
+    }
+
+    public void setBlockPlaceCreative(boolean blockPlaceCreative) {
+        this.blockPlaceCreative = blockPlaceCreative;
+    }
+
+    public boolean isBlockBreakCreative() {
+        return blockBreakCreative;
+    }
+
+    public void setBlockBreakCreative(boolean blockBreakCreative) {
+        this.blockBreakCreative = blockBreakCreative;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public boolean isMobGriefing() {
+        return mobGriefing;
+    }
+
+    public void setMobGriefing(boolean mobGriefing) {
+        this.mobGriefing = mobGriefing;
+    }
+
+    public boolean isKeepInventory() {
+        return keepInventory;
+    }
+
+    public void setKeepInventory(boolean keepInventory) {
+        this.keepInventory = keepInventory;
+    }
+
+    public boolean isUnequipCosmetics() {
+        return unequipCosmetics;
+    }
+
+    public GameVariation getGameVariation() {
+        return gameVariation;
+    }
+
+    public boolean isCustomTeamBalancing() {
+        return customTeamBalancing;
+    }
+
+    public void setCustomTeamBalancing(boolean customTeamBalancing) {
+        this.customTeamBalancing = customTeamBalancing;
     }
 }

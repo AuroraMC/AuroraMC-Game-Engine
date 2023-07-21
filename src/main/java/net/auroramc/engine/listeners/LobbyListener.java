@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2022 AuroraMC Ltd. All Rights Reserved.
+ * Copyright (c) 2022-2023 AuroraMC Ltd. All Rights Reserved.
+ *
+ * PRIVATE AND CONFIDENTIAL - Distribution and usage outside the scope of your job description is explicitly forbidden except in circumstances where a company director has expressly given written permission to do so.
  */
 
 package net.auroramc.engine.listeners;
@@ -335,14 +337,14 @@ public class LobbyListener implements Listener {
 
     @EventHandler
     public void onCosmeticEnable(CosmeticEnableEvent e) {
-        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().shouldUnequipCosmetics()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onCosmeticSwitch(CosmeticSwitchEvent e) {
-        if (EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) {
+        if ((EngineAPI.getServerState() == ServerState.IN_GAME || EngineAPI.getServerState() == ServerState.ENDING) && EngineAPI.getActiveGame().shouldUnequipCosmetics()) {
             e.setCancelled(true);
         }
     }
