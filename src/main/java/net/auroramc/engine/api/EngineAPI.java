@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class EngineAPI {
 
@@ -195,7 +196,7 @@ public class EngineAPI {
             try {
                 FileUtils.deleteDirectory(file);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
 
@@ -309,7 +310,7 @@ public class EngineAPI {
             try {
                 FileUtils.deleteDirectory(zipFolder);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
         EngineDatabaseManager.downloadMaps();
@@ -322,7 +323,7 @@ public class EngineAPI {
             try {
                 FileUtils.deleteDirectory(mapsFolder);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
         mapsFolder.mkdirs();
@@ -330,7 +331,7 @@ public class EngineAPI {
             try {
                 ZipUtil.unzip(zip.toPath().toAbsolutePath().toString(), mapsFolder.toPath().toAbsolutePath() + "/" + zip.getName().split("\\.")[0]);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
         File[] maps = new File(gameEngine.getDataFolder(), "maps").listFiles();
@@ -347,7 +348,7 @@ public class EngineAPI {
                 object = parser.parse(fileReader);
                 jsonObject = new JSONObject(((org.json.simple.JSONObject)  object).toJSONString());
             } catch (IOException | ParseException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
                 gameEngine.getLogger().info("Map loading for a map failed, skipping...");
                 continue;
             }

@@ -6,6 +6,7 @@
 
 package net.auroramc.engine.commands.admin;
 
+import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.api.permissions.Permission;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 public class CommandLoadEvent extends ServerCommand {
 
@@ -30,7 +32,7 @@ public class CommandLoadEvent extends ServerCommand {
             try {
                 ServerAPI.loadEvent();
             } catch (Exception e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
                 player.sendMessage(TextFormatter.pluginMessage("Events", "An exception occurred when attempting to load the event plugin. Please try again."));
             }
         } else {

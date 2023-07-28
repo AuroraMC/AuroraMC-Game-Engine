@@ -44,6 +44,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.logging.Level;
 
 public abstract class Game {
 
@@ -87,7 +88,7 @@ public abstract class Game {
                 this.gameVariation = gameVariation.getVariationClass().getConstructor(this.getClass()).newInstance(this);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
 
             }
         } else {

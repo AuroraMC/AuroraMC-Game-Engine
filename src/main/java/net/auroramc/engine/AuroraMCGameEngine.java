@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.logging.Level;
 
 public class AuroraMCGameEngine extends JavaPlugin {
 
@@ -42,7 +43,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
             try {
                 FileUtils.deleteDirectory(zipFolder);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
         EngineDatabaseManager.downloadMaps();
@@ -55,7 +56,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
             try {
                 FileUtils.deleteDirectory(mapsFolder);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
         mapsFolder.mkdirs();
@@ -63,7 +64,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
             try {
                 ZipUtil.unzip(zip.toPath().toAbsolutePath().toString(), mapsFolder.toPath().toAbsolutePath() + "/" + zip.getName().split("\\.")[0]);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
         File[] maps = new File(getDataFolder(), "maps").listFiles();
@@ -80,7 +81,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
                 object = parser.parse(fileReader);
                 jsonObject = new JSONObject(((org.json.simple.JSONObject)  object).toJSONString());
             } catch (IOException | ParseException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
                 getLogger().info("Map loading for a map failed, skipping...");
                 continue;
             }
@@ -111,7 +112,7 @@ public class AuroraMCGameEngine extends JavaPlugin {
                 file.mkdirs();
                 FileUtils.copyDirectory(map.getRegionFolder(), file);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
 
