@@ -307,6 +307,7 @@ public class EngineAPI {
             pl.sendMessage(TextFormatter.pluginMessage("Game Manager", "The server is currently updating its map register. Please wait..."));
         }
         setServerState(ServerState.RELOADING_MAPS);
+        EngineAPI.reloadCode = UUID.randomUUID();
         EngineAPI.maps.clear();
         gameEngine.getLogger().info("Downloading all live maps...");
         List<Integer> ints = EngineDatabaseManager.downloadMaps();
