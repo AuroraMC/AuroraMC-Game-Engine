@@ -37,8 +37,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class EngineAPI {
+
+    private static UUID reloadCode;
 
     private static AuroraMCGameEngine gameEngine;
     private static final Map<String, GameInfo> games;
@@ -101,6 +104,8 @@ public class EngineAPI {
 
        xpBoostMessage = EngineDatabaseManager.getXpMessage();
        xpBoostMultiplier = EngineDatabaseManager.getXpMultiplier();
+
+       reloadCode = UUID.randomUUID();
     }
 
     public static void init(AuroraMCGameEngine gameEngine) {
@@ -195,7 +200,7 @@ public class EngineAPI {
             try {
                 FileUtils.deleteDirectory(file);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
 
@@ -302,41 +307,52 @@ public class EngineAPI {
             pl.sendMessage(TextFormatter.pluginMessage("Game Manager", "The server is currently updating its map register. Please wait..."));
         }
         setServerState(ServerState.RELOADING_MAPS);
+        EngineAPI.reloadCode = UUID.randomUUID();
         EngineAPI.maps.clear();
         gameEngine.getLogger().info("Downloading all live maps...");
-        File zipFolder = new File(gameEngine.getDataFolder(), "zips");
-        if (zipFolder.exists()) {
-            try {
-                FileUtils.deleteDirectory(zipFolder);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        EngineDatabaseManager.downloadMaps();
-        File[] zips = new File(gameEngine.getDataFolder(), "zips").listFiles();
-        assert zips != null;
+        List<Integer> ints = EngineDatabaseManager.downloadMaps();
+        File zips = new File(gameEngine.getDataFolder(), "zips");
 
-        gameEngine.getLogger().info(zips.length + " zips downloaded. Extracting maps...");
+        gameEngine.getLogger().info(ints.size() + " zips downloaded. Extracting maps...");
         File mapsFolder = new File(gameEngine.getDataFolder(), "maps");
         if (mapsFolder.exists()) {
             try {
                 FileUtils.deleteDirectory(mapsFolder);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
         mapsFolder.mkdirs();
-        for (File zip : zips) {
+        for (int zip : ints) {
+            File file = new File(zips, zip + ".zip");
             try {
-                ZipUtil.unzip(zip.toPath().toAbsolutePath().toString(), mapsFolder.toPath().toAbsolutePath() + "/" + zip.getName().split("\\.")[0]);
+                ZipUtil.unzip(file.toPath().toAbsolutePath().toString(), mapsFolder.toPath().toAbsolutePath() + "/" + zip);
             } catch (IOException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
         }
-        File[] maps = new File(gameEngine.getDataFolder(), "maps").listFiles();
+        File[] maps = mapsFolder.listFiles();
         assert maps != null;
 
-        gameEngine.getLogger().info(maps.length + " maps extracted. Loading map registry...");
+        gameEngine.getLogger().info(ints.size() + " maps extracted. Removing old maps...");
+
+        int i = 0;
+        for (File map : maps) {
+            String mapId = map.getName();
+            if (AuroraMCGameEngine.getMaps().contains(mapId + ".load-code")) {
+                if (!UUID.fromString(AuroraMCGameEngine.getMaps().getString(mapId + ".load-code")).equals(EngineAPI.getReloadCode())) {
+                    map.delete();
+                    i++;
+                }
+            } else {
+                map.delete();
+                i++;
+            }
+        }
+
+        maps = mapsFolder.listFiles();
+
+        gameEngine.getLogger().info(i + " maps removed. Loading map registry...");
         for (File map : maps) {
             File data = new File(map, "map.json");
             JSONParser parser = new JSONParser();
@@ -347,7 +363,7 @@ public class EngineAPI {
                 object = parser.parse(fileReader);
                 jsonObject = new JSONObject(((org.json.simple.JSONObject)  object).toJSONString());
             } catch (IOException | ParseException e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
                 gameEngine.getLogger().info("Map loading for a map failed, skipping...");
                 continue;
             }
@@ -356,12 +372,13 @@ public class EngineAPI {
             int id = Integer.parseInt(map.getName().split("\\.")[0]);
             String name = jsonObject.getString("name");
             String author = jsonObject.getString("author");
-            if (EngineAPI.maps.containsKey(gameType)) {
-                EngineAPI.maps.get(gameType).getMaps().add(new GameMap(map, id, name, author, jsonObject));
+            String game = jsonObject.getString("game_type");
+            if (EngineAPI.getMaps().containsKey(gameType)) {
+                EngineAPI.getMaps().get(gameType).getMaps().add(new GameMap(map, id, name, author, game, jsonObject));
             } else {
                 MapRegistry registry = new MapRegistry(gameType);
-                registry.getMaps().add(new GameMap(map, id, name, author, jsonObject));
-                EngineAPI.maps.put(gameType, registry);
+                registry.getMaps().add(new GameMap(map, id, name, author, game, jsonObject));
+                EngineAPI.getMaps().put(gameType, registry);
             }
         }
         new BukkitRunnable(){
@@ -444,5 +461,9 @@ public class EngineAPI {
 
     public static Map<String, String> getVersionNumbers() {
         return versionNumbers;
+    }
+
+    public static UUID getReloadCode() {
+        return reloadCode;
     }
 }

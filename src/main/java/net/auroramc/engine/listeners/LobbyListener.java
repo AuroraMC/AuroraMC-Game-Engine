@@ -53,6 +53,7 @@ import org.bukkit.util.Vector;
 import org.json.JSONArray;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 
 /**
  * All of these listeners will take over the second the game ends or when the server is in the lobby.
@@ -211,7 +212,7 @@ public class LobbyListener implements Listener {
 
             player2.getHandle().playerConnection.sendPacket(packet);
         } catch (NoSuchFieldException | IllegalAccessException ex) {
-            ex.printStackTrace();
+            AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", ex);
         }
     }
 

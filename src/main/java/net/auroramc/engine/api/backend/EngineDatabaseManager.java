@@ -9,6 +9,7 @@ package net.auroramc.engine.api.backend;
 import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.api.backend.info.ServerInfo;
 import net.auroramc.core.api.ServerAPI;
+import net.auroramc.engine.AuroraMCGameEngine;
 import net.auroramc.engine.api.EngineAPI;
 import net.auroramc.engine.api.games.GameSession;
 import net.auroramc.engine.api.players.AuroraMCGamePlayer;
@@ -26,36 +27,51 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class EngineDatabaseManager {
 
-    public static void downloadMaps() {
+    public static List<Integer> downloadMaps() {
         try (Connection connection = AuroraMCAPI.getDbManager().getMySQLConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM maps" + ((AuroraMCAPI.isTestServer())?" ORDER BY last_modified DESC":" WHERE parse_version = 'LIVE'"));
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM maps WHERE parse_version = " + ((AuroraMCAPI.isTestServer())?"'TEST'":"'LIVE'") + "AND game != 'PATHFINDER' AND game != 'DUELS'");
             ResultSet set = statement.executeQuery();
             File file = new File(EngineAPI.getGameEngine().getDataFolder(), "zips");
-            if (file.exists()) {
-                FileUtils.deleteDirectory(file);
-            }
             file.mkdirs();
+            List<Integer> ints = new ArrayList<>();
             while (set.next()) {
                 File zipFile = new File(file, set.getInt(2) + ".zip");
                 if (zipFile.exists()) {
-                    //There is already a map here and is newer so ignore.
-                    continue;
+                    if (AuroraMCGameEngine.getMaps().contains(set.getInt(2) +"")) {
+                        int parseVersion = AuroraMCGameEngine.getMaps().getInt(set.getInt(2) + ".parse-number");
+                        if (parseVersion >= set.getInt(6)) {
+                            //We do not need to update the map, continue;
+                            AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".load-code", EngineAPI.getReloadCode().toString());
+                            continue;
+                        }
+                    }
+                    zipFile.delete();
                 }
                 FileOutputStream output = new FileOutputStream(zipFile);
 
                 System.out.println("Writing to file " + zipFile.getAbsolutePath());
-                InputStream input = set.getBinaryStream(7);
+                InputStream input = set.getBinaryStream(8);
                 byte[] buffer = new byte[1024];
                 while (input.read(buffer) > 0) {
                     output.write(buffer);
                 }
                 output.flush();
+                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".name", set.getString(3));
+                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".author", set.getString(4));
+                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".game", set.getString(5));
+                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".parse-number", set.getInt(6));
+                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".load-code", EngineAPI.getReloadCode().toString());
+                AuroraMCGameEngine.getMaps().save(AuroraMCGameEngine.getMapsFile());
+                ints.add(set.getInt(2));
             }
+            return ints;
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
+            return Collections.emptyList();
         }
     }
 
@@ -73,7 +89,7 @@ public class EngineDatabaseManager {
             statement.setString(5, String.join(",", ints));
             statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
         }
     }
 

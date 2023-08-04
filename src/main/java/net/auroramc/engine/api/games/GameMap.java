@@ -18,15 +18,17 @@ public class GameMap {
     private final int id;
     private final String name;
     private final String author;
+    private final String game;
     private final JSONObject mapData;
     private final int lowX,highX,lowY,highY,lowZ,highZ;
 
-    public GameMap(File regionFolder, int id, String name, String author, JSONObject mapData) {
+    public GameMap(File regionFolder, int id, String name, String author, String game, JSONObject mapData) {
         this.regionFolder = regionFolder;
         this.id = id;
         this.name = name;
         this.author = author;
         this.mapData = mapData;
+        this.game = game;
 
         JSONObject a = mapData.getJSONObject("border_a");
         JSONObject b = mapData.getJSONObject("border_b");

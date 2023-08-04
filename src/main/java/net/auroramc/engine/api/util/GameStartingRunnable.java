@@ -6,6 +6,7 @@
 
 package net.auroramc.engine.api.util;
 
+import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.api.cosmetics.Cosmetic;
 import net.auroramc.api.player.Team;
 import net.auroramc.api.utils.TextFormatter;
@@ -18,6 +19,7 @@ import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class GameStartingRunnable extends BukkitRunnable {
 
@@ -102,7 +104,7 @@ public class GameStartingRunnable extends BukkitRunnable {
             try {
                 EngineAPI.getActiveGame().start();
             } catch (Exception e) {
-                e.printStackTrace();
+                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
                 EngineAPI.getActiveGame().end(null);
                 for (AuroraMCServerPlayer player : ServerAPI.getPlayers()) {
                     player.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game had an issue while trying to start. Aborting and returning to waiting lobby..."));

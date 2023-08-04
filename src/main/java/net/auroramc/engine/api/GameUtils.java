@@ -6,6 +6,7 @@
 
 package net.auroramc.engine.api;
 
+import net.auroramc.api.AuroraMCAPI;
 import net.auroramc.api.utils.TextFormatter;
 import net.auroramc.core.api.ServerAPI;
 import net.auroramc.core.api.player.AuroraMCServerPlayer;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class GameUtils {
 
@@ -110,7 +112,7 @@ public class GameUtils {
                 player.sendMessage(TextFormatter.pluginMessage("Game Manager", "This game had an issue while trying to load. Aborting and loading next game..."));
             }
             loadNextGame();
-            e.printStackTrace();
+            AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
         }
     }
 
