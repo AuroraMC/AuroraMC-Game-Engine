@@ -45,6 +45,7 @@ public class EngineDatabaseManager {
                         int parseVersion = AuroraMCGameEngine.getMaps().getInt(set.getInt(2) + ".parse-number");
                         if (parseVersion >= set.getInt(6)) {
                             //We do not need to update the map, continue;
+                            AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".load-code", EngineAPI.getReloadCode().toString());
                             continue;
                         }
                     }
