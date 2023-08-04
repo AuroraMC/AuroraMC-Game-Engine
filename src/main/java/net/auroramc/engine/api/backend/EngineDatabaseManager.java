@@ -63,7 +63,7 @@ public class EngineDatabaseManager {
                 AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".name", set.getString(3));
                 AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".author", set.getString(4));
                 AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".game", set.getString(5));
-                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".parse-number", set.getString(6));
+                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".parse-number", set.getInt(6));
                 AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".load-code", EngineAPI.getReloadCode().toString());
                 AuroraMCGameEngine.getMaps().save(AuroraMCGameEngine.getMapsFile());
                 ints.add(set.getInt(2));
