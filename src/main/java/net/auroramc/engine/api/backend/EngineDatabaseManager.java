@@ -53,7 +53,7 @@ public class EngineDatabaseManager {
                 FileOutputStream output = new FileOutputStream(zipFile);
 
                 System.out.println("Writing to file " + zipFile.getAbsolutePath());
-                InputStream input = set.getBinaryStream(7);
+                InputStream input = set.getBinaryStream(8);
                 byte[] buffer = new byte[1024];
                 while (input.read(buffer) > 0) {
                     output.write(buffer);
@@ -63,7 +63,7 @@ public class EngineDatabaseManager {
                 AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".author", set.getString(4));
                 AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".game", set.getString(5));
                 AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".parse-number", set.getString(6));
-                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".load-code", EngineAPI.getReloadCode());
+                AuroraMCGameEngine.getMaps().set(set.getInt(2) + ".load-code", EngineAPI.getReloadCode().toString());
                 AuroraMCGameEngine.getMaps().save(AuroraMCGameEngine.getMapsFile());
                 ints.add(set.getInt(2));
             }
