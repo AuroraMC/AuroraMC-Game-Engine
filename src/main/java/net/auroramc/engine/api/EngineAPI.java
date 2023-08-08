@@ -315,18 +315,19 @@ public class EngineAPI {
 
         gameEngine.getLogger().info(ints.size() + " zips downloaded. Extracting maps...");
         File mapsFolder = new File(gameEngine.getDataFolder(), "maps");
-        if (mapsFolder.exists()) {
-            try {
-                FileUtils.deleteDirectory(mapsFolder);
-            } catch (IOException e) {
-                AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
-            }
-        }
         mapsFolder.mkdirs();
         for (int zip : ints) {
             File file = new File(zips, zip + ".zip");
+            File dest = new File(mapsFolder.toPath().toAbsolutePath() + "/" + zip);
+            if (dest.exists()) {
+                try {
+                    FileUtils.deleteDirectory(dest);
+                } catch (IOException e) {
+                    AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
+                }
+            }
             try {
-                ZipUtil.unzip(file.toPath().toAbsolutePath().toString(), mapsFolder.toPath().toAbsolutePath() + "/" + zip);
+                ZipUtil.unzip(file.toPath().toAbsolutePath().toString(), dest.toPath().toAbsolutePath().toString());
             } catch (IOException e) {
                 AuroraMCAPI.getLogger().log(Level.WARNING, "An exception has occurred. Stack trace: ", e);
             }
