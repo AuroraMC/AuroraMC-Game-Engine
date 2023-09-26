@@ -63,6 +63,13 @@ public class CommandMob extends ServerCommand {
                         }
                     }
 
+                    for (String s : new ArrayList<>(matches)) {
+                        if (s.equalsIgnoreCase(mobString)) {
+                            matches.clear();
+                            matches.add(s);
+                        }
+                    }
+
                     if (matches.size() == 0) {
                         player.sendMessage(TextFormatter.pluginMessage("Mob", "No matches were found for mob **" + mobString + "**."));
                         return;
@@ -72,6 +79,7 @@ public class CommandMob extends ServerCommand {
                         player.sendMessage(TextFormatter.pluginMessage("Mob", "Multiple possible matches found for mob **" + mobString + "**. Please be more specific. Matches: [**" + String.join("**, **", matches) + "**]"));
                         return;
                     }
+
 
                     EntityType type = EntityType.valueOf(matches.get(0));
                     if (type == EntityType.PLAYER) {
