@@ -63,25 +63,26 @@ public class CommandMob extends ServerCommand {
                         }
                     }
 
+                    EntityType type = null;
                     for (String s : new ArrayList<>(matches)) {
                         if (s.equalsIgnoreCase(mobString)) {
-                            matches.clear();
-                            matches.add(s);
+                            type = EntityType.valueOf(matches.get(0));
                         }
                     }
 
-                    if (matches.size() == 0) {
-                        player.sendMessage(TextFormatter.pluginMessage("Mob", "No matches were found for mob **" + mobString + "**."));
-                        return;
+                    if (type == null) {
+                        if (matches.size() == 0) {
+                            player.sendMessage(TextFormatter.pluginMessage("Mob", "No matches were found for mob **" + mobString + "**."));
+                            return;
+                        }
+
+                        if (matches.size() > 1) {
+                            player.sendMessage(TextFormatter.pluginMessage("Mob", "Multiple possible matches found for mob **" + mobString + "**. Please be more specific. Matches: [**" + String.join("**, **", matches) + "**]"));
+                            return;
+                        }
+                        type = EntityType.valueOf(matches.get(0));
                     }
 
-                    if (matches.size() > 1) {
-                        player.sendMessage(TextFormatter.pluginMessage("Mob", "Multiple possible matches found for mob **" + mobString + "**. Please be more specific. Matches: [**" + String.join("**, **", matches) + "**]"));
-                        return;
-                    }
-
-
-                    EntityType type = EntityType.valueOf(matches.get(0));
                     if (type == EntityType.PLAYER) {
                         player.sendMessage(TextFormatter.pluginMessage("Mob", "You cannot kill players with /mob."));
                         return;
