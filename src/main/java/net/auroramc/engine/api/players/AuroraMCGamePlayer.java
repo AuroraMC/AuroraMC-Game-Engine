@@ -15,6 +15,8 @@ import net.auroramc.engine.api.games.Kit;
 import net.auroramc.engine.api.util.SpectatorUtil;
 import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -73,6 +75,9 @@ public class AuroraMCGamePlayer extends AuroraMCServerPlayer {
             setGameMode(GameMode.SURVIVAL);
             setHealth(20);
             setFoodLevel(30);
+            for (PotionEffect effect : getActivePotionEffects()) {
+                removePotionEffect(effect.getType());
+            }
             if (isDead) {
                 getInventory().clear();
                 getInventory().setArmorContents(new ItemStack[4]);
